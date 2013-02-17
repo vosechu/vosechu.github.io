@@ -15,21 +15,33 @@
 
   </head>
   <body>
+    <header>
+      <h1>Chuck Lauer Vose</h1>
+      <p></p>
+    </header>
 
-      <header>
-        <h1>Chuck Lauer Vose</h1>
-        <p></p>
-      </header>
-
-      <div id="banner">
-        <span id="logo"></span>
-
-        <a href="https://github.com/vosechu" class="button fork"><strong>View On GitHub</strong></a>
-      </div><!-- end banner -->
+    <div id="banner">
+      <span id="logo"></span>
+      <a href="https://github.com/vosechu" class="button fork"><strong>View On GitHub</strong></a>
+    </div><!-- end banner -->
 
     <div class="wrapper">
       <nav>
-        <ul></ul>
+        <h3>Pages</h3>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/blog.html">Blog</a></li>
+          <li><a class="disabled" href="/portfolio.html">Portfolio</a></li>
+          <li><a class="disabled" href="/repos.html">Repo Roadmap</a></li>
+          <li><a class="disabled" href="/code.html">Code Samples</a></li>
+        </ul>
+        <h3>Recent Posts</h3>
+        <ul>
+        {% for post in site.posts limit:3 %}
+          <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title }}</a></li>
+        {% endfor %}
+        </ul>
+        <a href="/blog.html">All Posts</a>
       </nav>
       <section>
         <h2>{{ page.title }}</h2>
@@ -39,17 +51,18 @@
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
+
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-37234345-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+        var pageTracker = _gat._getTracker("UA-37234345-1");
+      pageTracker._trackPageview();
+      } catch(err) {}
+    </script>
 
   </body>
 </html>

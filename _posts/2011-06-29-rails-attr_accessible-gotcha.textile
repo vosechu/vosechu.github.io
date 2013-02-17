@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Rails attr_accessible Gotcha
+categories: rails
+tags: rails, attr_accessible, gotcha
 ---
 
 If you're like me you inherit a lot of projects which have very different styles. Today I ran into a project that had never used attr_accessible and I found a total gotcha:
