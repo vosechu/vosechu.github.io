@@ -1,15 +1,18 @@
 ---
 layout: post
+
+categories: life
+published: false
 title: Quick Post
 tags: China, Lan, Wang ba, video games, clever
 typo_id: 287
 ---
-I have nothing of interest to post today but out of a dedication to keep people reading I post regardless. 
+I have nothing of interest to post today but out of a dedication to keep people reading I post regardless.
 
-Over the last week I've been spending a lot of time studying and researching for thesis, a requirement for graduation from this Chinese program. My thesis is vaguely related to the Internet as it exists in China; naturally it is pretty much a front for me to spend a lot of extra time playing video games in the Internet cafes (wang ba). 
+Over the last week I've been spending a lot of time studying and researching for thesis, a requirement for graduation from this Chinese program. My thesis is vaguely related to the Internet as it exists in China; naturally it is pretty much a front for me to spend a lot of extra time playing video games in the Internet cafes (wang ba).
 
-But the _wang ba_ is a different beast from the Internet cafe entirely. In a _wang ba_ there is no wifi (or if there is there's no reason and nowhere to sit to use it), instead there's row upon row of computer desks. The one we go to must have 150 computers in the main room. Each of these computers is networked to a fast network storage array with plenty of space for... you guessed it, VIDEO GAMES GALORE! I've hit the jackpot! Except I can't read Chinese and the icons are usually different so I end up just trying random games every day. Those icons that I do recognize though I'm getting quite good at. 
+But the _wang ba_ is a different beast from the Internet cafe entirely. In a _wang ba_ there is no wifi (or if there is there's no reason and nowhere to sit to use it), instead there's row upon row of computer desks. The one we go to must have 150 computers in the main room. Each of these computers is networked to a fast network storage array with plenty of space for... you guessed it, VIDEO GAMES GALORE! I've hit the jackpot! Except I can't read Chinese and the icons are usually different so I end up just trying random games every day. Those icons that I do recognize though I'm getting quite good at.
 
 Now here's the real difference between a _wang ba_ and a LAN (local area network) center (which would be the American equivalent), all the games are 100% illegal which means that there's no way to play online, right? Wrong! Through a clever loophole most games still allow LAN games even if they're illegal. So there are multiple services in China that will allow you to set up a "LAN" game across the entirety of Shanghai so that any number of people can hook up to your "LAN" and play together. How freaking cool is that workaround?
 
-Classtime. Fly safe everyone. 
+Classtime. Fly safe everyone.

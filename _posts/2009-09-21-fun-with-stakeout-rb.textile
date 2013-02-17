@@ -1,5 +1,6 @@
 ---
 layout: post
+categories: tech
 title: Fun with stakeout.rb
 tags: ruby, drupal, drush, stakeout
 typo_id: 289

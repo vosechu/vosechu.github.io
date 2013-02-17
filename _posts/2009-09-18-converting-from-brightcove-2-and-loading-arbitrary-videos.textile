@@ -1,32 +1,33 @@
 ---
 layout: post
+categories: tech
 title: ! 'Converting from Brightcove 2 and loading arbitrary videos '
 tags: php, javascript, drupal, brightcove
 typo_id: 288
 ---
 Cross-posted to: "Company blog version":http://metaltoad.com/blog/converting-brightcove-2-and-loading-arbitrary-videos
 
-Over the last two weeks I've been working on a project to convert one of our client's websites to Brightcove 3 players. As I am quite new to drupal but not to PHP you can imagine that many of the problems I had were unrelated to brightcove itself but there were a few aspects that I thought were worth documenting for those who are in the (surprisingly) enviable position of doing this migration. 
+Over the last two weeks I've been working on a project to convert one of our client's websites to Brightcove 3 players. As I am quite new to drupal but not to PHP you can imagine that many of the problems I had were unrelated to brightcove itself but there were a few aspects that I thought were worth documenting for those who are in the (surprisingly) enviable position of doing this migration.
 
-First off I want to mention how huge of an upgrade it was going between 2 and 3. It may not look like it from the player aspect, many of the players look largely the same, but the backend work was tremendous. In addition to creating a spectacular new studio for uploading media and creating playlists they redesigned the players to allow greater customization without having to build your own swf player. What's best about the backend changes is that if you really want you can actually keep your v2 players and still use the updated studio to manage your media as well as using the updated Media API to directly query their database for content to display. 
-But what's been crucial for us is the new Player API which allows us to use javascript to customize the actions of the player, load videos manually, and generally cause incredible ruckus without having to recompile the player itself. 
+First off I want to mention how huge of an upgrade it was going between 2 and 3. It may not look like it from the player aspect, many of the players look largely the same, but the backend work was tremendous. In addition to creating a spectacular new studio for uploading media and creating playlists they redesigned the players to allow greater customization without having to build your own swf player. What's best about the backend changes is that if you really want you can actually keep your v2 players and still use the updated studio to manage your media as well as using the updated Media API to directly query their database for content to display.
+But what's been crucial for us is the new Player API which allows us to use javascript to customize the actions of the player, load videos manually, and generally cause incredible ruckus without having to recompile the player itself.
 
 To the point though, there is one mammoth gotcha in the upgrade between v2 and v3: <strong>if you're specifying videos via the params (ie: almost every one of us) videos, the playlists they're in, and the player both are in, must be from the same account. </strong> Additionally, <strong>videos must belong to the playlist that's currently loaded as well or it just will ignore your selection.</strong>
 
 Before I believe it was a little loosey goosey about where things came from but now there is this hard restriction. A little arbitrary feeling but there are ways of working around it. Here's how we ended up working around the problem of having videos that didn't have a playlist or that we just wanted to load in a different order:
 
-In order to get a list of videos into javascript quickly and easily I used drupal_to_js and let it sort out the details. This was in my module file. 
+In order to get a list of videos into javascript quickly and easily I used drupal_to_js and let it sort out the details. This was in my module file.
 
-<pre>
+{% highlight html %}
   <script language="JavaScript" type="text/javascript">
     videos = '. drupal_to_js($videos) .';
   </script>
-</pre>
+{% endhighlight %}
 
 
-In our js file we create the variables we need, (remember to put var in the front or ie will flip out) and add listeners. TEMPLATE_READY will be called when the template is fully loaded and MEDIA_COLLECTION_LOAD will be called anytime there's a switch between playlists or if we use the getMediaInGroupAsynch() function. 
+In our js file we create the variables we need, (remember to put var in the front or ie will flip out) and add listeners. TEMPLATE_READY will be called when the template is fully loaded and MEDIA_COLLECTION_LOAD will be called anytime there's a switch between playlists or if we use the getMediaInGroupAsynch() function.
 
-<pre>
+{% highlight javascript %}
 var player;
 var video, exp, social, content;
 var tabBar, videoList;
@@ -43,29 +44,29 @@ function onTemplateLoaded(pPlayer) {
     content.addEventListener(BCContentEvent.MEDIA_COLLECTION_LOAD, onMediaCollectionLoad);
   }
 }
-</pre>
+{% endhighlight %}
 
 
-When the player is loaded we want to load in a new set of videos. We don't need to do anything with the return value because it will be caught by the listener we defined earlier in the js file. 
+When the player is loaded we want to load in a new set of videos. We don't need to do anything with the return value because it will be caught by the listener we defined earlier in the js file.
 
-<pre>
+{% highlight javascript %}
 function onTemplateReady(e) {
   tabBar = exp.getElementByID("playlistTabs");
   videoList = exp.getElementByID("videoList");
-  
+
   if (videos != null) {
     content.getMediaInGroupAsynch(videos);
   }
 }
-</pre>
+{% endhighlight %}
 
 
 Finally we get to actually use the videos returned to the player. It's worth noting that the videos var here is exactly the same as above, a comma delimited list of video_ids. getMediaInGroupAsynch() doesn't actually do anything with the videos it loads, it just loads them in the player so that we can use them later.
 
-<pre>
+{% highlight javascript %}
 function onMediaCollectionLoad(e) {
   if (e.mediaCollection == null) {
-  // Do nothing because no results came back. Must have been all disabled videos. 
+  // Do nothing because no results came back. Must have been all disabled videos.
   }
   else {
     //once the ids have been fetched from the service, create the runtime lineup.
@@ -78,12 +79,12 @@ function onMediaCollectionLoad(e) {
 
     // Select the new tab we created.
     tabBar.setSelectedIndex(0);
-    
+
     // Select the correct video and play it.
     videoList.setSelectedIndex(0);
     video.loadVideo(list.getSelectedData());
   }
 }
-</pre>
+{% endhighlight %}
 
 Now you may be saying to yourself, why can't I just specify a list of videos in the @videoList param? To which I have to say that I have no idea. The documentation even suggests that this is perfectly possible but in fact it isn't. In the meantime we're just going to have to learn how to use the Player API, it's probably good for us anyways. It certainly was good for me and highly entertaining!

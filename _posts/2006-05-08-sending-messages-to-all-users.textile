@@ -1,16 +1,17 @@
 ---
 layout: post
+categories: tech
 title: Sending messages to all users
 typo_id: 6
 ---
-One of the biggest fears of all system admins and developers is publishing work to a live server and having it break everything. Naturally we all go to great lengths to make sure this doesn't happen but even the most well-tested code in the simplest environment still breaks sometimes. 
+One of the biggest fears of all system admins and developers is publishing work to a live server and having it break everything. Naturally we all go to great lengths to make sure this doesn't happen but even the most well-tested code in the simplest environment still breaks sometimes.
 
 In addition to these fatalities is the less intrusive but equally damning maintenance that sometimes just has to happen in the middle of the day whether there's users in the system or not. I'm sure you can think of a few scenarios and horror stories.
 
 At any rate I've come to realize that it's extremely important to be able to tell the people in the system that things are going to break for a bit. This is fortunately extremely easy in Rails; a quick three or four lines in the application.rb will do it. In PHP it's easy if there is even a little planning that went into the project.
 
-Despite the ease I don't think this is very common in the world of small-to-medium businesses and this seems like a shame. 
+Despite the ease I don't think this is very common in the world of small-to-medium businesses and this seems like a shame.
 
-Letting your users know what's about to happen or what happened a moment ago will increase their sense of security in many cases and in the very least will keep them from calling you in a panic. 
+Letting your users know what's about to happen or what happened a moment ago will increase their sense of security in many cases and in the very least will keep them from calling you in a panic.
 
 Blissful silence.

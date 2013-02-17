@@ -1,12 +1,13 @@
 ---
 layout: post
+categories: tech
 title: Complex commands with Rulang
 tags: ruby erlang mnesia rulang
 typo_id: 266
 ---
 Rulang was giving me a lot of trouble with regards to multi-line commands and complex commands in general. After hacking on it for a while I've developed a patch that will allow ruby code such as the following:
 
-<pre>
+{% highlight ruby %}
 require 'rulang'
 
 @mnesia = RulangBridge::Erlang.new("localhost", 9900)
@@ -22,11 +23,11 @@ def find
 end
 
 puts find
-</pre>
+{% endhighlight %}
 
 PATCH
 
-<pre>
+{% highlight diff %}
 diff -u Desktop/rulangbridge/rulang.erl Current Schoolwork/Project/mnesia/rulang_test/rulang.erl
 --- Desktop/rulangbridge/rulang.erl     2007-05-17 20:25:50.000000000 -0700
 +++ Current Schoolwork/Project/mnesia/rulang_test/rulang.erl    2008-01-03 10:12:05.000000000 -0800
@@ -68,4 +69,4 @@ diff -u Desktop/rulangbridge/rulang.rb Current Schoolwork/Project/mnesia/rulang_
 -                       socket.gets # ...?
 +                       socket.read # ...?
                 end
-</pre>
+{% endhighlight %}

@@ -3,7 +3,7 @@ layout: page
 title: Chuck Lauer Vose's Thoughts
 ---
 
-{% for post in site.posts %}
+{% for post in site.categories.tech %}
   <div class="post-header">
     <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
     <div id="byline">{{ post.date | date: '%B %d, %Y' }} &mdash; by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>

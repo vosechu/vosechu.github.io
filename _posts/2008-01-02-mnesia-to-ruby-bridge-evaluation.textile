@@ -1,37 +1,38 @@
 ---
 layout: post
+categories: tech
 title: Mnesia to ruby bridge evaluation
 tags: ruby erlang bridge
 typo_id: 265
 ---
-Owing to the complexities of building a Rails adapter for Mnesia I've been looking into using a Ruby to Erlang bridge and have looked at the various projects that seem to be available and want to share my comments on how each is stacking up so far. 
+Owing to the complexities of building a Rails adapter for Mnesia I've been looking into using a Ruby to Erlang bridge and have looked at the various projects that seem to be available and want to share my comments on how each is stacking up so far.
 
 h2. Rebar
 
-"Rebar":http://rubyisawesome.com/2007/4/30/calling-erlang-from-ruby-teaser was announced on 2007-04-20 and has since never surfaced to the public as far as his blog and Google are concerned. The code looked to be among the easiest to understand but is thankfully very similar to the Japanese RulangBridge below. The existence of the Japanese project could explain why Tom Werner never finished the project but that's merely a guess. 
+"Rebar":http://rubyisawesome.com/2007/4/30/calling-erlang-from-ruby-teaser was announced on 2007-04-20 and has since never surfaced to the public as far as his blog and Google are concerned. The code looked to be among the easiest to understand but is thankfully very similar to the Japanese RulangBridge below. The existence of the Japanese project could explain why Tom Werner never finished the project but that's merely a guess.
 
 h2. Erlectricity
 
-"Erlectricity":http://nullstyle.com/2007/05/08/erlectricity-hi-ruby-im-erlang/ by Scott Fleckenstein was the first project I really tried out and I am impressed by some aspects and disappointed by others. On one hand it was easy to obtain being hosted on "RubyForge":https://rubyforge.org/projects/erlectricity/ and "Google Code":http://code.google.com/p/erlectricity/ and works well at using Ruby from Erlang. On the other hand it comes with no documentation or rdocs outside of two uncommented examples. 
+"Erlectricity":http://nullstyle.com/2007/05/08/erlectricity-hi-ruby-im-erlang/ by Scott Fleckenstein was the first project I really tried out and I am impressed by some aspects and disappointed by others. On one hand it was easy to obtain being hosted on "RubyForge":https://rubyforge.org/projects/erlectricity/ and "Google Code":http://code.google.com/p/erlectricity/ and works well at using Ruby from Erlang. On the other hand it comes with no documentation or rdocs outside of two uncommented examples.
 
-I could never figure out a way to get it to bridge Erlang commands from Ruby but there may be a way that I'm missing; I have to admit I've not asked Scott about whether this code can go both ways or not. 
+I could never figure out a way to get it to bridge Erlang commands from Ruby but there may be a way that I'm missing; I have to admit I've not asked Scott about whether this code can go both ways or not.
 
-So if you need something that Ruby does well but Erlang doesn't then this may be your project. The second example uses the bridge to generate a gruff graph from Erlang which seems like it'll come in handy for a lot of people. 
+So if you need something that Ruby does well but Erlang doesn't then this may be your project. The second example uses the bridge to generate a gruff graph from Erlang which seems like it'll come in handy for a lot of people.
 
-Outside of documentation I'm concerned about whether the bridge can handle asynchronous requests from Erlang. From first glance it doesn't seem like there's any blocking and each Erlang thread calls the script directly instead of central blocking thread so I'm guessing that there's no concurrency built in; something that we would have to work with if we were to use this bridge for a many-threaded project. 
+Outside of documentation I'm concerned about whether the bridge can handle asynchronous requests from Erlang. From first glance it doesn't seem like there's any blocking and each Erlang thread calls the script directly instead of central blocking thread so I'm guessing that there's no concurrency built in; something that we would have to work with if we were to use this bridge for a many-threaded project.
 
 h2. RulangBridge
 
 "RulangBridge":http://code.google.com/p/rulangbridge/ by Toshi Hirooka (?) is a Japanese project allowing Ruby to use Erlang functions. Google's translation allows us to read the usage instructions and browse the code which has allowed me to start using it in earnest to build the "Ruby to Mnesia bridge":http://www.chuckvose.com/articles/2007/12/22/mnesia-ruby-announcement.
 
-My first impressions are that the bridge is that it is a little immature despite the >1.0 release number. The example code is excellent (if in Japanese) but it isn't packaged in a gem or hosted on RubyForge and doesn't have a way to auto-start an Erlang server. Furthermore, using only the built in classes we have to make the choice of asynchronicity or complicated/multi-module code. 
+My first impressions are that the bridge is that it is a little immature despite the >1.0 release number. The example code is excellent (if in Japanese) but it isn't packaged in a gem or hosted on RubyForge and doesn't have a way to auto-start an Erlang server. Furthermore, using only the built in classes we have to make the choice of asynchronicity or complicated/multi-module code.
 
-Of course the raw class (called Erlang) can be made asynchronous by wrapping it in a Thread.new which is essentially what the Rulang wrapper class does, but it would be nice to have this built-in. Putting the asynchronous switch in the wrapper class is fine but the wrapper class suffers from a desire to make the Erlang calls feel like ruby and therefore makes calling complicated code impossible through the wrapper and thus makes the asynchronous aspect moot also. 
+Of course the raw class (called Erlang) can be made asynchronous by wrapping it in a Thread.new which is essentially what the Rulang wrapper class does, but it would be nice to have this built-in. Putting the asynchronous switch in the wrapper class is fine but the wrapper class suffers from a desire to make the Erlang calls feel like ruby and therefore makes calling complicated code impossible through the wrapper and thus makes the asynchronous aspect moot also.
 
 The last concern I have is that each class must connect to a node explicitly rather than being able to automatically find and balance between nodes. In order to be happy with the adapter we'll have to figure out how to load-balance or make Erlang do it for us.
 
 h2. Conclusion
 
-For the purposes of the the Ruby to Mnesia Adapter I believe that RulangBridge will be sufficient but Erlectricity definitely has its purposes in the Erlang community. Despite some concerns and drawbacks both are usable code and could easily move forward with a little love from the community or follow-up versions by the owners. 
+For the purposes of the the Ruby to Mnesia Adapter I believe that RulangBridge will be sufficient but Erlectricity definitely has its purposes in the Erlang community. Despite some concerns and drawbacks both are usable code and could easily move forward with a little love from the community or follow-up versions by the owners.
 
-Any project involving Erlang and Ruby will have to deal extensively with concurrency. Ideally it would be nice to see a broker model between the two that supports communication in both directions and deals with concurrency issues and load-balancing transparently. Until that happens we'll have to work with Erlectricity and Rulang and love the creators for their hard work. 
+Any project involving Erlang and Ruby will have to deal extensively with concurrency. Ideally it would be nice to see a broker model between the two that supports communication in both directions and deals with concurrency issues and load-balancing transparently. Until that happens we'll have to work with Erlectricity and Rulang and love the creators for their hard work.

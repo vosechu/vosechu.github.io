@@ -6,12 +6,18 @@ layout: default
     {{ page.title }}
   </a></h2>
   <div id="byline">{{ page.date | date: '%B %d, %Y' }} &mdash; by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>
+  {% if page.tags != empty %}
   <div id="tags">Tags:
     {% for tag in page.tags %}
       {{ tag }}
     {% endfor %}
   </div>
+  {% endif %}
 </div>
 <div class="content">
   {{ content }}
+</div>
+<div class="pagination">
+  <a class="previous" href="{{ page.previous.url }}">Previous Post</a>
+  <a class="next" href="{{ page.next.url }}">Next Post</a>
 </div>

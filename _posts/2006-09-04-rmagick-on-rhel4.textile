@@ -1,5 +1,6 @@
 ---
 layout: post
+categories: tech
 title: RMagick on RHEL4
 tags: RHEL, RHEL4, Ruby, RMagick, Install, ImageMagick, RubyGems
 typo_id: 20
@@ -8,5 +9,7 @@ Holy shit, an easy thing in RHEL4.
 
 Assuming you already have rubygems and ruby:
 
-# sudo up2date ImageMagick ImageMagick-devel 
-# sudo gem install rmagick
+{% highlight bash %}
+sudo up2date ImageMagick ImageMagick-devel
+sudo gem install rmagick
+{% endhighlight %}

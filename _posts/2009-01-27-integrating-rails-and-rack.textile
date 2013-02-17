@@ -1,5 +1,6 @@
 ---
 layout: post
+categories: tech
 title: Integrating Rails and Rack
 tags: Rails, Rack, Passenger, Ruby, Integration
 typo_id: 273

@@ -1,5 +1,8 @@
 ---
 layout: post
+
+categories: life
+published: false
 title: Woot, Ding!
 typo_id: 17
 ---

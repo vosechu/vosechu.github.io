@@ -1,16 +1,17 @@
 ---
 layout: post
+categories: tech
 title: Concurrent code in Ruby 1.8.6 through inlining
 tags: ruby erlang rbridge rulang gems
 typo_id: 268
 ---
 *Slight typo in the code fixed: 2008-01-08*
 
-Toshiyuki and I have released a new gem called rbridge which allows us to execute functional, side-effect free, concurrent code directly in Ruby regardless of the version by using Erlang as a processor. This includes using the Mnesia distributed database and ETS/DETS. 
+Toshiyuki and I have released a new gem called rbridge which allows us to execute functional, side-effect free, concurrent code directly in Ruby regardless of the version by using Erlang as a processor. This includes using the Mnesia distributed database and ETS/DETS.
 
 To try it out please follow these steps:
 
-1. Download Erlang for your os. Windows has binaries and OS X can be configured with `./configure --prefix=/opt/local` to make MacParts happy. I haven't yet tried it with Linux but the default configure options should be okay. 
+1. Download Erlang for your os. Windows has binaries and OS X can be configured with `./configure --prefix=/opt/local` to make MacParts happy. I haven't yet tried it with Linux but the default configure options should be okay.
 
 2. Download the rbridge gem. `sudo gem install rbridge`
 
@@ -18,15 +19,15 @@ To try it out please follow these steps:
 
 4. Require rubygems and rbridge in your code and create a new connection to the rulang server. This is the simplest bit of inline code I can think of but there is a lot more we can do: asynchronous access and ruby-style syntax specifically.
 
-<pre>
+{% highlight ruby %}
 require 'rubygems'
 require 'rbridge'
 
 @r = RBridge.new(nil, 'localhost', 9900)
 
 puts @r.erl('10*10.')
-</pre>
+{% endhighlight %}
 
 To read more check out the documentation on "ruby-mnesia.rubyforge.org":http://ruby-mnesia.rubyforge.org.
 
-*Aside:* Toshiyuki Hirooka found me. Thank you to everyone that helped search and offered to translate for us. I'm constantly impressed by the support from the Ruby community. 
+*Aside:* Toshiyuki Hirooka found me. Thank you to everyone that helped search and offered to translate for us. I'm constantly impressed by the support from the Ruby community.

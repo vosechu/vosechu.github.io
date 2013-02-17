@@ -1,16 +1,17 @@
 ---
 layout: post
+categories: tech
 title: ! 'Drupal snippets #1 (Views exposed filters, F5 tweaks)'
 tags: drupal, f5, ordering, snippet, taxonomy, varies header, views
 typo_id: 307
 ---
 Cross-posted at the <a href="http://metaltoad.com/blog/drupal-snippets-1-views-exposed-filters-f5-tweaks">Metaltoad Blog</a>
 
-While I'm certain that I could never work up to the standards of Peter Cooper his "Interesting Ruby Tidbits That Don't Need Separate Posts" series was a great help to me when I was a ruby developer. You can see the original here: <a href="http://www.rubyinside.com/interesting-ruby-tidbits-that-dont-warrant-separate-posts-1-600.html">IRTTDNSP #1</a>. I've not found similar for the Drupal community but I believe a lot of the things I do during the week are interesting but not at all worthy of a complete post of their own. So this will be my attempt to categorize and commit those very thoughts to memory. I hope that even one of these things sparks something for you. 
+While I'm certain that I could never work up to the standards of Peter Cooper his "Interesting Ruby Tidbits That Don't Need Separate Posts" series was a great help to me when I was a ruby developer. You can see the original here: <a href="http://www.rubyinside.com/interesting-ruby-tidbits-that-dont-warrant-separate-posts-1-600.html">IRTTDNSP #1</a>. I've not found similar for the Drupal community but I believe a lot of the things I do during the week are interesting but not at all worthy of a complete post of their own. So this will be my attempt to categorize and commit those very thoughts to memory. I hope that even one of these things sparks something for you.
 
 <h2>How to get Views' exposed filters to display in a block</h2>
 
-If you create a block display and have some exposed filters you may have trouble getting them to actually show up. The problem is that blocks don't seem to like to display their exposed filters unless two prerequisites are met: there must be a full page display somewhere and it must have a path, the block must be set to use ajax. I would have never guessed this either but if you look at the requests that are going across the wire they're going to that page display and the results are coming back over ajax. 
+If you create a block display and have some exposed filters you may have trouble getting them to actually show up. The problem is that blocks don't seem to like to display their exposed filters unless two prerequisites are met: there must be a full page display somewhere and it must have a path, the block must be set to use ajax. I would have never guessed this either but if you look at the requests that are going across the wire they're going to that page display and the results are coming back over ajax.
 
 <h2>How to reorder taxonomy terms in Views' exposed filters</h2>
 
@@ -18,18 +19,18 @@ On that same page we realized that we needed to order the dropdown in a reasonab
 
 <img src="http://metaltoad.com/sites/default/files/System-1.jpg" alt="Emmys reordered taxonomies" width="500" />
 
-Despite the ordering that Views seems to be suggesting below, the actual display order of terms is determined by the taxonomy weights page at /admin/content/taxonomy/<vocab id number>. So you can feel confident that even though views doesn't have a means to order your taxonomy selections, they will be ordered for you. Now the real question is though, is it possible to reorder those terms on just one page and not on another? I don't know, maybe I'll get to post about that later. 
+Despite the ordering that Views seems to be suggesting below, the actual display order of terms is determined by the taxonomy weights page at /admin/content/taxonomy/<vocab id number>. So you can feel confident that even though views doesn't have a means to order your taxonomy selections, they will be ordered for you. Now the real question is though, is it possible to reorder those terms on just one page and not on another? I don't know, maybe I'll get to post about that later.
 
 <img src="http://metaltoad.com/sites/default/files/Edit view nomview | Emmys.com_.jpg" alt="Views exposed filter settings for taxonomy" width="500" />
 
 <h2>How to get an F5 Load Balancer to stop putting the Vary headers on your responses</h2>
 
-When you're using a CDN like Akamai having a Varies header in your response absolutely kills your caching despite all the hard work drupal puts into getting things right. We were seeing about 50-75% cachability through Akamai because of it. Mostly this was because Akamai couldn't cache the JS/CSS which was clearly incorrect. After we figured out that it was the Varies header (props to Grendzy as usual :P), it was a hop skip and a jump to figure out which settings could be causing the actual problem. 
+When you're using a CDN like Akamai having a Varies header in your response absolutely kills your caching despite all the hard work drupal puts into getting things right. We were seeing about 50-75% cachability through Akamai because of it. Mostly this was because Akamai couldn't cache the JS/CSS which was clearly incorrect. After we figured out that it was the Varies header (props to Grendzy as usual :P), it was a hop skip and a jump to figure out which settings could be causing the actual problem.
 
-Turns out the Varies header setting isn't the culprit though it does in fact fix the problem we were having it also introduces some others. The culprit is in fact having Browser Workarounds on which fixes IE6 and gzip and not having HTTP/1.0 Requests on. Of course the manual doesn't really describe what's going on so massive props out to spark on the F5 forums for <a href="http://devcentral.f5.com/Community/GroupDetails/tabid/1082223/asg/50/afv/topic/aft/61224/aff/5/showtab/groupforums/Default.aspx#40664">answering this question</a> before I had the chance to ask it. 
+Turns out the Varies header setting isn't the culprit though it does in fact fix the problem we were having it also introduces some others. The culprit is in fact having Browser Workarounds on which fixes IE6 and gzip and not having HTTP/1.0 Requests on. Of course the manual doesn't really describe what's going on so massive props out to spark on the F5 forums for <a href="http://devcentral.f5.com/Community/GroupDetails/tabid/1082223/asg/50/afv/topic/aft/61224/aff/5/showtab/groupforums/Default.aspx#40664">answering this question</a> before I had the chance to ask it.
 
 <img src="http://metaltoad.com/sites/default/files/BIG-IP.jpg" alt="F5 settings for fixing the Varies header" width="500" />
 
 <h2>Conclusion</h2>
 
-I've run out of time but I'd be grateful for any feedback. If people don't find this useful I'll not post it on planet but if you do please keep reading and encouraging me with your great comments. 
+I've run out of time but I'd be grateful for any feedback. If people don't find this useful I'll not post it on planet but if you do please keep reading and encouraging me with your great comments.

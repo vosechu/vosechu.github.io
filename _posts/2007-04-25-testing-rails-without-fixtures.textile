@@ -1,18 +1,19 @@
 ---
 layout: post
+categories: tech
 title: Testing rails without fixtures
 tags: Rails, rake, plugins, fixtures, testing
 typo_id: 256
 ---
 At "On & On Creative":http://www.create-on.com we have a lot of sites on a common rails backend. It's incredibly flexible so we can offer a lot of support to customers but because there are so many customers with different needs testing has become a huge pain. Not only does it let us run tests custom to each client, it provides a way to import the data to the test db really easily and it's way faster than loading the fixtures each time you start a test. Yay!
 
-After googling around I happened upon "this caboo.se article":http://blog.caboo.se/articles/2007/2/13/what-about-those-bloated-tests about how to run without fixtures at all. It's a very indepth article with lots of good things in it; far be it for me to try to compete. 
+After googling around I happened upon "this caboo.se article":http://blog.caboo.se/articles/2007/2/13/what-about-those-bloated-tests about how to run without fixtures at all. It's a very indepth article with lots of good things in it; far be it for me to try to compete.
 
-Instead, here's the low down on how we prepare each of our sites for testing. 
+Instead, here's the low down on how we prepare each of our sites for testing.
 
 Add the following to the end of your rails_root Rakefile:
 
-<code>
+{% highlight ruby %}
 class Rake::Task
   def detract(prerequisite)
     @prerequisites.delete(prerequisite)
@@ -23,20 +24,20 @@ end
   Rake::Task["test:#{task}"].detract('db:test:prepare')
   Rake::Task["test:#{task}"].enhance(['environment'])
 end
-</code>
+{% endhighlight %}
 
 Add the following to lib/tasks/fixtures.rake. Make sure to look at the two commented lines:
 
-<code>
-# This code courtesy of the "Rails Recipe's book":http://www.pragmaticprogrammer.com/titles/fr_rr/ I believe. 
+{% highlight ruby %}
+# This code courtesy of the "Rails Recipe's book":http://www.pragmaticprogrammer.com/titles/fr_rr/ I believe.
 namespace :db do
   namespace :fixtures do
-    
+
     desc 'Create YAML test fixtures from data in an existing database. Defaults to development database. Set RAILS_ENV to override.'
     task :dump => :environment do
       # Remove the limit if you want to. It's a timesaver mostly
       sql  = "SELECT * FROM %s LIMIT 0,1000"
-      # Add tables you don't want dumped. 
+      # Add tables you don't want dumped.
       skip_tables = ["schema_info", "plugin_schema_info", "engine_schema_info", "sessions"]
       ActiveRecord::Base.establish_connection(:development)
       (ActiveRecord::Base.connection.tables - skip_tables).each do |table_name|
@@ -52,16 +53,16 @@ namespace :db do
     end
   end
 end
-</code>
+{% endhighlight %}
 
 Then the fun easy stuff happens:
 
-<code>
+{% highlight bash %}
 rake db:fixtures:dump RAILS_ENV=production
 rake db:fixtures:load RAILS_ENV=test
 rake test:plugins PLUGIN=your_plugin
-</code>
+{% endhighlight %}
 
-If you want to commit the fixtures to the repo you can but it seems a waste to me since you might be regenerating them often. 
+If you want to commit the fixtures to the repo you can but it seems a waste to me since you might be regenerating them often.
 
-Also, check the two comments in the fixtures.rake, it could be doing things you don't expect. 
+Also, check the two comments in the fixtures.rake, it could be doing things you don't expect.

@@ -1,5 +1,8 @@
 ---
 layout: post
+
+categories: life
+published: true
 title: Taxi Drivers - Snippet
 typo_id: 281
 ---

@@ -1,13 +1,14 @@
 ---
 layout: post
+categories: tech
 title: Rendering partials with a 302 breaks ie6
 tags: rails, 302, partials, cookies
 typo_id: 258
 ---
 If you can spot what's wrong with this code you get a cookie. Apparently rendering with a 302 breaks ie6 entirely. Just deleting the 302 makes it okay.
 
-<code>
+{% highlight ruby %}
 render :partial => 'admin/restricted', :layout => 'admin', :status => "302" and return false
-</code>
+{% endhighlight %}
 
 Whether it makes sense or not is not the question. I'm pretty confident that it doesn't make sense after thinking about it for a while. But why would it make ie6 connections die while firefox et al are fine with it?

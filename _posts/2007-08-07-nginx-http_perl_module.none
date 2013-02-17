@@ -1,27 +1,27 @@
 ---
 layout: post
+categories: tech
 title: Nginx http_perl_module
 tags: nginx, rails, perl, errors
 typo_id: 259
 ---
 Errors you might get at this step:
-<pre>
+{% highlight text %}
 Can't locate nginx.pm in @INC
 Can't locate loadable object for module nginx in @INC
-</pre>
+{% endhighlight %}
 
 This is how I installed the http_perl_module for Nginx. I'm not sure why these things are the way they are, I'm following a mailing list that was written in russian. :)
 
 Installing from ~/src/nginx-0.6.5
 Installing to /opt/local/nginx (if this isn't owned by you use append sudo to the last step)
 
-<pre>
+{% highlight bash %}
 cd ~/src/nginx-0.6.5
 ./configure --with-http_perl_module --with-http_ssl_module --prefix=/opt/local/nginx/ --with-perl_modules_path=/opt/local/nginx/modules/perl
 make
 make install
 sudo /opt/local/nginx/sbin/nginx
-</pre>
+{% endhighlight %}
 
-Now we hope. 
-</pre><!-- technorati tags begin --><p style="font-size:10px;text-align:right;">Tags: <a href="http://technorati.com/tag/nginx" rel="tag">nginx</a>, <a href="http://technorati.com/tag/perl" rel="tag">perl</a>, <a href="http://technorati.com/tag/%20rails" rel="tag"> rails</a></p><!-- technorati tags end -->
+Now we hope.

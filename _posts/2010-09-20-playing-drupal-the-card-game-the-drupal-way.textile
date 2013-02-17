@@ -1,16 +1,17 @@
 ---
 layout: post
+categories: tech
 title: Playing Drupal the card game the Drupal way
 tags: drupal, nodeone, drupal the card game, high five
 typo_id: 313
 ---
-Now that NodeOne is <a href="http://nodeone.se/blogg/drupal-the-card-game-%E2%80%93-250-decks-and-37-countries-later">running out of Drupal the Card Game</a> I feel like it's time to introduce my version of the game rules which I believe are actually significantly more Drupaly than the main rules. 
+Now that NodeOne is <a href="http://nodeone.se/blogg/drupal-the-card-game-%E2%80%93-250-decks-and-37-countries-later">running out of Drupal the Card Game</a> I feel like it's time to introduce my version of the game rules which I believe are actually significantly more Drupaly than the main rules.
 
 If you don't already know the rules check out this video:<br />
 
 <object width="500" height="385"><param name="movie" value="http://www.youtube.com/v/GJSU08LQ54o?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/GJSU08LQ54o?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="500" height="385"></embed></object><br />
 
-Now, in the main rules you compete to complete modules and sites, which is all well and good right, but we don't develop modules in the dark at all, we all know what's going on with other modules through twitter, blogs, and actually meeting up in person at conventions and meetups. We even talk about our sites but in my experience outside of the exciting modules we rarely go into the details of what modules we're using. 
+Now, in the main rules you compete to complete modules and sites, which is all well and good right, but we don't develop modules in the dark at all, we all know what's going on with other modules through twitter, blogs, and actually meeting up in person at conventions and meetups. We even talk about our sites but in my experience outside of the exciting modules we rarely go into the details of what modules we're using.
 
 <h2>Modifications to rules</h2>
 <strong>During play:</strong>
@@ -18,9 +19,9 @@ When you put development effort into a module you play your points face up so th
 -2 cards have to be played and cannot be played on the same module and cannot take a module negative
 
 <strong>During scoring:</strong>
-Now put your cards down on the table face up and figure out how many points were scored in your hand. Add this number to everyone else's number and total. 
+Now put your cards down on the table face up and figure out how many points were scored in your hand. Add this number to everyone else's number and total.
 Write this number on a whiteboard and then give each other player a high five.
 Now try to outdo yourselves in the next version of Drupal (the next game you play).
 
 <strong>Bonus points:</strong>
-Bonus points if you're within 20% of the maximum possible points for all hands. This may have to be adjusted in your games. I usually represent this achievement by giving each player a peach or some similar fruit depending on season. 
+Bonus points if you're within 20% of the maximum possible points for all hands. This may have to be adjusted in your games. I usually represent this achievement by giving each player a peach or some similar fruit depending on season.

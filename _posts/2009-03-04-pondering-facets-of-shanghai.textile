@@ -1,18 +1,21 @@
 ---
 layout: post
+
+categories: life
+published: false
 title: Pondering Facets of Shanghai
 tags: China, TSM, OpenStim, Hanzi, Radicals
 typo_id: 280
 ---
-Today is a free-day and I am feeling a little lost. I woke up at about 2pm or so but unlike Saturday I'm not hungover and unlike Sunday I slept until 2pm, something the cleaning ladies regularly (and thankfully) prevent me from doing. But no hangover and no cleaning ladies today. My anchors are gone and I've been plunged into a radical world to fend for myself. 
+Today is a free-day and I am feeling a little lost. I woke up at about 2pm or so but unlike Saturday I'm not hungover and unlike Sunday I slept until 2pm, something the cleaning ladies regularly (and thankfully) prevent me from doing. But no hangover and no cleaning ladies today. My anchors are gone and I've been plunged into a radical world to fend for myself.
 
-Like all heroic men I have been playing video games and reading Wired all afternoon. 
+Like all heroic men I have been playing video games and reading Wired all afternoon.
 
-Tomorrow we have a test and Friday I will embark on a journey with my fellow alliance people to the city of Nanjing. Nanjing is a few hours outside of Shanghai but from what I've heard is a wildly different place. It's also the place where the Japanese invaded China to rape and pillage wildly. Japan still denies this and China still wants an apology so I worry about our friend Go who is pretty obviously Japanese. I know that he can handle it, he tells stories sometimes about his time in Wuhan (inner China) where people would give him crap for being Japanese and some of his students quit his class after finding out he was Japanese. 
+Tomorrow we have a test and Friday I will embark on a journey with my fellow alliance people to the city of Nanjing. Nanjing is a few hours outside of Shanghai but from what I've heard is a wildly different place. It's also the place where the Japanese invaded China to rape and pillage wildly. Japan still denies this and China still wants an apology so I worry about our friend Go who is pretty obviously Japanese. I know that he can handle it, he tells stories sometimes about his time in Wuhan (inner China) where people would give him crap for being Japanese and some of his students quit his class after finding out he was Japanese.
 
-In other news I was playing with a Hanzi lookup program which sorted Hanzi characters by their parts (called radicals). I spent probably two hours doing this and got through 2 sentences of a book but today I looked at characters and instead of seeing images all wrapped around each other I saw each individual radical. I still don't know what any of the Hanzi mean when I see them, but like being differentiate words from each other when I hear them I was excited to transition into a new stage in my Chinese language. 
-For today's mind-blowing experiment please look no farther than the following link. I fully intend to try to build a TSM and at the very least participate in the OpenStim project to see what other people discover about themselves. This is the first project that I've been truly passionate and curious about in a long time and my housemate will hopefully be able to help me in my endeavors. 
+In other news I was playing with a Hanzi lookup program which sorted Hanzi characters by their parts (called radicals). I spent probably two hours doing this and got through 2 sentences of a book but today I looked at characters and instead of seeing images all wrapped around each other I saw each individual radical. I still don't know what any of the Hanzi mean when I see them, but like being differentiate words from each other when I hear them I was excited to transition into a new stage in my Chinese language.
+For today's mind-blowing experiment please look no farther than the following link. I fully intend to try to build a TSM and at the very least participate in the OpenStim project to see what other people discover about themselves. This is the first project that I've been truly passionate and curious about in a long time and my housemate will hopefully be able to help me in my endeavors.
 
 http://www.wired.com/science/discoveries/news/2009/03/neuroengineering2
 
-It is a 2 part article but the previous part describes a method of brain alteration much more complicated than I am party to. 
+It is a 2 part article but the previous part describes a method of brain alteration much more complicated than I am party to.

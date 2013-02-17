@@ -1,34 +1,35 @@
 ---
 layout: post
+categories: tech
 title: Multiple Dynamic Tabs in Brightcove 3
 tags: brightcove, parallel processing, asynchronous requests, dynamic tabs, jquery
 typo_id: 291
 ---
 Cross-posted at company blog: http://metaltoad.com/blog/multiple-dynamic-tabs-brightcove-3
 
-This week I had the wonderful opportunity to work on an interesting problem that as far as I can tell hasn't been documented. The call came out that we needed to generate a couple dynamic tabs on the top of our player for smart playlists. Now, we already have one dynamic playlist so I thought it was going to be a fairly simple logical step up to three but I was really, really wrong. 
+This week I had the wonderful opportunity to work on an interesting problem that as far as I can tell hasn't been documented. The call came out that we needed to generate a couple dynamic tabs on the top of our player for smart playlists. Now, we already have one dynamic playlist so I thought it was going to be a fairly simple logical step up to three but I was really, really wrong.
 If you read issue 3 of the pragprog magazine you're probably thinking a lot about parallel and asynchronous processing. So it was extremely exciting to have come to a parallelization problem in my day to day activities. I'll explain the problem:
 
-In order to load a playlist into a brightcove player with the Player API you have to have already fetched the videos from the server using getMediaCollectionAsynch, getMediaInGroupAsynch, or getMediaAsynch. With one dynamic tab it's pretty easy to use getMediaInGroupAsynch because you can assume that the only time the MEDIA_COLLECTION_LOAD event is going to fire is when your call has returned. But when you're loading up two or more media items asynchronously you can no longer make that assumption. 
+In order to load a playlist into a brightcove player with the Player API you have to have already fetched the videos from the server using getMediaCollectionAsynch, getMediaInGroupAsynch, or getMediaAsynch. With one dynamic tab it's pretty easy to use getMediaInGroupAsynch because you can assume that the only time the MEDIA_COLLECTION_LOAD event is going to fire is when your call has returned. But when you're loading up two or more media items asynchronously you can no longer make that assumption.
 
 If you're just pulling down pre-defined playlists it's super easy to drop something like the following in your onMediaCollectionLoad listener:
 
-<pre>
+{% highlight javascript %}
 function onMediaCollectionLoad (e) {
   if (e.mediaCollection === null) {}
   else {
     tabBar.insertTabAt(e.mediaCollection, 0);
   }
 }
-</pre>
+{% endhighlight %}
 
-However if you're using getMediaInGroupAsynch or getMediaAsynch it can be difficult to figure out why the listener is getting called. For us we had three playlists of dynamic data but outside of comparing the resulting array to the original array (inefficient and error-prone) there is no way of knowing which asynch call asked for these videos. 
+However if you're using getMediaInGroupAsynch or getMediaAsynch it can be difficult to figure out why the listener is getting called. For us we had three playlists of dynamic data but outside of comparing the resulting array to the original array (inefficient and error-prone) there is no way of knowing which asynch call asked for these videos.
 
-But maybe we don't care. All we care about is that the videos are loaded completely when we insert the tabs into the player right? So we stop relying on order and just make sure that all the videos are loaded into the player before adding some tabs. To do this I maintained a request counter (which could be called a <a href="http://en.wikipedia.org/wiki/Semaphore_%28programming%29">counting semaphone</a> were you so inclined. Before each request I increment the counter and when the request is filled I decrement the counter. When the counter hits 0 I know that all requests have been filled and I can safely add all the tabs at once. 
+But maybe we don't care. All we care about is that the videos are loaded completely when we insert the tabs into the player right? So we stop relying on order and just make sure that all the videos are loaded into the player before adding some tabs. To do this I maintained a request counter (which could be called a <a href="http://en.wikipedia.org/wiki/Semaphore_%28programming%29">counting semaphone</a> were you so inclined. Before each request I increment the counter and when the request is filled I decrement the counter. When the counter hits 0 I know that all requests have been filled and I can safely add all the tabs at once.
 
-Your code could probably look something like this: 
+Your code could probably look something like this:
 
-<pre>
+{% highlight javascript %}
 var tab_count = 0;
 var popular_tab;
 
@@ -47,10 +48,10 @@ function onMediaCollectionLoad (e) {
     // Do nothing
   }
   else {
-    // Make sure that these playlists coming back are coming from 
+    // Make sure that these playlists coming back are coming from
     // getMediaInGroupAsynch. Otherwise their id would be positive.
     if (e.mediaCollection.id < 0) {
-      // Add all media to the player's memory. 
+      // Add all media to the player's memory.
       var mediaDTOs = new Array();
       jQuery.each(e.mediaCollection.mediaIds, function(i, val) {
         mediaDTOs.push(content.getMedia(val));
@@ -60,7 +61,7 @@ function onMediaCollectionLoad (e) {
       tab_count = tab_count - 1;
 
       if (tab_count == 0) {
-        // Make sure this is one of the playlists we were going to add.   
+        // Make sure this is one of the playlists we were going to add.
         if (popular_tab) {
           popular_playlist = {
             displayName: "Most Viewed Videos",
@@ -72,6 +73,6 @@ function onMediaCollectionLoad (e) {
     }
   }
 }
-</pre>
+{% endhighlight %}
 
-Here's hoping this helps you out in your quest for multi-tabbed players and managing asynchronous loading. 
+Here's hoping this helps you out in your quest for multi-tabbed players and managing asynchronous loading.

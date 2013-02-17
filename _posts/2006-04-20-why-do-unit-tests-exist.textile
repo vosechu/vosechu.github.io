@@ -1,13 +1,16 @@
 ---
 layout: post
+
+categories: life
+published: false
 title: Why Do Unit Tests Exist?
 typo_id: 3
 ---
 Holy crap I finally figured out why unit tests exist! To give me something to think about in the shower. Yep, simple as that.
 
-No, wait, there are two really good uses off the top of my head: packaging and testing filesystem crap. 
+No, wait, there are two really good uses off the top of my head: packaging and testing filesystem crap.
 
-The first use is if you're exporting a plugin for later use (or for general distribution). In this scenario there's a fairly good chance that the user importing your plugin has messed up their install or is using a database that isn't the same version or even the same type as the one you're using. 
+The first use is if you're exporting a plugin for later use (or for general distribution). In this scenario there's a fairly good chance that the user importing your plugin has messed up their install or is using a database that isn't the same version or even the same type as the one you're using.
 
 In either case if you have unit tests and none of them fail then you know that the database probably isn't at fault.
 

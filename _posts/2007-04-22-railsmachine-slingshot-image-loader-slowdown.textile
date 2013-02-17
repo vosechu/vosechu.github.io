@@ -1,5 +1,6 @@
 ---
 layout: post
+categories: tech
 title: RailsMachine / Slingshot image loader slowdown
 tags: Rails, Apache, mod_rewrite, mod_proxy_balancer, proxy, image, mongrel, slow,
   firebug, rails
@@ -17,25 +18,25 @@ h2. Solution
 
 RailsMachine and the mongrel docs themselves recommend the following code for apache:
 
-<code>
+{% highlight apache %}
 # Redirect all non-static requests to cluster
 RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
 RewriteRule ^/(.*)$ balancer://NEF_mongrel_cluster%{REQUEST_URI} [P,QSA,L]
-</code>
+{% endhighlight %}
 
 But there's a hidden gotcha that I still haven't fully figured out. Sometimes, usually when images aren't in the top level of /images, apache will not match the RewriteCond and pass the image to mongrel instead of loading it itself.
 
-Mongrel is terrible at serving images and static content from the filesystem. In the words of Zed Shaw, "This means mongrel will serve images, javascript, files, and everything else. Itâ€™s quite fast at this, but Apache can do it better."
+Mongrel is terrible at serving images and static content from the filesystem. In the words of Zed Shaw, "This means mongrel will serve images, javascript, files, and everything else. It's quite fast at this, but Apache can do it better."
 fn1. http://mongrel.rubyforge.org/docs/apache.html
 
 So if you see a slowdown on images, you run mongrel through apache's mod_proxy_balancer, and you used the config from the mongrel website or from RailsMachine/Slingshot's capistrano script, try this code and see if it helps:
 
-<code>
+{% highlight apache %}
 # Redirect all non-static requests to cluster
 RewriteCond %{REQUEST_FILENAME} !.*(jpg|gif|png|js|css)$
 RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
 RewriteRule ^/(.*)$ balancer://NEF_mongrel_cluster%{REQUEST_URI} [P,QSA,L]
-</code>
+{% endhighlight %}
 
 h2. Did It Work?
 
@@ -45,37 +46,37 @@ My computer is exceedingly slow so I can't rely on my browser to tell me how fas
 
 Drop this into your virtual host configuration right after the RewriteEngine On:
 
-<code>
+{% highlight apache %}
 RewriteLog logs/myapp_rewrite_log
 RewriteLogLevel 9
-</code>
+{% endhighlight %}
 
 Then check the apache logs folder (often /var/log/httpd or /usr/local/apache2/logs) for the myapp_rewrite_log. After loading a page it should look something like this:
 
 
-<code>
+{% highlight text %}
 init rewrite engine with requested uri /images/drivers_panel.jpg
 applying pattern '^/(.*)$' to uri '/images/drivers_panel.jpg'
 RewriteCond: input='/var/www/apps/NEF/current/public//images/drivers_panel.jpg' pattern='!.*(jpg|gif|png|js|css)' => not-matched
 pass through /images/drivers_panel.jpg
-</code>
+{% endhighlight %}
 
 Rather than this contrived example:
 
-<code>
+{% highlight text %}
 init rewrite engine with requested uri /images/extra/dirs/my_image.gif
 applying pattern '^/(.*)$' to uri '/images/extra/dirs/my_image.gif'
 RewriteCond: input='/var/www/apps/myapp/current/public/images/extra/dirs/my_image.gif' pattern='!-f' => matched
 rewrite '/images/extra/dirs/my_image.gif' -> 'balancer://myapp_mongrel_cluster/'
 forcing proxy-throughput with balancer://myapp_mongrel_cluster/
 go-ahead with proxy request proxy:balancer://myapp_mongrel_cluster/ [OK]
-</code>
+{% endhighlight %}
 
 h3. Checking the rails logs
 
 The rewrite logs are cool and handy so I put them first but you should also be seeing entries in your development.log or production.log.
 Try the following snippet, you may be surprised to see the results:
 
-<code>
+{% highlight bash %}
 cat development.log production.log | egrep '(jpg|png|gif|js|css)' | less
-</code>
+{% endhighlight %}

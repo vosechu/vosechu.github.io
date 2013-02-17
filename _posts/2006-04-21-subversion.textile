@@ -1,10 +1,13 @@
 ---
 layout: post
+
+categories: life
+published: false
 title: Subversion
 typo_id: 4
 ---
-I'm finally learning, oh yes. 
+I'm finally learning, oh yes.
 
-The reason IDE's make it so difficult to copy folders around is because it's an incredibly difficult process. In order to copy in Subversion you have to copy the folders/files, delete any .svn directories in each level of a folder, then those folders/files have to be added to the repo. 
+The reason IDE's make it so difficult to copy folders around is because it's an incredibly difficult process. In order to copy in Subversion you have to copy the folders/files, delete any .svn directories in each level of a folder, then those folders/files have to be added to the repo.
 
 Very complicated process which has been killing me lately. I should have known better; how not DRY of me to copy a folder...

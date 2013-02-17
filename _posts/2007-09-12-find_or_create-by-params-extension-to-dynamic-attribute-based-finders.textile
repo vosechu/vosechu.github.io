@@ -1,27 +1,28 @@
 ---
 layout: post
+categories: tech
 title: find_or_create by params (extension to dynamic attribute based finders)
 tags: Rails, find_or_create, dynamic attribute based finders, ActiveRecord, find,
   create
 typo_id: 262
 ---
-Rails has a dynamic method where you can do find_or_create_by_attr_name(attr) but it the method names get incredibly long very quickly. So SJS wrote "this article":http://sami.samhuri.net/2007/4/11/activerecord-base-find_or_create-and-find_or_initialize in which he tries to remedy the situation. His solution was pretty elegant but it still only worked for fields that were already defined in the database; if you often redefine setter methods it doesn't work at all. 
+Rails has a dynamic method where you can do find_or_create_by_attr_name(attr) but it the method names get incredibly long very quickly. So SJS wrote "this article":http://sami.samhuri.net/2007/4/11/activerecord-base-find_or_create-and-find_or_initialize in which he tries to remedy the situation. His solution was pretty elegant but it still only worked for fields that were already defined in the database; if you often redefine setter methods it doesn't work at all.
 
 Here's my attempt to remedy the situation.
 
-<pre>
+{% highlight ruby %}
 module ActiveRecordExtensions
   def self.included(base)
     base.extend(ClassMethods)
   end
-  
+
   module ClassMethods
     def find_or_create(params)
       begin
         return self.find(params[:id])
       rescue ActiveRecord::RecordNotFound => e
         attrs = {}
-        
+
         # search for valid attributes in params
         self.column_names.map(&:to_sym).each do |attrib|
           # skip unknown columns, and the id field
@@ -32,7 +33,7 @@ module ActiveRecordExtensions
 
         # call the appropriate ActiveRecord finder method
         found = self.send("find_by_#{attrs.keys.join('_and_')}", *attrs.values) if !attrs.empty?
-        
+
         if found && !found.nil?
           return found
         else
@@ -45,7 +46,7 @@ module ActiveRecordExtensions
 end
 
 ActiveRecord::Base.send(:include, ActiveRecordExtensions)
-</pre>
+{% endhighlight %}
 
 h3. Newb instructions
 

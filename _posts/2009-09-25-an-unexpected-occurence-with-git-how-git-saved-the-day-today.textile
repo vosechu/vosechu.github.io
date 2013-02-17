@@ -1,5 +1,6 @@
 ---
 layout: post
+categories: tech
 title: ! 'An Unexpected Occurence With Git: How Git Saved The Day Today'
 tags: git, contractors
 typo_id: 290
@@ -12,14 +13,14 @@ Time came and code needed to be merged into trunk. While discussing our options 
 
 Normally merging was a pain but today we issued these commands, watched the output, then shared high-fives and a beer.
 
-<pre>
+{% highlight bash %}
 cd imported_files
 git log
 *write down the first couple chars of the SHA1 of the first commit
 git diff --no-prefix {sha of first commit}..HEAD > patchfile
 cd trunk
 patch -p0 < ../imported_files/patchfile
-</pre>
+{% endhighlight %}
 
 Who knew it was going to be so easy!?
 
