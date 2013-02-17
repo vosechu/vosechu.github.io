@@ -1012,3 +1012,10 @@ footer {
     width: auto;
   }
 }
+
+.post-header {
+  margin-bottom: 1em;
+}
+.snippet {
+  margin-bottom: 1em;
+}

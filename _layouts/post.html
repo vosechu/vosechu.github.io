@@ -1,9 +1,17 @@
 ---
 layout: default
 ---
+<div class="post-header">
   <h2><a href="{{ page.url }}">
     {{ page.title }}
   </a></h2>
-  <div id="byline">Committed {{ page.date | date_to_string }} by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>
-  <div id="tags">Tags: {{ page.tags }}</div>
+  <div id="byline">{{ page.date | date: '%B %d, %Y' }} &mdash; by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>
+  <div id="tags">Tags:
+    {% for tag in page.tags %}
+      {{ tag }}
+    {% endfor %}
+  </div>
+</div>
+<div class="content">
   {{ content }}
+</div>
