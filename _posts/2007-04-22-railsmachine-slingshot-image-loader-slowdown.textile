@@ -1,0 +1,81 @@
+---
+layout: post
+title: RailsMachine / Slingshot image loader slowdown
+tags: Rails, Apache, mod_rewrite, mod_proxy_balancer, proxy, image, mongrel, slow,
+  firebug, rails
+typo_id: 255
+---
+h2. Background / Analysis
+
+Recently a fellow asked me to help him diagnose a slowdown in his rails stack at the Ruby Brigade meeting in Seattle.
+
+After going through the normal procedures of checking mysql indexes, talking about caching, and checking the code for bizarreness I still couldn't find anything really out of the ordinary.
+
+Finally we turned to "Firebug":http://getfirebug.com and found that the images were taking an eternity to download. This had happened to On &#38; On Creative earlier on this year so the solution was quick at hand.
+
+h2. Solution
+
+RailsMachine and the mongrel docs themselves recommend the following code for apache:
+
+<code>
+# Redirect all non-static requests to cluster
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+RewriteRule ^/(.*)$ balancer://NEF_mongrel_cluster%{REQUEST_URI} [P,QSA,L]
+</code>
+
+But there's a hidden gotcha that I still haven't fully figured out. Sometimes, usually when images aren't in the top level of /images, apache will not match the RewriteCond and pass the image to mongrel instead of loading it itself.
+
+Mongrel is terrible at serving images and static content from the filesystem. In the words of Zed Shaw, "This means mongrel will serve images, javascript, files, and everything else. Itâ€™s quite fast at this, but Apache can do it better."
+fn1. http://mongrel.rubyforge.org/docs/apache.html
+
+So if you see a slowdown on images, you run mongrel through apache's mod_proxy_balancer, and you used the config from the mongrel website or from RailsMachine/Slingshot's capistrano script, try this code and see if it helps:
+
+<code>
+# Redirect all non-static requests to cluster
+RewriteCond %{REQUEST_FILENAME} !.*(jpg|gif|png|js|css)$
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+RewriteRule ^/(.*)$ balancer://NEF_mongrel_cluster%{REQUEST_URI} [P,QSA,L]
+</code>
+
+h2. Did It Work?
+
+h3. Checking the rewrite logs
+
+My computer is exceedingly slow so I can't rely on my browser to tell me how fast an image is really downloading. If you're like me it might be worth watching the rewrite logs to see if the images are being passed through rather than being rendered.
+
+Drop this into your virtual host configuration right after the RewriteEngine On:
+
+<code>
+RewriteLog logs/myapp_rewrite_log
+RewriteLogLevel 9
+</code>
+
+Then check the apache logs folder (often /var/log/httpd or /usr/local/apache2/logs) for the myapp_rewrite_log. After loading a page it should look something like this:
+
+
+<code>
+init rewrite engine with requested uri /images/drivers_panel.jpg
+applying pattern '^/(.*)$' to uri '/images/drivers_panel.jpg'
+RewriteCond: input='/var/www/apps/NEF/current/public//images/drivers_panel.jpg' pattern='!.*(jpg|gif|png|js|css)' => not-matched
+pass through /images/drivers_panel.jpg
+</code>
+
+Rather than this contrived example:
+
+<code>
+init rewrite engine with requested uri /images/extra/dirs/my_image.gif
+applying pattern '^/(.*)$' to uri '/images/extra/dirs/my_image.gif'
+RewriteCond: input='/var/www/apps/myapp/current/public/images/extra/dirs/my_image.gif' pattern='!-f' => matched
+rewrite '/images/extra/dirs/my_image.gif' -> 'balancer://myapp_mongrel_cluster/'
+forcing proxy-throughput with balancer://myapp_mongrel_cluster/
+go-ahead with proxy request proxy:balancer://myapp_mongrel_cluster/ [OK]
+</code>
+
+h3. Checking the rails logs
+
+The rewrite logs are cool and handy so I put them first but you should also be seeing entries in your development.log or production.log.
+Try the following snippet, you may be surprised to see the results:
+
+<code>
+cat development.log production.log | egrep '(jpg|png|gif|js|css)' | less
+</code>

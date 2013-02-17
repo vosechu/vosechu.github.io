@@ -1,0 +1,9 @@
+---
+layout: post
+title: Integrating Rails and Rack
+tags: Rails, Rack, Passenger, Ruby, Integration
+typo_id: 273
+---
+Posted for those confused about Rack. Rails doesn't need Rack right now to integrate with the current webservers so you don't need to learn about Rack right now. Rack is for frameworks that aren't Rails but still want to take advantage of the excellent web servers that have come into being lately (read: Phusion Passenger)
+
+I hope you don't have to troll around the Internet as long as I did just to find this answer :)

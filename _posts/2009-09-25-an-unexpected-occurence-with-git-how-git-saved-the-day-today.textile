@@ -1,0 +1,30 @@
+---
+layout: post
+title: ! 'An Unexpected Occurence With Git: How Git Saved The Day Today'
+tags: git, contractors
+typo_id: 290
+---
+Cross-posted from the "Company Blog":http://metaltoad.com/blog/unexpected-occurence-git-how-it-made-our-life-easier-time
+
+In my experiences in the past working with external contractors is often a pain, especially the final merge where you try to incorporate all their code. I've always been a huge proponent of Subversion for SCM but today I saw an example where Git knocked the socks off of Subversion.
+
+Time came and code needed to be merged into trunk. While discussing our options someone noticed that there was a .git file in the project directory and put the pieces together. While Subversion relies on a central repo Git has no such requirement and the contractor had included his git repo with the file which meant that we had his complete revision history available to us as well as an extremely easy method of applying diffs.
+
+Normally merging was a pain but today we issued these commands, watched the output, then shared high-fives and a beer.
+
+<pre>
+cd imported_files
+git log
+*write down the first couple chars of the SHA1 of the first commit
+git diff --no-prefix {sha of first commit}..HEAD > patchfile
+cd trunk
+patch -p0 < ../imported_files/patchfile
+</pre>
+
+Who knew it was going to be so easy!?
+
+So the moral of the story: If you're working with people that may not be in your office or you expect to get a tarball/zip of their work you could do no better than Git for version control. You get to see their complete history and work with it.
+
+I'll bet that someone out there smarter than myself actually knows how to replay the git commits so you can keep the revision history as well. Git is cool!
+
+Note: Patch instructions based on "these directions":http://tamsler.blogspot.com/2009/02/patching-with-git-diff.html

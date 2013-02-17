@@ -1,0 +1,79 @@
+---
+layout: post
+title: Using git-svn to manage standard and non-standard branches
+tags: branches, drupal, Git, Git-svn, merge, svn
+typo_id: 303
+---
+Cross posted at the "Metal Toad Blog":http://metaltoad.com/blog/using-git-svn-manage-standard-and-non-standard-branches
+
+When Webchick announced that Drupal was moving to Git at Drupalcon 2010, our office erupted in pleasure at the news. Lots of great Drupalists are already using Git and there's even an unofficial Github branch of Drupal for your branching and stashing pleasure <a href="http://github.com/drupal/drupal">Github mirror</a>. However, Metal Toad Media has been an SVN shop for a long time we still have a lot of processes that use SVN, so we elected unanimously to do a gradual rollout: new sites get a private repo on Github, old sites just use git-svn. Looking back I wondering why we ever delayed.
+
+<h2>Standard Git-svn setup</h2>
+
+If you've got a standard SVN setup (with trunk under trunk, branches under branches, and tags under a tags directory), then you're lucky, because the standard Git-SVN setup is pretty much all you'll ever need. In that case you merely need to use: `git svn clone -s https://repo.tld/repo`. After this step you'll magically be able to switch branches super fast, commit to stage, etc. 
+
+If you have an old svn repo with just stackloads of changes use the -r flag to specify a range of revisions you're actually interested in. We have one repo that's well over 10k commits with tons of branches, this literally takes 20 hours to checkout with Git-svn. 
+
+Now that you're here what do you do? There are only a couple commands you need:
+
+<pre>
+git svn rebase | svn up
+git svn dcommit | svn ci
+git update-index --assume-unchanged path | ignore this file, great for settings.php
+git checkout -- path | delete my current changes
+git reset --hard | really, really delete my current changes
+git merge branch_name | merge in the changes from the branch called branch_name
+git stash | temporarily store my changes and check out master
+git stash pop | restore my stashed changes and take those changes off of the stash list
+</pre>
+
+When in doubt check out the <a href="http://cheat.errtheblog.com/s/gitsvn/">git-svn cheatsheet</a> and the <a href="http://cheat.errtheblog.com/s/git/">git cheatsheet</a> or install the cheat gem and get this direct to your command line:
+
+<pre>
+sudo gem install cheat
+cheat gitsvn
+</pre>
+
+If you're going to work with Github or a some other straight Git repo it's well worth setting your Name and email address so that people know who you are and GitX can pull down your gravatar. You can do so with the following commands:
+
+<pre>
+git config --global user.name 'John Doe'
+git config --global user.email johndoe@example.com
+</pre>
+
+I know that's a lot of commands, it's okay to bookmark this or the cheatsheets if you don't want to forget. The beauty of Git is that you get to find the way that works best for you; these and a few others are all I ever need from git-svn. 
+
+<h2>Non-standard Git-svn setup</h2>
+
+Okay, so the standard setup is all well and good but since SVN gives you the flexibility to drop branches and tags anywhere this can cause some problems for Git. Normally this is as simple and manually specifying the directories that it actually uses via the -T (for trunk), -t (for tags), or -b (for branches). However if you're in the unlucky situation of having branches sitting alongside your trunk directory there is some additional love that you need to give.
+
+First set up the repo as if it were a standard repo, get as much done right as you can by using -s or -T/-t/-b.
+Once you have the repo checked out edit the .git/config file
+In the svn-remote section take a peek at the braches/tags/fetch lines. If something doesn't fall completely into one category add it as another fetch line. For instance, if you had a client branch that wasn't in the branches folder you could do the following:
+
+<pre>
+[svn-remote "svn"]
+        url = https:// svndomain.tld/svn/project
+        fetch = trunk:refs/remotes/trunk
+        fetch = client:refs/remotes/client
+        branches = branches/*:refs/remotes/*
+        tags = tags/*:refs/remotes/tags/*
+</pre>
+
+After you've edited this you can do a `git svn fetch` to pull down all remote branches. Now when you've done that you should see other remote branches when you do `git branch -r` and you should be able to do awesome things like `git merge client && git commit -m "happiness is a fresh merge"`
+
+<h2>Merging to client branch</h2>
+
+After a while you're going to get out of date with the client branch unless they're doing a similar thing with git-svn. But merging into the client branch isn't quite as easy as a normal git merge, or at least it's not the same. Do merge from trunk -> client do the following:
+
+<pre>
+git reset --hard remotes/client
+git merge trunk
+git svn dcommit
+</pre>
+
+I've had varying results doing this. On some projects it seems to work great, on others it seems to switch me back to trunk instead of dcommit'ing. Worth a try at least. 
+
+<h2>Conclusion</h2>
+
+Git has been amazing for us so far. Grendzy has been using it for about a year and I'm at about 9 months. Getting everyone else on board has been pretty easy and already I've seen more smiles around the office. Hope your transition is as easy and fruitful as ours is so far!

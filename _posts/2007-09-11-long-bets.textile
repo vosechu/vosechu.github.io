@@ -1,0 +1,26 @@
+---
+layout: post
+title: Long Bets
+tags: REST, MySQL, Rails, Future, Ruby, Scaling, Bets, Hadoop, HBase, Mnesia, Erlang,
+  CouchDB
+typo_id: 261
+---
+"Sam Ruby":http://intertwingly.net occasionally does an article about his long bets and I really respect his ability to predict the future. "This time":http://intertwingly.net/blog/2007/08/12/Long-Bets I feel that he was focusing too close and forgot the long part of the 'long bet'. REST is already important, and there are further developments in edge rails that make it even more important (active resource). MySQL is already a pain for scaling and the plugins are starting to come out but haven't really hit the fan yet. 
+
+h3. Bet One - MySQL becomes the exception
+
+First, I think Sam Ruby is dead on about databases. Right now there are only a few things that are a consistent pain for deployment and scaling and databases are the top of the heap. I know there are things like MaxDB for mysql and there are ways to set up ring replication but it's hard; something that Ruby's community is really good at solving.
+
+My first bet is that MySQL dies out for the rails community and something new pops in. It wouldn't surprise me if it was "Mnesia":http://www1.erlang.org/documentation/doc-5.0.1/lib/mnesia-3.9.2/doc/index.html from "Erlang/OTP":http://www.erlang.se or something involving "Hadoop":http://lucene.apache.org/hadoop/ and "HBase":http://wiki.apache.org/lucene-hadoop/Hbase. It would surprise me if "CouchDB":http://www.couchdb.org popped onto the scene in a big way but it's the sort of thinking that could lead us somewhere interesting. The other option is that someone comes up with a really concrete stack of abstractions that makes it easy to balance mysql requests and writes.
+
+h3. Bet Two - Rails drops REST completely
+
+Secondly, I think REST is the wrong way to move forward. REST maps very well onto the CRUD principles, but I feel like we very rarely actually use just CRUD. More often than not I want to run custom little things and create crazy associations. And I realize that this is all possible in the REST model, but it makes the controllers obscene sometimes.
+
+What we really want is Query Language for the Internet and what better language to build that in than Ruby. I've seen DSL's for direct database access and it seems like the routes would be just around the corner if this is where we decide to take it. 
+
+The question is whether DHH sees the writing on the wall or desperately wants to hang on to REST. Since he's put so much effort into the REST idea it seems like he would be loath to drop it, but at the same time he's an incredibly mature developer and would hopefully handle a change like this if it ever happened. 
+
+h3. Conclusion
+
+All respect to Sam Ruby, I really do respect his predictions over my own. But I think his predictions are too close to us right now. I would like to know what happens after REST and what happens in the database arena. 

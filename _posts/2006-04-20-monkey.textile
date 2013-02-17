@@ -1,0 +1,108 @@
+---
+layout: post
+title: Using Rails to Create a Static Site
+typo_id: 1
+---
+h2. Overview
+
+A customer of ours has a splendidly restrictive environment which I have the pleasure to work within. Not only is there no Rails, there's no PHP and presumably no database to hook into even if there were dynamic languages. This is probably complete crap but it led to an interesting problem solving situation regardless.
+
+What do you do with a client that wants hundreds of pages to be redesigned when you don't have access to handy timesaving tools like Rails or PHP? 
+
+Long before I started research I told my boss to continue with the site anyways; I thought that caching would work exactly the way I needed. This turned out to be completely wrong but the site was well underway so I had to figure something out.
+
+After trolling the net for a long time I stumbled on a website that took ASP pages and made static pages out of them by spidering; basically wget tweaked a little bit and resold for far too much money.
+
+So I endeavored to do exactly the same for Rails. 
+
+h2. Routing
+
+In order to make this work I knew that I needed to do be able to represent pages by their name; something like activities.html would pull up the page with the title 'Activities'. Once I had the idea it was a short jump to the following routing rules:
+
+<typo:code>
+map.connect '', :controller => 'page', :action => 'splash_page'
+map.connect ':id', :controller => 'page', :action => 'index'
+map.connect ':controller/:action/:id'
+</typo:code>
+
+The first allows the blank page to be a custom welcome page as is standard for us. The third is the standard route just in case, but the second is the monkey-maker.
+
+I realize now that I could have just made <page.id>.html but I've justified it to myself by saying that the titles make for better presentation. 
+
+h2. The Code
+
+The code below is the default action for the controller and essentially fills the spot of the routing code with a couple of tweaks. 
+
+The index bases decisions on whether there's just a number, whether there's a .html, or just straight text. 
+
+<typo:code>
+def index
+  # If there's a number in the id assumed that it's the id of a page.
+  if params[:id] =~ /^\d+$/
+    @page = Page.find(params[:id])
+
+  # If there's a .html in the id assume we want the page with that title.
+  elsif params[:id] =~ /^.*\.html$/
+    # This allows users to use any case for the link name.
+    # Otherwise exporting to windows/mac might break from
+    # multiple pages being named the same. For instance
+    # Index.html != index.html in Linux but does in Windows/Mac.
+    # Therefore sending both versions will break a
+    # lot of archiving utilities in Win/Mac.
+    if params[:id] =~ /[A-Z]/
+      redirect_to :action => :index, :id => params[:id].downcase
+    end
+    # Otherwise strip the .html and the _ then query the database.
+    @page = Page.find(:first,
+                      :conditions => ['title = ?', html_to_title(params[:id])])
+
+  # Finally if theres simply a name we should redirect to 
+  # the .html version like we did above.
+  elsif params[:id]
+    redirect_to(:action => :index, 
+                :id => title_to_html(params[:id])
+  end
+  
+  # If the page somehow makes it through that battery 
+  # and the routing rules above just redirect to the 
+  # homepage keeping the flash intact.
+  if @page.nil?
+    flash[:notice] = flash[:notice]
+    redirect_to :action => :splash_page
+  end
+end
+</typo:code>
+
+Finally there are the helper scripts used above:
+
+<typo:code>
+def title_to_html(title)
+  title.downcase.tr('\ \\\/', '_') + '.html'
+end
+
+def html_to_title(title)
+  title.gsub(/\.html/,'').humanize
+end
+</typo:code>
+
+h2. Wget
+
+Now that we have pages that are entirely named correctly we can simply use wget to create a perfect copy on her server.
+
+For easy reference I used the following:
+
+<typo:code>
+wget -m -nH www.example.com
+</typo:code>
+
+h2. Conclusion
+
+After hours of tweaking I've arrived at a very stable and comfortable arrangement. The client knows that pages are simply the name of the page with underscores for spaces and for the most part things are working nicely. 
+
+Changing page titles is still a pain and probably always will be. We dealt with this by making a links area above the text which adds some order while solving the interpage problem. I think there are currently only two links in the actual pages that point to a page on the server.
+
+When using wget it's especially important to make sure that all the links are the same style. For instance having a / in front of some links but not in front of others can lead to weirdness when you're in a sub-directory and having mixed case will break windows servers (though I've attempted to remedy this).
+
+Another caveat is that wget doesn't follow javascript links, pop-ups, or roll-overs. All pages that can only be accessed through a form or a js action need to be manually copied with the rest of the files.
+
+If nothing this project makes for an interesting comparison in benchmarking. If you were benchmarking the caching ability of a Rails app it would be lovely to see the speed of the straight html as well.

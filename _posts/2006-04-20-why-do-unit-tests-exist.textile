@@ -1,0 +1,20 @@
+---
+layout: post
+title: Why Do Unit Tests Exist?
+typo_id: 3
+---
+Holy crap I finally figured out why unit tests exist! To give me something to think about in the shower. Yep, simple as that.
+
+No, wait, there are two really good uses off the top of my head: packaging and testing filesystem crap. 
+
+The first use is if you're exporting a plugin for later use (or for general distribution). In this scenario there's a fairly good chance that the user importing your plugin has messed up their install or is using a database that isn't the same version or even the same type as the one you're using. 
+
+In either case if you have unit tests and none of them fail then you know that the database probably isn't at fault.
+
+The second use is for filesystem crap. I can still count the number of times I've messed up the permissions on a folder only to find it after a half hour of debugging. This should never happen and there are wonderful tools to prevent it. `ri File` and `ri FileUtils` should get you started if you're curious.
+
+Specifically I've been working on a photo upload admin because I don't understand file_column. In this I occasionally have to make a directory (okay, every time I upload something that isn't a graphic) and it would be really nice to know that when I post it onto our production server that it'll work when I release it into the wild.
+
+Under this column is a wonderful addition to test_helper to check that things are correctly set in other places. Since rake is seperate from the dispatchers it could check their permissions, check the permissions of the public and log folders, and a myriad of other wonderful tests that could help newbies get on their way.
+
+Rake is already pretty good at this but it serves as an excellent example of one use for unit testing.

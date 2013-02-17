@@ -1,0 +1,37 @@
+---
+layout: post
+title: Facebook API Terminology
+tags: api, facebook
+typo_id: 297
+---
+Cross posted on the "Metal Toad Blog":http://metaltoad.com/blog/facebook-api-terminology
+
+The toad just finished a small project involving the Facebook API and by far the most confusing aspect of the project was the terminology regarding the many, many different API's and what each one actually does. I thought this merited a write-up and I hope you find it helpful. 
+
+<h2>FBML, Frames and the Canvas</h2>
+
+"I'm interested in making a Facebook app that will live on Facebook.com but store data on my webserver."
+
+A long time ago Facebook was limited to creating apps only in their website which they called the frame. The components you were allowed to use on your section of the app (called your canvas) were instantiated by using FBML tags. In this style you would create an app on Facebook's website and point your canvas url at your webserver. Your webserver would be interpreted through the rosie glasses of Facebook's website; FB would make a call to your webserver and deliver the results to the end-user after making subtle alterations to your code. 
+
+<h2>XFBML and Facebook Connect</h2>
+
+"I'm interested in making my website more interactive and allowing users to log in via their Facebook login."
+
+Not surprisingly making apps is not enough for many people and they want to extend their own websites instead of making Facebook better. To get Facebook integration into your site you're going to be looking at XFBML, FBJS and FQL, together they can be called Facebook Connect though I don't know if it's officially defined as such. 
+
+Unlike FBML there is no frame and you're relying on magic to get your XFBML parsed into a usable format. Rather than sitting in between your end-user and your webserver, this time your webserver uses the Facebook loader JS to construct iFrames which call out to Facebook.com, subtly change your XFBML tags into real HTML, and display the results. 
+
+What's important to know though, is that the three different ways of interacting with Facebook (XFBML, FBJS, and the PHP/Language specific libraries) essentially do the same exact things so you can do whichever you feel most comfortable with or whichever gives you the most bang for your particular project. If you're doing AJAX there's a good chance you'll end up with XFBML tags due to the limited interaction you'll have with PHP/Whatever on the backend, but that's totally up to you. 
+
+XFBML is not everything though and you'll find yourself wanting to use <fb:serverfbml> fairly often to get at some of the juicier bits from FBML. Be not afraid, it is a kind layer once you get it developed. Best part is that serverfbml elements do know about each other so if you render a login and a hidden friend finder at the same time once people log in you can show the friend finder and it will have the friends of the now logged in user. Magic. 
+
+<h2>Glossary</h2>
+
+FBML - Facebook.com specific tags for building Facebook apps.
+XFBML - Facebook Connect markup language for adding Facebook functionality into your website.
+FBJS - Facebook's JS library that works on both Facebook.com apps and for Facebook Connect apps.
+FQL - Facebook's weird little query language for getting data quickly with no interface.
+Facebook Connect - Namespace to describe stuff that you may want to do with your server. 
+Canvas - The main space on Facebook.com where you can find objects like your Wall.
+Frame - The stuff around the frame like your notifications and the myriad ads.

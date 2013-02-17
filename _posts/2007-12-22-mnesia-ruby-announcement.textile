@@ -1,0 +1,15 @@
+---
+layout: post
+title: Mnesia + Ruby Announcement
+tags: Mnesia, Ruby, Amazon, EC2, SimpleDB, Erlang, DDBMS, Distributed
+typo_id: 263
+---
+My goal this year is to release a Ruby port of the Mnesia distributed database and hopefully start the process of moving to a true slice architecture. The port is an interesting project but I think the importance of the slice architecture is paramount. 
+
+For the last couple of years we've been working on the n-tier model with ruby. It's well established and it has been working nicely for us. But the web server industry is starting to move more towards the idea of instances or clouds of ambiguous slices. Amazon is doing it, mongrel is a part of it certainly, Mnesia has always worked this way. 
+
+My hope is that my port will help us to create an EC2 instance that is both the master of it's domain and a part of a cloud at the same time. I would like to see an EC2 instance that can autoconfigure itself and automatically find its neighbors, which contains a complete Mnesia instance, a couple mongrels, and a proxy/load balancer. 
+
+I'm not sure if we can do this quite yet but multi-processor theory suggests that it can be done. Whether it's advantageous to remove all the bottle-necks and have to deal with the scheduling individually is where we'll have to analyze but I'm confident that we are moving somewhere truly incredible.
+
+In the future I hope to be able to drop in a new EC2 and just have it completely figure things out for me. No more MySQL master, no more apache proxying. Whether we use my new port or SimpleDB is of no concern to me at all. 

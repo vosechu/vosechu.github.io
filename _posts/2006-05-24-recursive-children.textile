@@ -1,0 +1,34 @@
+---
+layout: post
+title: Recursive children
+typo_id: 16
+---
+One of the things sorely missing from Rails (and with good reason) is a function to find all the children in a tree. Below is my attempt at it, you can drop it in any model that acts_as_tree and call all_children to get a flattened list of all children, grandchildren, etc.
+
+<typo:code>
+  def all_children
+    all_children = []
+    all_children << list_children(self)
+    return all_children.flatten
+  end
+
+  private
+
+  def list_children(branch)
+    all_children = []
+    for child in branch.children
+      all_children << list_children(child)
+    end
+
+    if branch.children.empty?
+      return branch
+    else
+      all_children << branch
+      return all_children
+    end
+  end
+</typo:code>
+
+There's probably a lot of reasons for this not existing but sometimes you need the limited functionality that this provides and can work within the constraints of making sure that no children have two parents. 
+
+The other approach is to use acts_as_nested_set but you sometimes lose valuable data such as the self_and_siblings function from acts_as_tree. 

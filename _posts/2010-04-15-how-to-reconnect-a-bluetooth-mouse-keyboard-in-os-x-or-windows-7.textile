@@ -1,0 +1,16 @@
+---
+layout: post
+title: How to reconnect a bluetooth mouse/keyboard in OS X or Windows 7
+tags: bluetooth, keyboard, magic mouse, mighty mouse, mouse, os x, windows 7, windows
+  vista
+typo_id: 302
+---
+Cross-posted on "the metaltoad blog":http://metaltoad.com/blog/how-reconnect-bluetooth-mousekeyboard-os-x-or-windows-7
+
+Okay, as mundane as it sounds there are a lot of articles around the internet that are fundamentally misunderstanding the simplicity of this request: how do I reconnect my bluetooth device after it's been disconnected from being in my laptop bag or whatever.
+
+There is no reconnect option in Windows 7 and the reconnect option in OS X is fairly buried. As long as your device is in the bluetooth devices menu the following should work for you:
+
+Mash buttons. 
+
+I know how stupid that sounds, but it's been working for me for a couple days now and I'm staggered that I didn't think of it earlier. I always wiggled the mouse or hit the alt key on the keyboard like I do to wake my mac from sleep, but it really needs a good ole mashing. 

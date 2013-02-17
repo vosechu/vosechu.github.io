@@ -1,4 +1,9 @@
 ---
 layout: default
 ---
-{{ content }}
+  <h2><a href="{{ page.url }}">
+    {{ page.title }}
+  </a></h2>
+  <div id="byline">Committed {{ page.date | date_to_string }} by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>
+  <div id="tags">Tags: {{ page.tags }}</div>
+  {{ content }}

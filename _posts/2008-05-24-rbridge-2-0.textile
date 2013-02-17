@@ -1,0 +1,19 @@
+---
+layout: post
+title: RBridge 0.2
+tags: rbridge, ruby, erlang
+typo_id: 271
+---
+RBridge has undergone a lot of bug fixes and I think it's worthy of a 0.2 release at long last. 
+
+1 major enhancement
+
+* Actually runs headless via the rulang command. 
+  
+3 minor enhancements
+ 
+* Uses optparse for clearer command-line options.
+* Option to specify port, compile directory, mnesia directory, sname, and location of server file.
+* Some error checking, and debug output added. Checks to see if server is already running on specified port.
+
+You can check it out "here":http://ruby-mnesia.rubyforge.org or just <i>gem install rbridge</i>

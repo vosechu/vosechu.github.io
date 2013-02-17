@@ -1,0 +1,47 @@
+---
+layout: post
+title: Getting started on displaying videos with the Brightcove iPhone SDK
+tags: BCPlayer, brightcove, iPhone
+typo_id: 293
+---
+Cross posted on the "Metal Toad Blog":http://metaltoad.com/blog/getting-started-displaying-videos-brightcove-iphone-sdk
+
+There's a lot of good to be said about the Brightcove iPhone SDK, it's easy, it seems to work really well, but there's also a ton of gotchas and the docs are a little conflicting and/or out of date. The OnePlanet app is also out of date. This post is my attempt to rectify some of these things. 
+
+There are three things needed to get your app going:
+You must be using your Read with URL Acccess token to fetch videos. Old accounts don't have this so you'll have to contact brightcove support to get them. Access this page from Home -> Account Settings -> API Management:
+
+<img src="http://metaltoad.com/sites/default/files/screenie_0.png" alt="Read API tokens page" />
+
+Next thing you need is to make sure that your UDS is enabled. You can find this page at Home -> Account Settings -> Publishing Settings:
+
+<img src="http://metaltoad.com/sites/default/files/screenie_1.png" alt="Publish Settings page" />
+
+Despite the documentation saying you need your videos to say Progressive Download it doesn't actually matter. All you need to do is adjust your call to be like this from <a href="http://developer.brightcove.com/en/articles/best-practices-iphone-sdk-development">this excellent doc</a>:
+
+<pre>
+	bc = [[BCMediaAPI alloc] initWithReadToken:@"your read with URL Access api"];
+        // This makes UDS happen. Without it there is no happiness in the world.
+	[bc setUdsSupportOn:YES];
+
+	videoList = [ [ NSMutableArray alloc ] init ];
+
+	NSError *err;
+	BCPlaylist *bcp = [ bc findPlaylistById:1234512345L error:&err ];
+	
+	if (bcp != nil) {
+		for (int i = 0; i < [ bcp.videos count ]; i++) {
+			[ videoList addObject: [ bcp.videos objectAtIndex: i ] ];
+		}
+	}
+</pre>
+
+Other notes:
+
+<ul>
+<li>When using the OnePlanet app beware that the Headers/Libs have been set on the target as well as on the project so you need to amend their instructions to remove the Header Search Path and Library Search Path from the target.</li> 
+<li>Also with the OnePlanet app the BCMoviePlayer.bundle needs to be reimported from your SDK or it's not going to be happy. </li>
+<li>The README states that you can call the BCMediaAPI calls without the additional frameworks MediaPlayer, OpenGLES, and QuartzCore but you actually need all three or no project you build is ever going to compile. </li>
+<li>It's already been stated in the docs but Geo restricted videos just don't work yet. I'm not sure about the status of Localization yet. </li>
+<li>Use the error catching logic from the <a href="http://developer.brightcove.com/en/articles/best-practices-iphone-sdk-development">best practices page</a>, it helps a lot and it's actually pretty mandatory if you don't want blank players and app crashes. </li>
+</ul>

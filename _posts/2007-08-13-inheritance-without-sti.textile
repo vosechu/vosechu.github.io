@@ -1,0 +1,129 @@
+---
+layout: post
+title: ! 'Inheritance without STI: method_missing routing'
+tags: inheritance, sti, rails, method_missing, monkey-patching, blocks, regex
+typo_id: 260
+---
+Every once in a while I find myself in the situation where I need to override a model or create an inheritance without using single table inheritance (STI).  
+
+The method_missing call can help us to create an intelligent router that will route calls to the parent class or the child while maintaining an extremely small code footprint. 
+
+Here's an example of what I'm talking about. We needed a landing page that would be dynamic for each user that wanted one. But we needed a template landing page which just needed the values substituted in at the right spot. Here's a quick Yaml of what the table might look like. 
+
+<pre>
+# Example Page
+landing_page_template:
+  title: Welcome to [COMPANY-NAME]
+  meta_keywords: [COMPANY-NAME], [COMPANY-META-KEYWORDS]
+  ...
+
+# Example Landing Page
+landing_page:
+  company_name: CV, Inc. 
+  company_logo: www.chuckvose.com/fake_logo.gif
+  company_meta_keywords: happy, rails, method_missing, inheritance
+  ...
+</pre>
+
+So here's the hope, when we load up the LandingPage object and call LandingPage#title it should display "Welcome to CV, Inc."
+
+h2. Pseudo-code and implementation
+
+<pre>
+def method_missing(method_name, args*)
+  if method_name is in the extended database
+    call method_name
+  if method_name isn't in the extended database
+    try calling parent.method_name
+      return results directly or mangle them somehow
+</pre>
+    
+We chose to mangle the results but if you just wanted to add a couple columns you could. You could run into performance issues doing this instead of STI. However this is an absolutely ideal place to mangle the code too if you want. Probably as good as a controller after_filter.
+
+Two steps needed to happen for this, we need to load up the template on initialization, then use method_missing to switch between calls to the LandingPage class (such as :company_name) and the Page class (such as title). 
+
+h2. Step 1: Load the template
+
+The first part is a little weird because of rails performance. If you haven't used after_find/after_initialize rails-core had to put in a little kludge for performance reasons. The solution is just to define a blank function named after_find or after_initialize.
+
+<pre>
+class LandingPage < ActiveRecord::Base
+  after_initialize :find_template
+  
+  # Required to activate the after_initialize filter
+  def after_initialize; end 
+  
+  private
+  
+  def find_template
+    @template = Page.find_by_url("landing_page_template")
+  end
+end
+</pre>
+
+h2. Step 2: Create the method_missing switcher
+
+The method_missing switcher had to incorporate two things and one trick. First, it needed to look in the LandingPage table for its own attributes. Then it needed to look in the Page table for anything else before passing it through a regex engine and returning. The last little trick was that the regex engine needed to only be run on Strings, trying to regex a boolean doesn't work very well. This allows the plethora of query functions such as Page.valid?.
+
+<pre>
+class LandingPage < ActiveRecord::Base
+  
+  private
+
+  def method_missing(meth, *args)
+    # See if this attribute is in this object already. 
+    # If so just call out to super and let 
+    # ActiveRecord::Base deal with trying to find the 
+    # attribute in the database. 
+    if @attributes.include?(meth.to_s) || @attributes.include?(meth.to_s.gsub(/(=|_before_type_cast)/, ""))
+      super
+    else
+      # Call Page#meth and store the response. Usually something like @page.body or @page.title
+      resp = @template.send(meth)
+      
+      # If the attribute returned from above is a String, toss it into the regex grinder
+      # and return the results. 
+      if resp.is_a?(String)
+        return resp.html_sub(self)
+        
+      # If the response is a boolean, symbol, or something else, just return it since we
+      # can't (and probably don't need to) regex it.
+      else
+        return resp
+      end
+    end
+  end
+end
+</pre>
+
+h2. Step 3: The regex grinder
+
+*Security Warning:* Before I begin this I want people to know that it should never be used by people outside your direct trust. It calls ruby code directly off of text found in the database. It can be rewritten to be more secure but this wasn't necessary for us. If you want slightly more security drop some constraints on the LandingPage.send() method. For even more security do one regex per tag to replace (such as html = html.gsub(/\[MERCHANT-NAME\]/, template.merchant_name || ""). *Security Warning*
+
+The last step is totally up to you. We needed it to find things like [MERCHANT-NAME] and replace them with LandingPage#merchant_name. This can be done fairly simply monkey-patching String with a blocked gsub.
+
+<pre>
+class String
+  # Look for snippets like [MERCHANT-NAME] and replace 
+  # them with LandingPage#merchant_name
+  def html_sub(landing_page)
+    html = self # self cannot and should not be modified directly.
+
+    # Look for [WHATEVER] tags
+    html = html.gsub(/\[[^\]]+?\]/) do |match|
+      # For each match, call the LandingPage instance method 
+      # with the same name and return those results or the empty
+      # string.
+      landing_page.send(match.gsub(/[\[\]]/, "").gsub(/-/, "_").downcase) || ""
+    end
+  end
+end
+</pre>
+
+h2. Conclusion
+
+The method_missing call seems to be a rough spot for a lot of discussions. Why_ wrote an article ("The Best of Method Missing":http://redhanded.hobix.com/inspect/theBestOfMethod_missing.html) that shows this pretty well: he starts by explaining how he has hated every piece of code he's written with it then proceeds to point out some method_missing code that he loves. Lots of people feel this way about it and about many aspects of Rails in general. 
+
+But sometimes it's a wonderful thing. This example should have taken several hundred lines of code and lots of kludges and bugs, but method missing trimmed it to ~20 LOC and we haven't been able to find a bug yet. 
+
+Hope this helps you with some project, I've enjoyed playing with it and writing it up. 

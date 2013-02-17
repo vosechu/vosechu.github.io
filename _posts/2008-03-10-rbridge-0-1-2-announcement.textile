@@ -1,0 +1,10 @@
+---
+layout: post
+title: RBridge-0.1.2 Announcement
+tags: rbridge, release, ruby, erlang, announcement
+typo_id: 270
+---
+Just wanted to poke my head in and let people know that a new version of rbridge has been released. New to this revision is a few little tweaks and bug fixes but the main point is that you can install the gem and just type 'rulang' from anywhere to start the erlang server. This enabled us to build a little test suite which should improve quality. 
+
+Also, the end of quarter summary has been posted per our class requirements:
+"Review":http://www.chuckvose.com/pages/eoq_review

@@ -1,0 +1,71 @@
+---
+layout: post
+title: Complex commands with Rulang
+tags: ruby erlang mnesia rulang
+typo_id: 266
+---
+Rulang was giving me a lot of trouble with regards to multi-line commands and complex commands in general. After hacking on it for a while I've developed a patch that will allow ruby code such as the following:
+
+<pre>
+require 'rulang'
+
+@mnesia = RulangBridge::Erlang.new("localhost", 9900)
+
+def find
+  @mnesia.eval(<<-EOF
+    QH = qlc:q([X || X <- mnesia:table(shop)]),
+    F = fun() -> qlc:eval(QH) end,
+    {atomic, Val} = mnesia:transaction(F),
+    Val.
+  EOF
+  )
+end
+
+puts find
+</pre>
+
+PATCH
+
+<pre>
+diff -u Desktop/rulangbridge/rulang.erl Current Schoolwork/Project/mnesia/rulang_test/rulang.erl
+--- Desktop/rulangbridge/rulang.erl     2007-05-17 20:25:50.000000000 -0700
++++ Current Schoolwork/Project/mnesia/rulang_test/rulang.erl    2008-01-03 10:12:05.000000000 -0800
+@@ -30,11 +30,15 @@
+ handle_connection(Socket) ->
+-       Reason = (catch communication(Socket)),
+-       gen_tcp:send(Socket, io_lib:format("Error: ~w~n", [Reason])),
++       try communication(Socket)
++  catch
++    error:Reason ->
++         {gen_tcp:send(Socket, io_lib:format("Error: ~p~n", [Reason]))}
++  end,
+        ok = gen_tcp:close(Socket).
+
++% Try to evaluate the code submitted throwing an exception if the evaluation
++% doesn't work. Return the code submitted.
+ communication(Socket) ->
+        {ok, Binary} = gen_tcp:recv(Socket, 0),
+        {ok, Result} = eval(binary_to_list(Binary)),
+@@ -43,9 +47,9 @@
+
+ eval(Expression) ->
+-       {ok, Scanned, _} = erl_scan:string(Expression),
+-       {ok, [Parsed]} = erl_parse:parse_exprs(Scanned),
+-       {value, Result, _} = erl_eval:expr(Parsed, []),
++       {done, {ok, Scanned, _}, _} = erl_scan:tokens([], Expression, 0),
++       {ok, Parsed} = erl_parse:parse_exprs(Scanned),
++       {value, Result, _} = erl_eval:exprs(Parsed, []),
+        {ok, Result}.
+
+
+diff -u Desktop/rulangbridge/rulang.rb Current Schoolwork/Project/mnesia/rulang_test/rulang.rb
+--- Desktop/rulangbridge/rulang.rb      2007-05-24 10:42:22.000000000 -0700
++++ Current Schoolwork/Project/mnesia/rulang_test/rulang.rb     2008-01-03 10:02:19.000000000 -0800
+@@ -79,7 +79,7 @@
+                def eval(command)
+                        socket = TCPSocket.new(@host, @port)
+                        socket.write(command)
+-                       socket.gets # ...?
++                       socket.read # ...?
+                end
+</pre>

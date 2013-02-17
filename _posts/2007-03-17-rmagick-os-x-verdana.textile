@@ -1,0 +1,16 @@
+---
+layout: post
+title: Rmagick OS X Verdana
+typo_id: 254
+---
+If you're getting errors about Verdana not being found, specifically:
+
+"unable to read font `/Library/Fonts/Verdana' (Magick::ImageMagickError)"
+
+try:
+
+<pre>
+sudo apt-get install applesystemfonts
+cp /sw/lib/X11/fonts/applettf/Verdana.ttf /Library/Fonts/
+sudo gem install rmagick
+</pre>

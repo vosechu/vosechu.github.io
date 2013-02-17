@@ -1,0 +1,19 @@
+---
+layout: post
+title: The Power of Yes
+tags: can't, client, drupal, languages, ruby, yes
+typo_id: 292
+---
+Cross-posted at metaltoad.com: "The Power of Yes":http://metaltoad.com/blog/power-yes
+
+Of all the powerful words in any language assertion is in my opinion the absolute most powerful. With affermative language we are able to create trust, enact people's will, and begin processes. Silly of course, to take one word to mean so much but I believe everyone can agree that when a client asks for something 'yes' should be the thing that jumps to your lips immediately, hopefully without qualification but at times you have to add on things like 'and it will cost x' or ', now lets look at the plan and see how we can make this a reality'. 
+
+But this post isn't about clients, it's about our language and framework choices. 
+
+When I was new to programming I said no a lot. This was in part an aspect of my first language PHP, which was perhaps as immature as I was at the time. 'No' was probably my biggest buzzword, maybe followed by 'can't' which I justified by saying that PHP couldn't do it. Turns out I was wrong, PHP really can do almost anything, but at the time I couldn't. But 'No' was certainly an artifact of the culture. The things I do in PHP are often much harder than they need to be, at least they feel unnecessarily difficult to me now, and in this environment it is easy to say that it's to hard. I've noticed since starting to use PHP again I've noticed 'can't' creeping into my language more and more. 
+
+Ruby was the first language that was strongly oriented towards 'yes' both in the language and the culture. It could have been that I learned later in life or in a place that had a very strong Ruby culture (Seattle), but I suspect that the language had more to do with it than anything else. Ruby positively _wants_ to make things faster for you so that the time between your thought and your expression of said thought grows shorter and shorter as you learn more Ruby. As such, when your language is saying 'yes' so often you naturally begin to start thinking this way yourself. 
+
+Drupal was a bit of a revelation to me in this regard. Drupal, as everyone knows, is a PHP app, yet despite the underlying language constructs the ui says 'yes' even more often than Ruby does. As my coworker pointed out, the amount of a website that gets finished before you hit the code is absolutely staggering. Maybe 90% of any given Drupal website could be accomplished by Drupal using only CCK/Views (et al) with the rest of the customizations being fairly quick using the copious APIs available to us. This is assuming that you find the correct project, in all things of course selecting the best tool for the job yields the best results. 
+
+So what are your languages saying to you every day? As products of our surroundings it is absolutely critical that we evaluate what our languages and tools say to us no just what they say about us. PHP may have a stigma, and Drupal through association, but I believe that the way it works with us is a much stronger reason to invest in exploring Drupal. 

@@ -1,0 +1,202 @@
+---
+layout: post
+title: Drupal benchmark results using AB and the simple things we did to get here
+tags: ab, benchmark, drupal
+typo_id: 305
+---
+Cross posted at the "Metal Toad Blog":http://metaltoad.com/blog/drupal-benchmark-results-using-ab-and-simple-things-we-did-get-here
+
+I was trolling around the Internet today looking for benchmarks and I actually had a little trouble finding something current. Dries has one comparing D6 on PHP4 vs D6 on PHP5 but that was clearly ages ago. I also realize that this is going to be out of style in about 12 minutes, will probably be fraught with contention, and generally mocked by everyone; but in the interest of those few souls out there that really actually just want to know what is reasonable to expect from production hardware under some load I want to post these stats anyways. 
+
+<h2>Our setup</h2>
+
+We're using a gaggle of 1U SuperServers by Super Micro. The basic stats are <a href="http://www.supermicro.com/Aplus/system/1U/1021/AS-1021M-T2R.cfm">here</a>. We have them loaded with a pair of 4-core opterons and 32GB of RAM. Not entirely unaffordable nowadays for production kit. 
+
+These sit behind some firewalls and an F5 load balancer which helps make SSL a little quicker and makes sure that if things go down we can fail over to a different webhead. The truth is that all this redundancy stuff up front actually slows our pages down pretty heavily for small loads but when doing a lot of traffic on those happy spikey days it helps out a lot. 
+
+We've done a lot of the normal things to speed up the servers:
+<ul>
+ <li>Turn on APC, this is huge!</li>
+ <li>Get rid of your .htaccess files and configure apache to do this at restart</li>
+ <li>Use Boost if you can't run Varnish, but run Varnish wherever you can</li>
+ <li>Turn off all the devel modules</li>
+ <li>Turn on as many of your drupal caching options as you can without breaking the site. Then figure out why the site broke and try to get those breaking caches online</li>
+ <li>Turn on your MySQL Query Cache, it's off by default and makes an amazing difference</li>
+ <li>Put MySQL on its own disk, put logs and even the MySQL binlogs on a different disk if you can</li>
+ <li>MAKE SURE YOU HAVE ENOUGH BANDWIDTH! Getting capped by your ISP will kill you during spikes since your servers will be resending lost data constantly</li>
+</ul>
+
+<h2>Commands Used</h2>
+
+Since this article is about ab I'm not going to post our configs from SIEGE or JMeter. 
+
+Running from a box with an extremely fast network connection we were doing the following:
+
+<code>
+ab -n 10000 -c 100 -k -H 'Accept-Encoding: gzip,deflate' www.site-name.tld/
+</code>
+
+I like to run from a box within the network directly to the webhead as well to find out how much things are getting slowed down in the load balancers and firewalls. Since our webheads often do more than one site we have to use a Host header and the actual IP address as shown in the following snippet.
+
+<code>
+ab -n 10000 -c 100 -k -H 'Accept-Encoding: gzip,deflate' -H 'Host: www.site-name.tld' 192.168.0.27/
+</code>
+
+I also like to use relatively high concurrency and number of requests so that momentary spikes even out a little bit. There is a rule out on the net that you should take the average of three attempts for any benchmark and I think that's totally necessary. 
+
+We've noticed that our servers start to really crack around 500 concurrent anonymous users. Peak performance seems to be around 100-200 so I stick with that so that the differences in config changes are the most obvious. If I go from 100 #/s to 250 #/s I know it's a big change (or vice versa in a lot of cases).
+
+<h2>Results</h2>
+
+Without further ado, these are my results. I realize that there is certainly more that we should be doing to squeeze out performance and I also realize that my methods are pretty unscientific but I hope they give you an idea of what you might be looking for. 
+
+<h3>Internal - Test 1</h3>
+<pre>
+
+Document Path:          /
+Document Length:        10716 bytes
+
+Concurrency Level:      100
+Time taken for tests:   40.694054 seconds
+Complete requests:      10000
+Failed requests:        9993
+   (Connect: 0, Length: 9993, Exceptions: 0)
+Write errors:           0
+Keep-Alive requests:    0
+Total transferred:      112128752 bytes
+HTML transferred:       106842680 bytes
+Requests per second:    245.74 [#/sec] (mean)
+Time per request:       406.941 [ms] (mean)
+Time per request:       4.069 [ms] (mean, across all concurrent requests)
+Transfer rate:          2690.81 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    2  84.8      0    2999
+Processing:    61  379 809.9    147   12255
+Waiting:       53  344 799.4    134   12255
+Total:         61  381 814.4    148   12259
+
+Percentage of the requests served within a certain time (ms)
+  50%    148
+  66%    170
+  75%    265
+  80%    345
+  90%    599
+  95%   1371
+  98%   3159
+  99%   4725
+ 100%  12259 (longest request)
+</pre>
+
+<h3>Internal - Test 2</h3>
+<pre>
+Document Path:          /
+Document Length:        10683 bytes
+
+Concurrency Level:      100
+Time taken for tests:   29.175060 seconds
+Complete requests:      10000
+Failed requests:        5389
+   (Connect: 0, Length: 5389, Exceptions: 0)
+Write errors:           0
+Keep-Alive requests:    0
+Total transferred:      111006011 bytes
+HTML transferred:       105724371 bytes
+Requests per second:    342.76 [#/sec] (mean)
+Time per request:       291.751 [ms] (mean)
+Time per request:       2.918 [ms] (mean, across all concurrent requests)
+Transfer rate:          3715.64 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    5 123.8      0    3033
+Processing:    41  273 445.8    135   11841
+Waiting:       36  245 430.6    124   11840
+Total:         41  278 463.5    136   11851
+
+Percentage of the requests served within a certain time (ms)
+  50%    136
+  66%    150
+  75%    176
+  80%    287
+  90%    491
+  95%   1305
+  98%   1534
+  99%   3118
+ 100%  11851 (longest request)
+</pre>
+
+<h3>External - Test 1</h3>
+<pre>
+Document Path:          /
+Document Length:        10472 bytes
+
+Concurrency Level:      100
+Time taken for tests:   31.161653 seconds
+Complete requests:      10000
+Failed requests:        0
+Write errors:           0
+Keep-Alive requests:    0
+Total transferred:      110620000 bytes
+HTML transferred:       104720000 bytes
+Requests per second:    320.91 [#/sec] (mean)
+Time per request:       311.617 [ms] (mean)
+Time per request:       3.116 [ms] (mean, across all concurrent requests)
+Transfer rate:          3466.66 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0   13 199.5      0    3051
+Processing:    46  273 414.5    138    4558
+Waiting:       41  246 404.3    126    4545
+Total:         46  287 457.2    139    4558
+
+Percentage of the requests served within a certain time (ms)
+  50%    139
+  66%    156
+  75%    299
+  80%    336
+  90%    482
+  95%   1119
+  98%   1580
+  99%   3143
+ 100%   4558 (longest request)
+</pre>
+
+<h3>External - Test 2</h3>
+<pre>
+Document Path:          /
+Document Length:        10472 bytes
+
+Concurrency Level:      100
+Time taken for tests:   29.336590 seconds
+Complete requests:      10000
+Failed requests:        0
+Write errors:           0
+Keep-Alive requests:    0
+Total transferred:      110000000 bytes
+HTML transferred:       104720000 bytes
+Requests per second:    340.87 [#/sec] (mean)
+Time per request:       293.366 [ms] (mean)
+Time per request:       2.934 [ms] (mean, across all concurrent requests)
+Transfer rate:          3661.67 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    3  95.1      0    3034
+Processing:    50  264 447.7    129    4532
+Waiting:       45  240 435.7    119    4528
+Total:         50  268 459.6    129    6128
+
+Percentage of the requests served within a certain time (ms)
+  50%    129
+  66%    143
+  75%    162
+  80%    295
+  90%    423
+  95%   1307
+  98%   1532
+  99%   3125
+ 100%   6128 (longest request)
+</pre>

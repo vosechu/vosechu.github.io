@@ -1,0 +1,44 @@
+---
+layout: post
+title: Hiring developers
+typo_id: 2
+---
+h2. Background
+
+After a lot of thought and "an enlightening article by Joel Spolsky":http://www.joelonsoftware.com/articles/DevelopmentAbstraction.html , I've come to the following conclusion: Hiring new developers is almost never the answer to the problem of having too many programming projects.
+
+We have that problem right now. Demand is very high and Tynan no longer has much time to code due to business requirements. So we have at least four pending projects, two of them very large, and three on-going projects but only 1.5 developers.
+
+No, we really have much closer to 3/4 of a developer. If that.
+
+I spend roughly 1/3 to 1/2 of each day doing server related projects. Unbreaking the repo is a pretty consistent project (probably because Tynan and I are bad citizens but we don't know any better), as well as maintaining the email, doing backups, messing with mysql, doing security checks and making sure apache is still running.
+
+I usually consider it a good day if I get in two hours of programming before I''m too tired to continue. It happens fairly often that after all the server management I'm just too tired to get in the zone so I pour out crap that I have to re-program later on.
+
+Tynan is in an even more painful place. I've only seen him work once but he spent the whole day on the phone with customers. He's figured out what to do with his problem to some degree but I estimate him at somewhere around 1/4 to 1/3 of a developer.
+
+h2. Solutions
+
+What the hell do you do? Adding more developers is the natural idea; it seems like it would work brilliantly. But anyone that's worked with another developer knows that this is dead wrong. As Brooks points out in "The Mythical Man-Month":http://en.wikipedia.org/wiki/The_Mythical_Man-Month adding a developer increases the complexity of communication exponentially.
+
+h3. Gamble with time
+
+So that's out, the only thing left is to reclaim lost developer time and gamble a little bit. By hiring a secretary, a server admin and a tester will the two developers produce enough to offset the three extra salaries?
+
+It's a business choice, the sort of thing I really suck at. If the developer is twice as productive will it be worth twice the money or will something happen where the developer isn't twice as productive? How long will it take to train and hire a server admin? How much of this time will be from the developer? Can we afford to lose the main developer for the time it takes to train the server admin?
+
+What about a secretary? How long will it take to train the secretary to find all the information in the office? How long will it take to organize the information so they can find it period?
+
+h3. Time management
+
+Maybe that's not the only solution. The conflict is that the developer doesn''t have time to do all the projects. So you have two approaches, make the developer more effective or give them more time.
+
+The other option is one that requires months of foresite. We have a project starting in May, two weeks from now. It's not going to happen. I knew it wasn't going to happen when it was proposed a month and a half ago. I had hoped but I think that in the back of my mind I knew it wasn't going to happen.
+
+But telling a client you'll get to their project seven months from now is going to be a hard sell.
+
+h2. Conclusion
+
+Point is, hiring developers is pretty much out. There are two options in our case which are to make the developer better or make the projects farther apart.
+
+There are things blocking both, all we need to do is figure out what the blocks are, which are biggest, and how to deal with them.

@@ -1,0 +1,19 @@
+---
+layout: post
+title: Fun with stakeout.rb
+tags: ruby, drupal, drush, stakeout
+typo_id: 289
+---
+Cross-posted to the company blog at: "Fun with stakeout.rb":http://metaltoad.com/blog/fun-stakeoutrb
+
+Having only left Rubyville a couple weeks ago there are still a lot of Ruby-based utilities that I still find incredibly handy. One such utility that I've recently fallen hopelessly in love with is stakeout.rb from: http://pragmaticautomation.com/cgi-bin/pragauto.cgi/Monitor/StakingOutFi...
+
+Stakeout monitors your filestructure waiting for changes to happen and when they do it runs some command in the shell. Think about all the things you would like to happen when you change a file. Clear your cache? Refresh your browser via AppleScript? Run your PHPUnit tests? Program your Roomba vacuum to spin in a circle and sing for you? YES!
+
+Take the code from the above webpage and drop it in a file called stakeout.rb. If you're running Linux or OS X you probably already have Ruby. If you're running windows I doubt the Ruby code would even work but do let me know if you do get it running and create a script for it.
+
+After that simply run something like: ruby stakeout.rb 'php drush.php clear cache' sites/all/modules/*/*
+
+Now try editing and saving one of your module files. Success?
+
+Rejoice!

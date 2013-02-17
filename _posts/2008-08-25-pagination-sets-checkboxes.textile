@@ -1,0 +1,52 @@
+---
+layout: post
+title: Pagination, Sets, Checkboxes
+tags: check_box, check_box_tag, rails, ruby, view, list, index, pagination, filter,
+  check boxes, multiple
+typo_id: 272
+---
+When I was at RailsConf2008 I learned a lot about life and Rails but there were some nagging problems that lingered after me for a long time. 
+
+At one point in the talks there was a discussion of how to make listing pages have checkboxes and how to handle this data. The problem is complicated by pagination and filtering so it's actually a really good problem to talk about. 
+
+The proposed solution was to send back a structure that looked something like this:
+
+<pre>
+[{:id => 1, :activated => "+", :contact => "-"}, ...]
+</pre>
+
+At this point I was probably playing pogs in the audience with Ryan Schenk so the details are lost to time but the concept remains. 
+
+It seems needlessly complex though. A very interesting idea, no doubt about it, and it certainly has its merit but it seems very complex to me when we're talking about booleans. Also, I feel like it's worth mentioning that this method is much faster than the below method but somehow that doesn't turn me off that badly. 
+
+Instead of the above I took the already well accepted practice of using the check_box_tag in the view with the addition of a hidden field which would tell me which objects to care about:
+
+<pre>
+<% @users.each do |user| %>
+  <%= hidden_field_tag('seen[]', user.id) -%>
+  <%= check_box_tag 'activated[]', user.id -%>
+<% end %>
+</pre>
+
+In the controller it's as easy as loading up params[:seen] and loading each object:
+
+<pre>
+def index
+  if request.post?
+    activated_ids = params[:activated].collect {|id| id.to_i} if params[:activated]
+    seen_ids = params[:seen].collect {|id| id.to_i} if params[:seen]
+
+    if activated_ids
+      seen_ids.each do |id|
+        r = User.find_by_id(id)
+        r.activated = activated_ids.include?(id)
+        r.save
+      end
+    end
+  end
+end
+</pre>
+
+So what I don't get is whether this is wrong on some moral stance or if I really didn't understand what the presenter was getting at. Yes, he loads and saves fewer objects, which could be important. But he also introduced what seems to me to be a lot of complexity into a fairly simple process. 
+
+At any rate, this code is here in case someone needs to find it until I find what the presenter was proposing. I seem to recall being impressed at the time so there must be something I've forgotten. 

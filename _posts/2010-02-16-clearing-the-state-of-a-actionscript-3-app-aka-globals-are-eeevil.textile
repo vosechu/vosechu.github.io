@@ -1,0 +1,37 @@
+---
+layout: post
+title: Clearing the state of a actionscript 3 app (aka, globals are eeevil)
+tags: actionscript-3, cs4, evil, flash, globals, state
+typo_id: 295
+---
+Cross posted on the "Metal Toad Blog":http://metaltoad.com/blog/clearing-state-actionscript-3-app-aka-globals-are-eeevil
+
+Imagination time: Imagine for a moment that you have an app, it has one button and one little window. When you click the button it changes the text within the window to something else. Now, when you get into flash development it seems like the easiest and clearest way to do this is to wipe out the contents in the window, but you would be wrong for thinking so. While it is the most obvious I intend to prove to you that to do so is both slower and prevents you from turning on the juice later with caching. 
+
+On to story time: We're building an app for the OpenPeak tabletop device, it's totally rad and you'll love it I promise but that's really not the point of the post. When we started the app we had what I considered a pretty awesome solution, we'd clear the state, build it onto a global, then write the global out to a window on the app. It actually worked great for a long time until we decided to start doing some caching where it became wildly apparent that I had actually written all three parts of that app dead wrong. It's pretty exciting to do something wrong enough that you can write about it later. :)
+
+<h2>Building on Globals (Horrible)</h2>
+
+Okay, lets start with the most awful part of the lesson for me, that using globals is horrible and should never be done. Oh sure, they make certain listeners easier but it really does blow up fast when you start trying to cache things or thread. Here's two scenarios that will inevitably bite you if you start using globals: 
+
+<ul>
+<li>When you start threading you'll end up painting two scenes on to the global stage object at once.</li>
+<li>Even if you try to be synchronous you have to descend into an event listener hell since AS3 often decides to not dispatch Event.COMPLETE which means you'll end up with a deadlocked app while a URLLoader tries in vane to do nothing. </li>
+<li>At some point you'll accidentally use the same URLLoader twice or some other critical variable and the results will be completely random seeming as one gets overwritten on occasion. </li>
+</ul>
+
+So, how can you deal with this? As annoying as it is, define your variables at the beginning of your functions. I know it seems like a waste, but unlike that one global TextFormat object your URLLoaders really are totally different beasts and need to be treated as such. Same goes for almost all objects and display containers. I know it seems nice and elegant to use the same object all the time but what you may not be seeing is that all those globals need to have IPC methods defined on them or they're completely useless in the inherently async world that is AS3. 
+
+<h2>Clearing the State (Wrong)</h2>
+
+This one is simple really, I should have thought of it to begin with it but I wasn't in OO space yet. Rather than thinking about pages or DisplayObjects as something physical that needs to be removed from the stage it's much, much more efficient to just build a new Sprite() and replace the old stage that you were using. Best part is that when you just replace the display container you're using you can easily stash this away in a cache object somewhere. Simple caching is only moments away but if you wipe the slate clean not only did you spend time killing all those children objects, you lost the ability to cache it away somewhere. 
+
+Metaphorical you of course, my apologies. 
+
+So what we did was to use an Object (we should have used a Dictionary but I didn't know any better yet) with attributes that described the path we were writing to. We never wrote to a global stage object (we actually deleted those so we couldn't). This way async calls could continue to write to the correct Sprite even in the background, the only place we needed to put a lock around was the drawing part as we drew out the content but rather than drawing a global DisplayObject we took the data from the cache and drew that which meant it was much, much faster, handled multiple threads just fine, and was extremely cacheable. 
+
+<h2>Conclusion</h2>
+
+I hope this gives you some ideas; my hope was merely to get people thinking about two things: global objects require IPC, and that wiping the slate clean is wasteful. Let the garbage collector take care of clearing memory and make sure that you have only a few global objects. 
+
+Next time I'm going to talk about how I got a requirements engine running which would allow me to ensure that certain steps were always completed before anything else without creating messy spaghetti code. I think it's pretty fantastic and I hope that you do too.

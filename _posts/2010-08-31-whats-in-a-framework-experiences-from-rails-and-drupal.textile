@@ -1,0 +1,30 @@
+---
+layout: post
+title: What's in a framework, experiences from Rails and Drupal
+tags: rails, drupal, rich data model, admin
+typo_id: 311
+---
+I've now been working professionally in Drupal for a year and have learned a lot about it; I have some patches into contrib but I've not really done much with core other than some simpletests I was too shy to commit at Drupalcon and some comments trying to help people out on d.o. Prior to my stint as Drupal programmer I was a hardcore Ruby on Rails developer for about 4 years. Over the last two years in particular I've learned a lot about frameworks and I'd like to share an observation about which framework feels right to me for which situations and why. 
+
+<h2>Administrators vs End-users</h2>
+
+At the heart of my observation is this question: Who is putting content into your database and what percentage of the database are they creating? I think it's fair to assume that there is a database but for those that are in the NoSQL camp and might be using multiple types of database lets just all agree to talk about some mythical database which content comes from. 
+
+<ul>
+<li>At least 80% of my client's content comes primarily from their staff members and is consumed by the faceless masses on the Internet</li>
+<li>At least 80% of my client's content comes primarily from logged in users via uploads, comments, content creation, etc.</li>
+</ul>
+
+Nobody is going to argue that making the admin interface of a website easy to use is critical for the first case. If you have people spending their entire days working on the back side of your website it had better be something awesome or they're all going to stalk you and break your flowers just below the point where they can regrow. Unacceptable of course. Similarly, when it comes right down to it, for me of course, creating a slick admin interface to something like stackoverflow.com would be completely pointless. Probably someone uses it, but the interface needs to be sitting in the front for the users.
+
+As it turns out, this seems to be a great dividing line between Ruby on Rails and Drupal in my mind. I believe that Drupal has one of the greatest admin interfaces of any CMS. Failing that, I don't think that I'll get many complaints if I say that it is easy to cajole the Drupal admin into a super usable state if you know what you're doing (or you just used Drupal 7 to begin with). Drupal manages content exceedingly well, but it is extremely hard to build applications like todo lists in the thing. I'm taking todo lists because they're an easy concept that doesn't really require an admin at all. 
+
+Ruby on Rails on the other hand, does not come with an admin interface because it is not something that every web application needs. There are some marvelous backend builders for Rails, but it's not the core competency. Same thing for Sinatra and many of the other Ruby frameworks. What they excel at is being versatile, they excel at doing things that just can't really be done by the web engines we already understand (Content management and blogging in particular). 
+
+What's crucial to understand here is that for the average website for your average client that just wants to get online, we've probably already built an engine that will make them happy. Drupal in particular of course, but Wordpress and Joomla are also excellent at doing the things that everyone else is already doing. A CMS can be done very profitably in Rails, I've done it, but it probably would have been much more profitable had I learned Wordpress or Drupal back in the day. 
+
+<h2>Conclusion / Summary</h2>
+
+My point, summarized to one sentence is thus: Do your clients want to be on the Internet, or do your clients want to create some chunk of the Internet. If they want to create awesome content and reap the rewards of it, Drupal is probably your framework of choice. If they want to do something that really doesn't fit into something that every other website is doing, Ruby on Rails is probably your framework of choice. 
+
+The hardest question though, is what do you do when it's not really so clear cut? When your client wants half of the site to be essentially a perfect candidate for a CMS, but the other half to be a crazy interactive, totally innovative thing? Do you try to use both? Do you strap it all together with Ajax? Or do you try to build the CMS in Ruby and lose out on that time? I don't know that answer, but I hope that I've made you think about your clients and their projects in a slightly different way. 

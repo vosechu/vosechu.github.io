@@ -1,0 +1,37 @@
+---
+layout: post
+title: Cascading page attributes
+typo_id: 5
+---
+h2. Intro and Concept
+
+One of the first things I tried to do in Rails was to figure out how to make a nice, generic website that anyone could update. After about sixteen iterations I've finally stumbled on one that I think will finally work. 
+
+As of now it's only partially complete. I'm really only using this method to generate the titles and meta information but each time I have to make a change to the website I find more and more information going into what I call the welcome message.
+
+The idea is as follows: 
+* Making an action for each page is almost always rediculous and hard to update. So that's pretty much out.
+* Making a loader page that loads a Page object and displays the content works for the most part if you don't have special content (and as long as you remember to change the :parameter if you ever try to paginate a series of pages.) 
+* Making the content an optional part of an initialize function in the application.rb will ensure that you can always access page related information on any page (ever dynamic pages).
+
+In order to do this I have a function called `initialize` in my application.rb that parses the @params and looks through the database for a entry in the welcomes table. As I said, I'm only using parts of this but it would be easy to extend; initially this was just to display a welcome message on any page they wanted.
+
+If there's an entry in the welcomes table with controller == params[:controller], action == params[:action], and id == params[:id], then it returns a raft of information such as the page title, a background image, meta values, etc. These override the defaults in the page (and there must be defaults) and make the page dynamic.
+
+The beauty of this approach is that it's very easy to take an action that actually has an action (such as /admin/delete_user) and pop a new title on it, or meta values, or custom css, or whatever you can think of. If you have this table contain content you could have a blank template by default that gets overridden by the content in the row. 
+
+h2. Steps
+
+* Create the table and figure out what you want to be able to apply to any action. Titles and meta values are a great start. Make sure to make a unique index on the controller, action, and id rows (This is very important). 
+* Create an initializer function that searches this new table for the controller, action, and id in the params.
+* Create before_filters in each controller you want this to be available in. This may be possible in the application.rb but I haven't tried it (and it can be extremely picky). 
+* Create forms that make editing these items easy. Definitely note that it's entirely possible to have /page/page_loader override /page/page_loader/3. This may be intended and a good idea but it's pretty important to note that it could completely wreck things until you figure out why things aren't working.
+* Lastly, create sane defaults in the initializer function for pages that don't have entries. This is incredibly important. 
+
+h2. Conclusion
+
+I realize that I breezed over all the details, this was intentional. Because I've not actually done this entirely in a site (only as far as titles and whatnot) I don't want to give fake code samples. I'll get there eventually but it may be a while until I start a new project.
+
+At any rate, the idea is sound and is working in part very well in my sites so far. There are a lot of gotchas, mostly in the defaults, but there's also a lot of room to innovate. The idea of the defaults cascading is a wonderful extension especially when so many sites are in tree/nested set formations. 
+
+Keeping the attributes away from the actual code is a  great way to make it easy for customers to interact with the website. Customers often want to change little things and it's important that they be able to change as much as possible even when the code is mostly hidden in a template or you'll end up making little changes for the rest of your existence.

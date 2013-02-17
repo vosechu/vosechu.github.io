@@ -1,0 +1,20 @@
+---
+layout: post
+title: The Value of 10% Time in Improving Your Life and Productivity
+typo_id: 296
+---
+Cross posted on the "Metal Toad Blog":http://metaltoad.com/blog/value-10-time-improving-your-life-and-productivity
+
+<h2>Convincing Yourself</h2>
+
+Convincing yourself of the value in 10% time is critical and is sometimes the most overlooked step in the process. Most people look at 10% time as nothing time; time you can't bill for must surely be worth nothing financially right? And worse you might think, not only are you not billing but you're robbing yourself of time that you could be actually developing so it feels like a double-whammy. 
+
+But can you think of a time when you've thought something like, "Man, this is repetitive but I don't really have the time to script this." Or maybe something like, "This code is just awful but I don't really have any time to refactor it." Or even better, "I should really release this to the community so that other people can help patch and debug for me but it's not quite ready yet."
+
+Convincing people that 10% time is valuable can sometimes be a chore but I'm probably one of the luckiest guys in the country because my bosses actually <em>want</em> to do 10% time, but aren't quite sure how to get to the point where we can afford it. But more than just being able to afford you it's important to convince yourself, your coworkers, and your bosses that you can't afford not to do something like 10% time.
+
+Every one of those statements I find myself saying, but I never do anything about it and my perfectly good Open Source code languishes, my code goes unrefactored and I hate looking at it, and I often don't script even some of the most business critical things because it just seems like it would take an insurmountable amount of time. But in my heart of hearts I know that this is completely insane. Releasing your Open Source code brings a notoriety that can't even be approached by a fleet of skilled salesmen, refactoring your code so you can understand it or bear looking at it makes you a better programmer and makes you happier, and scripting business critical applications almost always saves time and certainly performs much more consistently in my experience. 
+
+So, I'm losing out on valuable press, writing hairy code, and doing things inconsistently. I think in most companies that should be considered grounds for expulsion but here we find ourselves doing it constantly. It's not that we hate ourselves or our companies, but it is important to understand that to not improve yourself, to not invest in yourself, is to lose out on the most valuable resource that you have, yourself. 
+
+Now, if I'm feeling especially saucy I'll continue this post later on. If not, I hope I've presented something half-cogent to chew on while drinking beers this evening with your friends and colleagues. Happy Friday!

@@ -1,0 +1,47 @@
+---
+layout: post
+title: Making your clients love Drupal's menu system as much as I love candy
+tags: drupal, ux, love, d7ux
+typo_id: 309
+---
+NOTE: Apologies for the gap, I said I would post on Monday but well, I decided to get married instead. So there. 
+
+You might be saying to yourself, "So Chuck, D7UX is all well and good right, but I'm running D6 right now. How can your wisdom possibly enhance my life and vitality?" Well, you're in luck friend, for my limited stints into D7 have left me craving more of that optimized UX goodness and blogging is a side-effect of learning for me. Today, not in fact monday like I had promised, not like my promise really means anything to my adoring audience anyways, I want to talk about getting users around Drupal in the fastest way possible. In addition, I want to talk about some roles and permissions that will result in less training and less support calls. 
+
+<h2>Making <a href="http://www.urbandictionary.com/define.php?term=love">love</a> to admin_menu</h2>
+
+There exists in this world a beautiful love-child of admin_menu and Chuck, I call it Ted but most people don't call it anything because it's really just an awesome idea and most of the time those don't get names outside of the patent office. If you aren't already using admin_menu go out and get the new 3.x version, install it, and give your role permissions to use admin_menu (you don't really need permissions to 'display drupal links', that just adds some links to drupal.org which we'll turn off in the next section). Sweet, you've now made a huge step to productivity by enabling a pretty bar at the top of your screen. But wait, there's more!
+
+Here's what the new admin_menu looks like, so pretty and so much more clickable:
+
+<figure><img src="http://chuckvose.com/files/admin_menu-1.jpg" alt="admin_menu 3.x example" /></figure>
+
+Admin_menu is pretty awesome, but it's a little confusing unless you already know how to use it (something that is patently untrue in 100% of my clients' cases, bless their little hearts). So we're going to take advantage of the fact that admin_menu uses Drupal's menu system to build all those links and structures. Mouse over to Site Building -> Menus on your fancy new admin_menu or go to /admin/build/menu and click on the Administration Menu. You should be presented with a staggering amount of links and structure that we're going to steal from. Most of what you need will be in this menu but you might find some things in the Navigation menu or the Development menu. 
+
+Before we begin create a new menu item by clicking the Add Item button. I usually set the path to admin and name it something clever like Puppies but I'd imagine that you're a great deal more professional than I so maybe something more along the lines of Common Tasks or Everyday. This should also be Enabled and Expanded for maximum happiness. 
+
+Next, identify tasks that you think your client is going to use a lot, not things that they <em>may</em> use, only those tasks that you know that they'll use a lot. The truth is that clients typically won't and don't <em>want</em> to explore your hot little admin interface, they really just want to get things done and get out as quickly as their legs can take them away, it's scary in here and frankly, swimming through their money like Scrooge McDuck is way more fun. 
+
+Here we have a bit of a choice, personally I would like to just copy these links onto our new menu item but this is not an option with stock Drupal 6, so unless you don't need things to be in the right place this usually isn't an option. If you're lucky enough to be building a site for your Mom and you know that there will not be a successor, at least, statistically, then go ahead and move menu entries around by clicking the clicking the crosshair and dragging menu items around. Otherwise, we'll have to do a little more work or do some database hackery.
+
+Note: There's somewhat of <a href="http://drupal.org/node/502500">a furor</a> over whether to include Create Content in the Content menu. Since we're creating a list of menu entries our clients will actually use now is a great time to move the Create Content menu over from the Navigation menu by hitting the edit button on Create content and changing the Parent Item to Administration Menu -> Administer -> Content. Then we can cherry pick out items or copy them in the next section.
+
+<h3>Copying menu items the hard but obvious way</h3>
+
+If you're only doing a few entries or you're really gungho about things you can click edit on a menu item, remember the info on that screen, and paste it into a new menu item somewhere else. Not really a bad way to do things but obviously time consuming, maybe for one of those braindead afternoons. 
+
+<h3>Copying menu items the easy but less-obvious way</h3>
+
+There are better ways to copy menu items but since Drupal really doesn't like this concept very much it's not been ironed out very well. One possibility is to use <a href="http://drupal.org/project/menu_clone">menu_clone</a> to clone a particular menu and then cherry pick those menu items you actually want in your optimized menu. 
+
+<h3>Blocks for links</h3>
+
+There is one other way of course, probably many others now that I think about it, but only one that I was thinking about in particular: blocks. Dropping a block on /admin can make life a lot easier. This block wouldn't be available all the time but it can be a great 80/20 thing to get people running without having to work on the menu system. You could also make this available on all pages but restrict it to admin users which would be pretty snazzy. You can find one such list here: <a href="http://www.metaltoad.com/sites/default/files/admin%20links.txt">Admin Links</a>. 
+
+I accept that this list may be controversial, but it's a block so you can edit to your heart's content. I tried to keep it to just the items I think my current client is actually going to use (minus a few that were very specific to this project).
+
+<h2>Enough of this boring stuff, we want more unicorns!</h2>
+
+Yes, I hear you on that; unicorns are wonderful. But there are no unicorns this time. Well, I guess there is this one that appeared on my desk today wrapped in magical gift wrap and sacred plastic. It includes a description of different types of horn attachments and their relative merits. Currently I have the horn equipped that allows for super hearing. Very important in my line of work, you never know when the CEO is going to sneak up on you and ask you to stop writing about unicorns!
+
+<figure><img src="http://chuckvose.com/files/photo-2.JPG" alt="Unicorns!" class="w550" width="500" /></figure>

@@ -1,15 +1,14 @@
 ---
 layout: post
-title: Rails attr_accessible Gotcha
-categories: rails
-tags: rails, attr_accessible, gotcha
+title: Rails attr_accessible gotcha
+tags: Rails, attr_accessible
+typo_id: 315
 ---
+If you're like me you inherit a lot of projects which have very different styles. Today I ran into a project that had never used attr_accessible and I found a total gotcha: 
 
-If you're like me you inherit a lot of projects which have very different styles. Today I ran into a project that had never used attr_accessible and I found a total gotcha:
-
-* If there are no attr_accessible attributes on a model it's open, any attribute can be written with .update_attributes() or a similar mass-assignment function.
-* If there is even one attr_accessible the model is closed except for those attributes defined to be attr_accessible.
+* If there are no attr_accessible attributes on a model it's open, any attribute can be written with .update_attributes() or a similar mass-assignment function. 
+* If there is even one attr_accessible the model is closed except for those attributes defined to be attr_accessible. 
 
 So there is an implicit toggle involved in attr_accessible as well as the actual desired functionality of allowing an attribute to be mass-assigned. I'd never worked on a project that wasn't using attr_accessible (count my lucky stars it seems) so i'd never seen this problem before.
 
-Also, try not to confuse attr_accessor and attr_accessible. The latter is a rails security function, the former just defines an instance variable. Mass assignment, or assignment of any kind won't really work on the former from within rails.
+Also, try not to confuse attr_accessor and attr_accessible. The latter is a rails security function, the former just defines an instance variable. Mass assignment, or assignment of any kind won't really work on the former from within rails. 
