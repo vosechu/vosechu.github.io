@@ -121,15 +121,25 @@ curl -X POST -H "Content-type application/x-www-form-urlencoded" -d "key=value" 
   * How do you get the values that were submitted to a Rack app?
 
 #### Stage 2 (application/analyzing)
-* Get rack running with rackup (on a port other than 4567), create a hello world
-* Create a form and submit the values, via POST, to your running rack application
-* Make your rack application print out the values you submitted from the form (using RackRequest)
-* Try to read through the code in TryStatic, what is it doing? What parts have you never seen before?
-* Try running Rack with an app server other than Webrick. Thin and Mongrel are popular choices.
+* Create a file reader Rack application
+  * Start with a Hello World app that just responds with text.
+  * Place an index.html in the same folder. Using `File.read` pull in the data in the index.html and assign it to a variable.
+  * If `File.read` worked and your variable is full of data, return a 200 response with the html as the third argument. Otherwise return a 404 response.
+  * Once you have it reading and responding with a file, use `Rack::Request#path` to find a file on your system.
+    * Try using `puts File.dirname(__FILE__) + request.path`. When you next refresh your browser check the terminal to see what is printed out.
+    * If `path` returns '/', make it look for an index.html.
+    * If `path` returns something that ends in .html, use that as the path for `File.read`.
+  * Now that you have a Rack app that responds with a file, you've basically made the Internet! Congratulations!
+* POSTing and GETing
+  * Create a Rack app that prints the values from Rack::Request#params.
+  * In your browser, add '?chunky=bacon&pcs=rocks' to your url. This is a GET request.
+  * From your terminal use curl to create a POST request. Or create a form with method="POST" and submit it.
 
 #### Boss Fight (evaluation/creation)
 * Use the RackTidy middleware to tidy up your HTML markup after it’s created. Document how you installed this module and any configuration options you needed to run it.
 * Find 3 other Rack Middlewares that are interesting and tell us about them during the reflection time.
+* Try to read through the code in TryStatic, what is it doing? Make a comment between each line with what you think is happening and share with your partner.
+* Try running Rack with an app server other than Webrick. Thin and Mongrel are popular choices.
 
 ## Day 13 &mdash; 2/20/2013
 ### Topics
@@ -176,8 +186,7 @@ watchr test.watchr
   * What is a struct and why would I use it over a class?
 
 #### Stage 2 (application/analyzing)
-* Go back to your HQ9F class and add autorun tests to it. Verify that h, HQ9F._99, and HQ9F.new.f all work with a variety of inputs. Try to use assert_output instead of assert_equal like in my example.
-* If you can’t get assert_output working, what would you need to change to make assert_equal work? This is generally why `puts` is avoided in other Ruby programs in favor of Logger.info or something else.
+* Go back to your HQ9F class from week2 and add autorun tests to it. Verify that h, HQ9F._99, and HQ9F.new.f all work with a variety of inputs. Try to use assert_output or capture_io.
 * Which cases did I miss in my testing? Write a test for some of those cases.
 
 #### Boss Fight (evaluation/creation)
@@ -202,6 +211,7 @@ watchr test.watchr
 * [http://daringfireball.net/projects/markdown/syntax](http://daringfireball.net/projects/markdown/syntax)
 
 ### Resources
+* [http://matthodan.com/2012/10/27/how-to-create-a-blog-with-jekyll.html](http://matthodan.com/2012/10/27/how-to-create-a-blog-with-jekyll.html)
 * [https://help.github.com/categories/20/articles](https://help.github.com/categories/20/articles)
 * [https://github.com/mojombo/jekyll/wiki/install](https://github.com/mojombo/jekyll/wiki/install)
 * [https://help.github.com/articles/using-jekyll-with-pages](https://help.github.com/articles/using-jekyll-with-pages)
