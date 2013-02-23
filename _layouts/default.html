@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   </head>
-  <body>
+  <body class="{{ page.body_classes }}">
     <header>
       <h1>Chuck Lauer Vose</h1>
       <p></p>
@@ -35,13 +35,15 @@
           <li><a class="disabled" href="/repos.html">Repo Roadmap</a></li>
           <li><a class="disabled" href="/code.html">Code Samples</a></li>
         </ul>
-        <h3>Recent Posts</h3>
-        <ul>
-        {% for post in site.posts limit:3 %}
-          <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title }}</a></li>
-        {% endfor %}
-        </ul>
-        <a href="/blog.html">All Posts</a>
+        <div class="recent-posts">
+          <h3>Recent Posts</h3>
+          <ul>
+          {% for post in site.posts limit:3 %}
+            <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title }}</a></li>
+          {% endfor %}
+          </ul>
+          <a href="/blog.html">All Posts</a>
+        </div>
       </nav>
       <section>
         {{ content }}

@@ -1,8 +1,8 @@
 ---
 layout: page
+body_classes: exercise
 ---
-
-## Day 11 &mdash; 2/18/2013
+## Week 3 &mdash; Overview
 ### Monday Stuff
 * Announcements
 * Network points awards
@@ -19,15 +19,21 @@ layout: page
 * What is a clearfix?
 * How do you center content?
 
+### Weekly Topics
+* Javascript
+* Rack
+* Testing
+* Jekyll
+
 ### Weekly Theme
 * Creating an interactive Jekyll blog to host on Github Pages
 * Create a Rack server which can process data and be validated with an automated test suite
 
 ### Weekly Home<del>work</del>**fun**
 * 3rd Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
-* Jekyll blog on Github pages with your three blog posts, links to your resume in html and pdf format, and an index page with placeholders for your favorite repos/code samples.
+* Jekyll blog on Github pages with your three blog posts, links to your resume in html and pdf format, and an index page with links to your JS rock-paper-scissors, your tested hq9f, and your rack application repos on Github.
 
-## Day 11 &mdash; 2/18/2013
+## Monday &mdash; 2/18/2013
 ### Topics
 * Javascript
 
@@ -77,7 +83,7 @@ layout: page
 * Evaluate the types of namespacing in Addy Osmani’s article. Defend your choice to the class and explain why namespacing is important during reflection time.
 * Finish up the app above by allowing the computer to randomly select. Allow repeated plays. Ensure that you see the computer select all 5 possible actions!
 
-## Day 12 &mdash; 2/19/2013
+## Tuesday &mdash; 2/19/2013
 ### Topics
 * Rack
 * Form Processing
@@ -141,7 +147,7 @@ curl -X POST -H "Content-type application/x-www-form-urlencoded" -d "key=value" 
 * Try to read through the code in TryStatic, what is it doing? Make a comment between each line with what you think is happening and share with your partner.
 * Try running Rack with an app server other than Webrick. Thin and Mongrel are popular choices.
 
-## Day 13 &mdash; 2/20/2013
+## Wednesday &mdash; 2/20/2013
 ### Topics
 * Ruby Modules/Core Ruby/StdLib
 * Testing
@@ -193,7 +199,7 @@ watchr test.watchr
 * Attempt to integrate Watchr or autotest to automatically run your tests. Optionally get this working with Growl so you don’t even have to leave your editor. (You may need the gem rb-fsevent). Write up documentation about what watchr script you wrote and put it on the wiki.
 * Download the Rubinius or Ruby source and look through the lib or ext folders and find 3 other modules that might be interesting to include/extend. Tell us about these modules in reflection time.
 
-## Day 14 &mdash; 2/21/2013
+## Thursday &mdash; 2/21/2013
 ### Topics
 * Jekyll
 * Markdown/Textile/Other formatters
@@ -252,7 +258,7 @@ pip install pygments
 * Research and evaluate the quality of at least 3 Jekyll plugins. Look also at the listed Jekyll sites and find out which plugins are commonly used. Install these plugins and document any configuration in the wiki.
 * Include Disqus in your blog posts to enable commenting. Document the steps or link to articles that you found relevant in the wiki.
 
-## Day 15 &mdash; 2/22/2013
+## Friday &mdash; 2/22/2013
 * Wrapping it all up
 * Review of the week
 * Retrospective
