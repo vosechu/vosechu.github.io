@@ -2,6 +2,7 @@
 layout: page
 body_classes: exercise
 ---
+
 ## Week 3 &mdash; Overview
 ### Monday Stuff
 * Announcements
@@ -260,8 +261,8 @@ pip install pygments
 
 ## Friday &mdash; 2/22/2013
 * Wrapping it all up
-* Review of the week
 * Retrospective
+* Code review
 * 1-on-1’s / Catchup time
 * Networking points report
 * Go

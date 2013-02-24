@@ -1017,6 +1017,8 @@ footer {
   }
 }
 
+/* Custom Styles */
+
 .post-header {
   margin-bottom: 1em;
 }
@@ -1058,4 +1060,10 @@ footer {
 .next {
   position: absolute;
   right: 0;
+}
+.exercise nav .recent-posts {
+  display: none;
+}
+.overview nav .pages {
+  display: none;
 }

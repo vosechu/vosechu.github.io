@@ -8,14 +8,13 @@ var sectionHeight = function() {
   } else {
     $section.css('height','auto');
   }
-}
+};
 
 $(window).resize(sectionHeight);
 
 $(document).ready(function(){
   // This appears to add an anchor in the left nav for each H1/H2 in the page
   if ($(".exercise article h1, .exercise article h2").length > 0) {
-    $("nav .recent-posts").hide();
     $("nav").prepend("<h3>This Page</h3><ul id=\"in-page\"></ul>");
   }
   $("article h1, article h2").each(function(){
@@ -52,7 +51,7 @@ fixScale = function(doc) {
 
   if ((meta = meta[meta.length - 1]) && addEvent in doc) {
     fix();
-    scales = [.25, 1.6];
+    scales = [0.25, 1.6];
     doc[addEvent](type, fix, true);
   }
 };
