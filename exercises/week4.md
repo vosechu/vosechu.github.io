@@ -124,21 +124,18 @@ ruby tests/corkboard_test.rb
 * [http://lupomontero.com/screencast-fetching-tweets-with-jquery-and-the-twitter-json-api/](http://lupomontero.com/screencast-fetching-tweets-with-jquery-and-the-twitter-json-api/)
 
 ### Resources
-* https://github.com/vosechu/pcs_examples/tree/master/week4
-* http://stackoverflow.com/questions/3506208/jquery-ajax-cross-domain
-* http://devlicio.us/blogs/scott_seely/archive/2010/09/07/how-jsonp-works-and-some-bits-about-implementing-it-in-wcf.aspx
-
-### Helpful Commands
-{% highlight bash %}
-
-{% endhighlight %}
+* [https://github.com/vosechu/pcs_examples/tree/master/week4](https://github.com/vosechu/pcs_examples/tree/master/week4)
+* [http://stackoverflow.com/questions/3506208/jquery-ajax-cross-domain](http://stackoverflow.com/questions/3506208/jquery-ajax-cross-domain)
+* [http://devlicio.us/blogs/scott_seely/archive/2010/09/07/how-jsonp-works-and-some-bits-about-implementing-it-in-wcf.aspx](http://devlicio.us/blogs/scott_seely/archive/2010/09/07/how-jsonp-works-and-some-bits-about-implementing-it-in-wcf.aspx)
 
 ### Exercises
 
 #### Stage 1 (remembering/understanding)
 
 * Answer these questions with your pair
+
   * General jQuery
+
     * How do you make an ajax request through jQuery?
     * How do I find an element with jQuery?
     * How do I hide and show elements with jQuery?
