@@ -44,6 +44,7 @@ body_classes: exercise overview
 
 ## Week 1
 ### Major Topics
+* [Week 1 Handout](/exercises/week1.html)
 * Basic HTML markup (All of Treehouse's HTML Deep Dive)
 * Basic CSS (Selectors, Values and Units, Text, Fonts, and Lists)
 * Basic Ruby (Ruby Deep Dive up to Methods)
@@ -55,6 +56,7 @@ body_classes: exercise overview
 
 ## Week 2
 ### Major Topics
+* [Week 2 Handout](/exercises/week2.html)
 * HTML using Middleman
 * CSS for positioning, Bootstrap
 * Ruby (Loops, Blocks, Procs)
@@ -68,6 +70,7 @@ body_classes: exercise overview
 
 ## Week 3
 ### Major Topics
+* [Week 3 Handout](/exercises/week3.html)
 * Javascript (Javascript Deep Dive Variables, Strings, Numbers, Arrays)
 * Rack web servers
 * Ruby (Modules, Testing)
@@ -79,6 +82,7 @@ body_classes: exercise overview
 
 ## Week 4
 ### Major Topics
+* [Week 4 Handout](/exercises/week4.html)
 * Sinatra and APIs
 * Ajax and jQuery
 * Regexes
@@ -92,6 +96,7 @@ body_classes: exercise overview
 
 ## Week 5
 ### Major Topics
+* [Week 5 Handout](/exercises/week5.html)
 * OOP principles and Object modeling
 * SQL and Data modeling
 * jQuery & Coffeescript
@@ -102,6 +107,7 @@ body_classes: exercise overview
 
 ## Week 6
 ### Major Topics
+* [Week 6 Handout](/exercises/week6.html)
 * How Sinatra fails Asset packaging, Reloading, caching, security
 * Refactoring code / modularization / Code complexity analysis
 * Using ORMs for database persistence
@@ -112,6 +118,7 @@ body_classes: exercise overview
 
 ## Week 7
 ### Major Topics
+* [Week 7 Handout](/exercises/week7.html)
 * Rails and rails-api (Routing, asset pipeline, mvc)
 * Gem review (Authentication, Access Control, Search, Caching)
 *   http//www.intridea.com/blog/2011/5/13/rails3-gems
@@ -122,6 +129,7 @@ body_classes: exercise overview
 
 ## Week 8
 ### Major Topics
+* [Week 8 Handout](/exercises/week8.html)
 * Rails without ARB
 * Gem review (Authentication, Access Control, Search, Caching)
 *   http//www.intridea.com/blog/2011/5/13/rails3-gems
@@ -136,6 +144,7 @@ body_classes: exercise overview
 
 ## Week 9
 ### Major Topics
+* [Week 9 Handout](/exercises/week9.html)
 * Open source development
 * Advanced deployment to EC2
 * Programming Patterns
@@ -145,6 +154,7 @@ body_classes: exercise overview
 
 ## Week 10
 ### Major Topics
+* [Week 10 Handout](/exercises/week10.html)
 * Monday retro
 * Queueing with ActiveMQ or RabbitMQ
 * MongoDB and MongoMapper
@@ -154,6 +164,7 @@ body_classes: exercise overview
 
 ## Week 11
 ### Major Topics
+* [Week 11 Handout](/exercises/week11.html)
 * Monday retro
 * Concurrency in Ruby
 * \*nix systems
@@ -162,6 +173,7 @@ body_classes: exercise overview
 
 ## Week 12
 ### Major Topics
+* [Week 12 Handout](/exercises/week12.html)
 * Session retro
 * Graduation
 * Drinking...
