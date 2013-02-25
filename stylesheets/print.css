@@ -31,4 +31,7 @@
     color: #efefef;
     background-color: #333;
   }
+  .exercise h2 {
+    page-break-before: always;
+  }
 }
