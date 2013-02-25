@@ -231,6 +231,8 @@ watchr test.watchr
 {% highlight bash %}
 gem install jekyll
 jekyll --server --auto
+
+# Installing syntax highlighting
 brew install python
 # export PATH="/usr/local/share/python${PATH}"
 easy_install pip

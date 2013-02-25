@@ -1067,3 +1067,9 @@ footer {
 .overview nav .pages {
   display: none;
 }
+.confidence {
+  width: 100%;
+}
+.confidence span {
+  float: right;
+}

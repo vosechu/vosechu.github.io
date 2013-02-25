@@ -1,0 +1,34 @@
+@media print {
+  html { width:8.5in; }
+  body {
+    font: 9pt/1.5 Arial, sans-serif;
+    background: none;
+  }
+  header {
+    display: none;
+  }
+  .wrapper section {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  nav {
+    display: none;
+  }
+  hr {
+    border-bottom: 1px dashed;
+    height: 11px;
+    margin: 0 0 20px;
+  }
+  ul {
+    page-break-inside: avoid;
+  }
+  code {
+    text-shadow: none;
+    color: #efefef;
+    background-color: #333;
+  }
+}

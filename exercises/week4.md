@@ -31,8 +31,8 @@ body_classes: exercise
 * Exam covering all topics in previous 4 weeks
 
 ### Weekly Home<del>work</del>**fun**
-* A link to your 4th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
-* A link to where you feature your javascript backed site on your portfolio
+* Email me a link to your 4th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to where you feature your javascript backed site on your portfolio
 
 ## Monday &mdash; 2/25/2013
 ### Topics
@@ -45,12 +45,16 @@ body_classes: exercise
 * Understand REST
 * Use curl/browser to ping your JSON API
 
+### Notes
+* We're going to try to ignore DataMapper and just use it without understanding for now
+
 ### Important Threshold Concepts
 * What is an API
 * What is REST
 
 ### Reading to do before class
 * [My example project. It should look a lot like Rack](https://github.com/vosechu/corkboard_server_example)
+* [Updated example project with better style](https://github.com/oisin/corkboard_server_example)
 * [Slides about REST](http://www.slideshare.net/oisin/simple-rest-services-with-sinatra)
 * [DataMapper tutorial (up to minute 11)](http://net.tutsplus.com/tutorials/ruby/ruby-for-newbies-working-with-datamapper/)
 * [Sinatra Intro](http://www.sinatrarb.com/intro.html)
@@ -76,8 +80,6 @@ ruby tests/corkboard_test.rb
 
 * Answer these questions with your pair
   * Read through Chuck's example, what don't you understand yet? What do you understand?
-  * What is the difference between DataMapper and SQLite3?
-  * Why do we like SQLite3? What are some alternative Databases?
   * What is REST? Does it have to use JSON or could it use YAML or XML?
   * What is an API? Is it a superset or a subset of REST? (Draw a picture)
   * How is Sinatra different from Rack?
@@ -93,7 +95,7 @@ ruby tests/corkboard_test.rb
   * Generate a Quiz object and give it some properties. When you restart rack make sure that you see the tables and attributes in Base.app.
   * Using `params[:id]`, use DataMapper to find the quiz with that id.
   * Try to figure out how to make all 5 of these new routes work and respond with a json object.
-  * Push your attempts to Github no matter where you get.
+  * Push your attempts to Github.
 
 #### Boss Fight (evaluation/creation)
 
@@ -103,8 +105,7 @@ ruby tests/corkboard_test.rb
 
 ## Tuesday &mdash; 2/26/2013
 ### Topics
-* jQuery, AJAX
-* JSON.parse
+* AJAX through jQuery
 * Object Oriented Javascript
 
 ### Goals
@@ -112,6 +113,9 @@ ruby tests/corkboard_test.rb
 * To understand AJAX
 * To grasp a little bit of jQuery and how it uses CSS selectors
 * To make reasonable Object Oriented Javascript
+
+### Notes
+* We're going to try to ignore most of jQuery and just use its AJAX components. We'll cover more jQuery next week.
 
 ### Important Threshold Concepts
 * Function Callbacks
@@ -171,18 +175,43 @@ ruby tests/corkboard_test.rb
 
 ## Wednesday &mdash; 2/27/2013
 ### Topics
+* Regular Expressions & Routes in Sinatra
 
 ### Goals
-
-### Important Threshold Concepts
+* To understand how to create some basic regexes
+* To use these regexes in our Sinatra app
+* Understand why regex is important
 
 ### Reading to do before class
+* [Regex on Code Academy](http://www.codecademy.com/courses/javascript-intermediate-en-NJ7Lr)
+* [Regex lesson+video on NetTuts+](http://net.tutsplus.com/tutorials/ruby/ruby-for-newbies-regular-expressions/)
+* [Concise Regex advice on SO](http://stackoverflow.com/a/2759417/203731)
+* [Fairly complete chart of regex](http://stackoverflow.com/a/2759424/203731)
+* [Using Regex to parse XML (summons Cthulu)](http://stackoverflow.com/a/1732454/203731)
+* [Part 1: Regex tutorial](http://neverfear.org/blog/view/12/Regex_tutorial_for_people_who_should_know_Regex_but_do_not_Part_1)
+* [Part 2: Regex tutorial](http://neverfear.org/blog/view/14/Regex_tutorial_for_people_who_should_know_Regex_but_do_not_Part_2)
 
 ### Resources
+* [Ruby Regex tester](http://www.rubular.com/)
+* [Regex cheat sheet](http://www.cheatography.com/davechild/cheat-sheets/regular-expressions/)
+* [Whether to parse XML with Regex (analysis)](http://www.codinghorror.com/blog/2009/11/parsing-html-the-cthulhu-way.html)
+* [Readable Regexes](http://stackoverflow.com/a/4053506/203731)
+* [EBNF expression syntax](http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 
 ### Helpful Commands
 {% highlight bash %}
+# in place editing of a file
+perl -pi -e 's/foo/bar/gi' /home/smith/myfile.txt
 
+# egrep gives us more options when searching through network connections
+ps ax | grep ruby # ruby is actually a really simple regex here
+netstat -an | grep 'tcp[46]*' | egrep '(LISTEN|CLOSE_WAIT)'
+
+# like perl -pi, sed allows in place editing of text. In this case it's removing an IP address so I can get a list of open ports
+netstat -an | grep tcp | awk '{print $4}' | sed -E "s/.*[\.:]([0-9]+)$/\\1/" | sort -un | grep -v '*.*'
+
+# Find out how much batter you have
+pmset -g ps | tail -1 | sed -E 's/.*?(\d+)%.*/\1/'
 {% endhighlight %}
 
 ### Exercises
@@ -190,31 +219,39 @@ ruby tests/corkboard_test.rb
 #### Stage 1 (remembering/understanding)
 
 * Answer these questions with your pair
+  * Why are regexes awesome?
+  * What are some of the most common uses of regexes?
+  * What is a character class?
+  * How do I count in regex?
+  * How do I group (and what does this mean for replacement)?
+  * What is greed and how do you use regex-fu to curtail it?
 
 #### Stage 2 (application/analyzing)
 
+* [Create a regex that can validate whether](https://gist.github.com/vosechu/5025463):
+  * We've been given a valid phone number
+  * We've been given a valid email address (not fully RFC822 compliant though!)
+  * We've been given a recipe in metric
+* Using regexes in Sinatra
+  * Define a route like `get %r{/hello/([\w]+)}`.
+  * Why do we have to use `%r{}` instead of `//` like in normal ruby?
+  * Make a route that only works for Chrome and one that only works for Curl. Use the agent syntax: `get '/foo', :agent => /.*/ do`
+  * Create a before filter that `halt`s if `request.path_info` contains the word 'cats'
+
 #### Boss Fight (evaluation/creation)
 
+* Since we're not allowed to use Regexes on HTML, what are some alternatives?
+* What's the current state of the art for parsing with XPATH? With CSS selectors? With something else?
 
 ## Thursday &mdash; 2/28/2013
 ### Topics
-* Exam day
-
-### Goals
-
-### Important Threshold Concepts
-
-### Reading to do before class
-
-### Resources
-
-### Helpful Commands
+* Exam day (open google)
 
 ### Exercises
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Answer these questions
 
 #### Stage 2 (application/analyzing)
 

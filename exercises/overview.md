@@ -94,7 +94,7 @@ body_classes: exercise overview
 ### Major Topics
 * OOP principles and Object modeling
 * SQL and Data modeling
-* Javascript & Coffeescript
+* jQuery & Coffeescript
 
 ### Other Topics
 * Agile methodologies review

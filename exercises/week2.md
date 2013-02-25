@@ -123,8 +123,8 @@ TODO Refactor to stages
 
 ### Reading to do before class
 * [http://diveintohtml5.info/semantics.html](http://diveintohtml5.info/semantics.html)
+* [Treehouse: HTML Deep Dive: Objects, Tables, Forms](http://teamtreehouse.com/library/websites/html)
 * [http://middlemanapp.com/getting-started/](http://middlemanapp.com/getting-started/)
-* Finish HTML on Treehouse
 
 ### Resources
 * [http://html5please.com](http://html5please.com)
@@ -208,7 +208,7 @@ TODO Refactor to stages
 * Blocks and yielding
 
 ### Reading to do before class
-* Treehouse: Loops, methods, blocks, procs & lambdas
+* Treehouse: hashes, methods, blocks
 
 ### Resources
 * [http://www.codecademy.com/tracks/ruby](http://www.codecademy.com/tracks/ruby)
