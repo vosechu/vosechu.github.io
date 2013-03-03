@@ -38,8 +38,12 @@ body_classes: exercise
 ### Important Threshold Concepts
 
 ### Reading to do before class
+* [Sinatra README](http://www.sinatrarb.com/intro.html)
+* [ERB README](http://ruby-doc.org/stdlib-2.0/libdoc/erb/rdoc/ERB.html)
 
 ### Resources
+* [EventSource JS Object](https://developer.mozilla.org/en-US/docs/Server-sent_events/Using_server-sent_events)
+* [Original chat app by rkh (not working anymore)](https://gist.github.com/rkh/1476463)
 * [Sinatra-contrib](http://www.sinatrarb.com/contrib/)
 
 ### Helpful Commands
@@ -51,6 +55,18 @@ sinatra-gen sinatra-long-poll --tiny --test=spec --views=erb get:/subscribe post
 
 # Start the server properly
 RACK_ENV=development be ruby sinatra-long-poll.rb
+{% endhighlight %}
+
+{% highlight ruby %}
+require 'erb'
+# Compile the template (but don't fill in the values yet)
+template = ERB.new "The value of x is: <%= @x %>"
+
+# Prepare the values for inclusion in ERB
+@x = 42
+
+# Use the variables in the current scope and pass them to `result`
+puts template.result(binding) #=> The value of x is: 42
 {% endhighlight %}
 
 ### Exercises
