@@ -73,7 +73,7 @@ puts template.result(binding) #=> The value of x is: 42
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Answer these questions with your group
   * What is Sinatra
   * What is a route
   * What is a named parameter
@@ -117,15 +117,16 @@ puts template.result(binding) #=> The value of x is: 42
 * [Object-oriented Design Process](http://stackoverflow.com/a/1101138/203731)
 
 ### Resources
+* [CRC Cards](http://en.wikipedia.org/wiki/Class-responsibility-collaboration_card)
 * [Law of Demeter](http://en.wikipedia.org/wiki/Law_of_Demeter)
 * [Object-oriented Design](http://en.wikipedia.org/wiki/Object-Oriented_Programming#Fundamental_features_and_concepts)
 * [Responsibility-driven Design](http://en.wikipedia.org/wiki/Responsibility-driven_design)
 
-### Helpful Commands
-{% highlight bash %}
-{% endhighlight %}
-
 ### Exercises
+
+#### Stage 0
+
+* Find a hat. Inside that hat will be instructions.
 
 #### Stage 1 (remembering/understanding)
 
@@ -151,38 +152,80 @@ puts template.result(binding) #=> The value of x is: 42
 
 #### Stage 2 (application/analyzing)
 
+* In your group, map out the Stage 0 project on paper. You can use CRC style or whatever makes sense to your group.
+* Using the project you selected on Monday, analyze the project and make CRC cards or map out how the models are going to interact. You don't have to get it right.
+
 #### Boss Fight (evaluation/creation)
+
+* Research prototype-style hierarchies and compare them with Object-oriented hierarchies. They share a lot in common, but it's the differences that are interesting.
+* Start building your models in Sinatra and how they interact with each other.
 
 ## Wednesday &mdash; 3/6/2013
 ### Topics
+* Databases, SQL
+* Datamapper
+* Normalization
 
 ### Goals
+* Understand RDBMS structures: database, table, row, column
+* Understand select, where, and easy joins
+* Interact with the database on command line, through an ORM, and through a GUI
 
-### Important Threshold Concepts
+### Definitions
+* Database normalization: The process of organizing the fields and tables of a relational database to minimize redundancy and dependency.
 
 ### Reading to do before class
+* [Select Tutorial](http://sqlzoo.net/wiki/SELECT_basics)
+* [Select Assessment](http://sqlzoo.net/wiki/SELECT_from_BBC_Tutorial)
+* [Join Tutorial (Music DB)](http://sqlzoo.net/wiki/Music_Tutorial)
+* [Should I normalize?](http://databases.about.com/od/specificproducts/a/Should-I-Normalize-My-Database.htm)
 
 ### Resources
+* [(MySQL GUI) Sequel Pro.app](http://www.sequelpro.com/)
+* [(SQLite3 GUI) Base 2.app](http://menial.co.uk/base/)
+* [(Postgres GUI) Navicat Essentials](http://download2.navicat.com/download/navicatess101_pgsql_en.dmg)
+* [BCrypt-ruby for user passwords](http://bcrypt-ruby.rubyforge.org/)
+* [SQL Videos @ Lynda.com](http://www.lynda.com/SQL-tutorials/essential-training/769-2.html)
 * [Object-relational impedance mismatch](http://en.wikipedia.org/wiki/Object-Relational_impedance_mismatch)
-
-### Helpful Commands
-{% highlight bash %}
-{% endhighlight %}
+* [Database Normalization (Wikipedia)](http://en.wikipedia.org/wiki/Database_normalization)
 
 ### Exercises
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Answer these questions with your group
+  * What is a database, a table, a row, and a column
+  * What is normalization
+  * What is CRUD
+  * How do selects work
+  * How do joins work
+  * How do where clauses work
 
 #### Stage 2 (application/analyzing)
 
+* Project
+  * Take a look at your project from Monday and write out the tables and data that you might store in the db
+  * Don't start on the project yet, just practice thinking through the database needs
+  * Make sure that your database is in third normal form (3NF)
+
+* In class
+  * Using the datamapper config from last week, create an object for a user with a username and a password
+  * When a user logs in to your chat app, check the database to ensure that their username and password match
+  * Use BCrypt to store and check the password of a user
+
 #### Boss Fight (evaluation/creation)
+
+* Go farther with the chat database and start storing chat messages associated with a user.
+* Create an index page of all things a user has said
+* Move on to working on your project
 
 ## Thursday &mdash; 3/7/2013
 ### Topics
+* jQuery and Coffeescript
 
 ### Goals
+* Learn the important bits about jQuery
+* Get coffeescript compiling in Sinatra
 
 ### Important Threshold Concepts
 
@@ -198,7 +241,7 @@ puts template.result(binding) #=> The value of x is: 42
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Answer these questions with your group
 
 #### Stage 2 (application/analyzing)
 
