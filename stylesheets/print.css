@@ -14,8 +14,13 @@
     border: 0;
     box-shadow: none;
     border-radius: 0;
+    width: auto;
+    max-width: 8.5in;
   }
   nav {
+    display: none;
+  }
+  footer {
     display: none;
   }
   hr {
@@ -31,7 +36,7 @@
     color: #efefef;
     background-color: #333;
   }
-  .exercise h2 {
-    page-break-before: always;
+  .confidence .smiley {
+    width: 30px;
   }
 }

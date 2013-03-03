@@ -1,0 +1,494 @@
+---
+layout: page
+---
+# HTML and Frameworks
+
+{% include confidence.md %}
+Q: How do you define an unordered list in HTML?
+
+* A: `<list>`
+* B: `<ul>`
+* C: `<ol>`
+* D: `<ls>`
+
+***
+
+{% include confidence.md %}
+Q: Which of the following correctly uses a relative path?
+
+* A: `<a href="http://www.google.com/">Google</a>`
+* B: `<a href="/cherries.html">Cherries</a>`
+* C: `<a src="http://www.google.com/">Google</a>`
+* D: `<a src="/cherries.html">Cherries</a>`
+
+***
+
+
+{% include confidence.md %}
+Q: When we use HTML5 why do we need a shim or a polyfill?
+
+* A: Because HTML5 is new enough that most browsers don't support everything yet.
+* B: To warn older browsers that they may not be able to render correctly.
+* C: Because IE treats all unknown elements as `display: inline`.
+* D: Spite.
+
+***
+
+{% include confidence.md %}
+Q: What's wrong with this code: `<input type="text" id="name" placeholder="Enter your name"></input>`
+
+* A: It's using the wrong type attribute, for names it should be textarea.
+* B: In HTML5, the input should be self-closing instead of using `</input>`
+* C: It's missing the name attribute.
+* D: The placeholder attribute is experimental and shouldn't be used.
+
+***
+
+{% include confidence.md %}
+Q: What does the `action` attribute mean in a form tag?
+
+* A: It contains the URL to send data to.
+* B: It specifies whether to use GET or POST.
+* C: Action is not an attribute.
+* D: It specifies whether to validate or not.
+
+***
+
+{% include confidence.md %}
+Q: What is an API server?
+
+* A: A mathematical reasoning engine for the web.
+* B: A type of authentication server.
+* C: A server that creates API Objects for other Ruby servers.
+* D: A server that presents data instead of visual representations, like HTML.
+
+***
+
+{% include confidence.md %}
+Q: What are the 5 RESTful actions?
+
+* A: Get, post, put, delete, get(List)
+* B: Create, read, update, delete, head
+* C: Fetch, store, create, list, add
+
+***
+
+### Short Answer
+
+{% include confidence.md %}
+Q: Under what circumstances would we consider a static site generator over a CMS?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: Why do we keep CSS and HTML separate?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: When the HTML5 authors said they were going to 'pave the cowpaths', what were they talking about?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+# Frontend and Javascript
+
+***
+
+{% include confidence.md %}
+Q: What is the difference between padding and margin?
+
+* A: Mostly spelling, they do the same thing.
+* B: Padding collapses when it gets near another element with padding.
+* C: Margin is only used on the sides and top of the window.
+* D: Padding is inside the border, margin is outside.
+
+***
+
+{% include confidence.md %}
+Q: Why should you use a css reset?
+
+* A: To prevent browser manufacturers from breaking our site when users upgrade.
+* B: Because all browsers are slightly different and normalize gives us a nice base.
+* C: It allows us to nest CSS and use variables.
+* D: Because it makes all our colors match nicely.
+
+***
+
+{% include confidence.md %}
+Q: How are css selectors weighted?
+
+* A: attribute: 5, class: 20, id: 50
+* B: element: 1, class: 10, id: 100
+* C: id: 1, class: 10, element: 100
+* D: p: 1, div: 10, html: 100
+
+***
+
+{% include confidence.md %}
+Q: Why do we often place an id on the body?
+
+* A: So that we can scope our CSS and Javascript to a particular page
+* B: To ensure that our Javascript can't load up other pages
+* C: We don't, Chuck it's a performance problem.
+* D: We don't, we can't put id's on the body element.
+
+***
+
+{% include confidence.md %}
+Q: When you've floated several block-level items in a row, how do we prevent the following text from wrapping up around it?
+
+* A: By using the property, `clear: both`.
+* B: By using, `float: right` on the last item.
+* C: By putting the items inside a section or nav tag.
+* D: By using a "clearfix" div wrapped around all the floated elements
+
+***
+
+{% include confidence.md %}
+Q: What's the best way to center content horizontally?
+
+* A: `text-align: center`
+* B: `margin: auto`
+* C: `padding: -1`
+* D: `margin: 0 auto`
+
+***
+
+{% include confidence.md %}
+Q: How do you detect an undefined variable in Javascript safely?
+
+* A: `a.nil?`
+* B: `typeof a === 'undefined'`
+* C: `a == null`
+* D: `a === undefined`
+
+***
+
+{% include confidence.md %}
+Q: If you declare a variable inside a function is it available outside that function?
+
+* A: No. It exists only inside the function.
+* B: Not unless you declare it globally like: `var global <name>`.
+* C: Yes. It will get placed on the window regardless of where you declare it.
+* D: Yes. But it will be undefined outside of the function.
+
+***
+
+{% include confidence.md %}
+Q: If you declare a variable outside a function, but then declare it inside the function as well, what happens?
+
+* A: Any assignment to `a` will be copied to the outside variable. It will override.
+* B: Any assignment to `a` will be hoisted out of the function.
+* C: We will get a DuplicateVariableError.
+* D: Any assignment to `a` inside the function will be lost after the function returns. It will shadow.
+
+***
+
+{% include confidence.md %}
+Q: If you only need to GET data, what's the easiest way to request it from another domain via AJAX?
+
+* A: Just request directly.
+* B: Using CORS and a Polyfill for old browsers.
+* C: Using JSON-P.
+* D: Using Ruby's net/http or httparty.
+
+***
+
+### Short Answer
+
+{% include confidence.md %}
+Q: Draw out 4 diagrams that show 4 divs that are: `display: inline`, `display: block`, `display: inline-block`, and `float: left`
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: Describe what these four css files are for and what types of declarations they contain: reset.css, responsive.css, global.css, pages.css?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What does it mean to delay Javascript until domReady?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What is an Object prototype? Why do we use it?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+# Utilities
+
+***
+
+{% include confidence.md %}
+Q: When we have untracked files in our working directory, how do we prepare them for committing?
+
+* A: `git add .`
+* B: `git add -m`
+* C: `git commit -am ""`
+* D: `git stage .`
+
+***
+
+{% include confidence.md %}
+Q: When we want to clone a repo from Github, which command should we use?
+
+* A: `git clone origin vosechu/test`
+* B: `git init git@github.com:vosechu/test.git`
+* C: `git clone git@github.com:vosechu/test.git`
+* D: `git checkout vosechu/test`
+
+***
+
+{% include confidence.md %}
+Q: When we push files to Github and it throws an error saying it can't 'fast-forward', what do we do?
+
+* A: `git push -f origin master`
+* B: `git fast-forward master`
+* C: `git pull origin master`
+* D: `git fetch origin`
+
+***
+
+{% include confidence.md %}
+Q: What is the standard Rack response?
+
+* A: `[status, body]`
+* B: `[status, headers, body]`
+* C: `body`
+* D: `{:status => 200, :headers => {}, :body => body}`
+
+***
+
+{% include confidence.md %}
+Q: When you need to get the current directory in Ruby, which of these work?
+
+* A: `File.expand_path('.')`
+* B: `Dir.pwd`
+* C: `File.dirname(__FILE__)`
+* D: `__dir__` (ruby 2.0)
+* E: All of the above
+
+
+### Short Answer
+
+{% include confidence.md %}
+Q: Draw and label what happens when we make a request to http://www.google.com.
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+{% include confidence.md %}
+Q: Why do we use Git over some other method of sharing code?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What is Rack and how is it related to Sinatra?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+# Programming
+
+***
+
+{% include confidence.md %}
+Q: Which values are false?
+
+* A: `false, '', 0`
+* B: `NaN, 0, '', [], false, nil`
+* C: `false, nil`
+* D: just false, nothing else.
+
+***
+
+{% include confidence.md %}
+Q: What is the difference between single and double quotes?
+
+* A: Single quotes don't allow us to change the string after creation.
+* B: Double quotes are only used for speeches.
+* C: Double quotes are output to the terminal.
+* D: Single quotes don't allow us to use #{}.
+
+***
+
+{% include confidence.md %}
+Q: If you want to walk over an array without touching the original values, which function do you use?
+
+* A: `reduce`
+* B: `each`
+* C: `inject`
+* D: `for`
+
+***
+
+{% include confidence.md %}
+Q: If you want to walk over an array and change each value, which function do you use?
+
+* A: `map`
+* B: `to_s`
+* C: `tap`
+* D: `call`
+
+***
+
+{% include confidence.md %}
+Q: How do you make a new hash?
+
+* A: `a = new Hash`
+* B: `a = Array.new.to_hash`
+* C: `a = {'bob': 'my uncle'}`
+* D: `a = ['bob' => 'my uncle']`
+
+***
+
+{% include confidence.md %}
+Q: How do you make a class method?
+
+* A: `def self.happiness`
+* B: `def happiness`
+* C: `cdef happiness`
+* D: `def happiness(self)`
+
+***
+
+{% include confidence.md %}
+Q: If you have a module `Happiness` and you want to import its methods, how should you do it?
+
+* A: `require 'Happiness'`
+* B: `import Happiness`
+* C: `Happiness.extend(self)`
+* D: `include Happiness`
+
+***
+
+{% include confidence.md %}
+Q: What is the difference between a string and a symbol?
+
+* A: Symbols use single quotes instead of double.
+* B: Strings use a colon in the front instead of quotes.
+* C: Symbols take up less memory and can't be changed.
+* D: Symbols are the only thing we can use in hashes.
+
+***
+
+### Short Answer
+
+{% include confidence.md %}
+Q: Why does Ruby have only two values that are false? Does that make life better or worse?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What is the difference between a class method and an instance method?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What's the difference between a Hash and an Array?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What is TDD and why do we practice it?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+***
+
+{% include confidence.md %}
+Q: What is Pair Programming and why do we practice it?
+
+A:
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

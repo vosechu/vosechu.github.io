@@ -97,6 +97,7 @@ body_classes: exercise overview
 ## Week 5
 ### Major Topics
 * [Week 5 Handout](/exercises/week5.html)
+* Sinatra Basics
 * OOP principles and Object modeling
 * SQL and Data modeling
 * jQuery & Coffeescript

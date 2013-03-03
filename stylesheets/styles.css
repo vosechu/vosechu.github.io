@@ -1072,4 +1072,9 @@ footer {
 }
 .confidence span {
   float: right;
+  margin-left: 20px;
+}
+.confidence .smiley {
+  width: 30px;
+  padding-right: 8px;
 }
