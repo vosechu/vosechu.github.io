@@ -39,4 +39,20 @@
   .confidence .smiley {
     width: 30px;
   }
+  .page-break {
+    page-break-after: always;
+  }
+  .exercise h2 {
+    page-break-before: always;
+  }
+  .exercise h2.alpha {
+    page-break-before: avoid;
+    margin: 0 0 10px;
+    font-size: 24px;
+  }
+  .exercise h2.alpha a {
+    text-decoration: none;
+    color: #393939;
+    font-weight: bolder;
+  }
 }

@@ -1,9 +1,9 @@
 ---
 layout: page
 body_classes: exercise
+title: Week 5 &mdash; Overview
 ---
 
-## Week 5 &mdash; Overview
 ### Monday Stuff
 * Announcements
 * Network points awards
@@ -11,6 +11,10 @@ body_classes: exercise
 * Call for lightning talks
 
 ### Monday comprehension questions
+* What's an API server
+* What's an API
+* What's REST
+* What's Sinatra
 
 ### Weekly Topics
 * Sinatra Basics
@@ -19,9 +23,11 @@ body_classes: exercise
 * jQuery & Coffeescript
 
 ### Weekly Theme
+Building a chat room with long-polling, jquery, and a database backend
 
 ### Weekly Home<del>work</del>**fun**
 * Email me a link to your 5th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your group's project.
 
 ## Monday &mdash; 3/4/2013
 ### Topics
@@ -57,16 +63,31 @@ sinatra-gen sinatra-long-poll --tiny --test=spec --views=erb get:/subscribe post
 RACK_ENV=development be ruby sinatra-long-poll.rb
 {% endhighlight %}
 
+### Code for the board
 {% highlight ruby %}
+# Routing
+get '/'
+get '/:id' do
+  # params[:id]
+get '/:id' do |id|
+  # id
+get '/users/*'
+  # params[:splat]
+
+# Templates and processing
 require 'erb'
-# Compile the template (but don't fill in the values yet)
 template = ERB.new "The value of x is: <%= @x %>"
-
-# Prepare the values for inclusion in ERB
 @x = 42
+template.result(binding) #=> The value of x is: 42
 
-# Use the variables in the current scope and pass them to `result`
-puts template.result(binding) #=> The value of x is: 42
+# Sass / Coffee compilation
+get '/css/pages.css' do
+  sass :pages # ./views/pages.scss
+end
+get '/js/application.js' do
+  # requires execjs or therubyracer
+  coffee :application # ./views/application.coffee
+end
 {% endhighlight %}
 
 ### Exercises
@@ -121,6 +142,31 @@ puts template.result(binding) #=> The value of x is: 42
 * [Law of Demeter](http://en.wikipedia.org/wiki/Law_of_Demeter)
 * [Object-oriented Design](http://en.wikipedia.org/wiki/Object-Oriented_Programming#Fundamental_features_and_concepts)
 * [Responsibility-driven Design](http://en.wikipedia.org/wiki/Responsibility-driven_design)
+
+### Code for the board
+{% highlight text %}
+Client:
+  Responsibilities:
+    Request websites from webserver using ip
+    Request ip from DNS
+  Collaborators:
+    DNSServer
+    WebServer
+
+DNSServer
+  Responsibilities:
+    Translate domains to ip addresses
+  Collaborators:
+    Client
+    UpstreamDNSServer { ... snip }
+
+WebServer
+  Responsibilities:
+    Serve HTML to people who ask nicely
+  Collaborators:
+    FileSystem { ... snip }
+    AppServers { ... snip }
+{% endhighlight %}
 
 ### Exercises
 
@@ -189,6 +235,19 @@ puts template.result(binding) #=> The value of x is: 42
 * [Object-relational impedance mismatch](http://en.wikipedia.org/wiki/Object-Relational_impedance_mismatch)
 * [Database Normalization (Wikipedia)](http://en.wikipedia.org/wiki/Database_normalization)
 
+### Code for the board
+{% highlight sql %}
+# Normal select with a where
+SELECT * FROM songs WHERE play_count > 2000000;
+
+# Equivalent Join statements (old vs new school)
+# Note the naming and talk about normalization
+SELECT * FROM songs
+LEFT JOIN artists ON song.artist_id = artists.id;
+SELECT * FROM songs, artists
+WHERE song.artist_id = artists.id
+{% endhighlight %}
+
 ### Exercises
 
 #### Stage 1 (remembering/understanding)
@@ -222,19 +281,46 @@ puts template.result(binding) #=> The value of x is: 42
 ## Thursday &mdash; 3/7/2013
 ### Topics
 * jQuery and Coffeescript
+* Document ready
+* CDN vs self-hosted
+* Selecting elements
+* Add/remove classes, show/hide
+* Callbacks/handlers
 
 ### Goals
 * Learn the important bits about jQuery
 * Get coffeescript compiling in Sinatra
 
 ### Important Threshold Concepts
+* Callbacks
 
 ### Reading to do before class
+* [Small intro to jQuery](http://learn.jquery.com/about-jquery/how-jquery-works/)
+* [Outstanding slides by John Resig himself (up to slide 29ish)](http://ejohn.org/apps/workshop/intro)
+* [Video about jQuery (old but relevant)](http://css-tricks.com/video-screencasts/20-introduction-to-jquery/)
 
 ### Resources
+* [jQuery homepage](http://jquery.com/)
+* [jQuery API Docs](http://api.jquery.com/)
+* [CoffeeScript Docs](http://coffeescript.org/)
+* [CoffeeScript + Sinatra](http://recipes.sinatrarb.com/p/views/coffee_script)
 
-### Helpful Commands
-{% highlight bash %}
+### Code for the board
+{% highlight javascript %}
+// Naming conventions for wrapped sets
+$buttons = $("button")
+
+// DOMReady
+$(document).readyfunction () {});
+$().ready(function () {}); // Not recommended
+$(function () {});
+jQuery(document).ready(function ($) {}); // $.noConflict() mode
+$ -> // in CoffeeScript
+
+// Click handlers
+$('.toggle-all').on 'click', (e) ->
+  $('.collapsable').slideToggle()
+
 {% endhighlight %}
 
 ### Exercises
@@ -242,10 +328,31 @@ puts template.result(binding) #=> The value of x is: 42
 #### Stage 1 (remembering/understanding)
 
 * Answer these questions with your group
+  * Why do we have to wait until document.ready
+  * What is the condensed form of domready
+  * How do you select elements with jQuery
+  * Why should we use the CDN version of jQuery
+  * Why should we not use the CDN version of jQuery
+  * How do you add a class in jquery? How do you hide/show
+  * How do you chain methods in jquery
+  * How do you add a click handler or a submit handler
+  * How do you overwrite what's in an element
+  * How do you append to the content in an element
 
 #### Stage 2 (application/analyzing)
 
+* With your group, using your chat app, have the new chat messages slide in instead of appearing
+* When you click on a username, make it appear in the text field with an @ next to it
+* If an @yourusername appears, make it bold and colorful
+* If an image url comes into the page, display it
+* Give each line of chat a different colored background so it's easy to read
+* Give each user their own colored background
+* If you click on an image, collapse it and hide it
+
 #### Boss Fight (evaluation/creation)
+
+* Display gravatars next to each chat message (you'll have to use emails instead of usernames)
+* Research jQuery-UI and see what's available there. Write up some options on the board.
 
 ## Friday &mdash; 3/8/2013
 * Wrapping it all up
