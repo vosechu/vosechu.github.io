@@ -5,6 +5,7 @@ body_classes: exercise
 
 ## Week 3 &mdash; Overview
 ### Monday Stuff
+* How was the weekend?
 * Announcements
 * Network points awards
 * Networking events for the week

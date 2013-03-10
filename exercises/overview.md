@@ -85,7 +85,7 @@ body_classes: exercise overview
 * [Week 4 Handout](/exercises/week4.html)
 * Sinatra and APIs
 * Ajax and jQuery
-* Regexes
+* Regexes \[Skipped\]
 * **Exam**
 
 ### Other Topics
@@ -100,7 +100,7 @@ body_classes: exercise overview
 * Sinatra Basics
 * OOP principles and Object modeling
 * SQL and Data modeling
-* jQuery & Coffeescript
+* jQuery & Coffeescript \[Skipped\]
 
 ### Other Topics
 * Agile methodologies review
@@ -109,13 +109,14 @@ body_classes: exercise overview
 ## Week 6
 ### Major Topics
 * [Week 6 Handout](/exercises/week6.html)
-* How Sinatra fails Asset packaging, Reloading, caching, security
-* Refactoring code / modularization / Code complexity analysis
+* Intro to Rails
 * Using ORMs for database persistence
+* jQuery & Coffeescript
 * Basic Javascript MVC w/ Backbone
 
 ### Other Topics
 * Bundler
+* Refactoring code / modularization / Code complexity analysis
 
 ## Week 7
 ### Major Topics
@@ -123,7 +124,7 @@ body_classes: exercise overview
 * Rails and rails-api (Routing, asset pipeline, mvc)
 * Gem review (Authentication, Access Control, Search, Caching)
 *   http//www.intridea.com/blog/2011/5/13/rails3-gems
-* Better Javascript MVC w/ Angular or Ember
+* Javascript MVC w/ Angular or Ember
 * Testing in Rails (controllers, unit, mock, stub, assertions)
 
 ### Other Topics

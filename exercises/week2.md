@@ -4,6 +4,7 @@ body_classes: exercise
 ---
 ## Week 2 &mdash; Overview
 ### Monday Stuff
+* How was the weekend?
 * Announcements
 * Network points awards
 * Networking events for the week
@@ -13,7 +14,10 @@ body_classes: exercise
 * TODO
 
 ### Weekly Topics
-* TODO
+* Git/Github
+* HTML w/ Middleman
+* CSS3
+* Ruby: Classes, modules
 
 ### Weekly Theme
 * TODO
