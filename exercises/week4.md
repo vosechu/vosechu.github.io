@@ -1,9 +1,9 @@
 ---
 layout: page
 body_classes: exercise
+title: Week 4 &mdash; Overview
 ---
 
-## Week 4 &mdash; Overview
 ### Monday Stuff
 * How was the weekend?
 * Announcements

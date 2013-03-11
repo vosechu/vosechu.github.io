@@ -55,4 +55,7 @@
     color: #393939;
     font-weight: bolder;
   }
+  .overview h2 {
+    page-break-before: avoid;
+  }
 }

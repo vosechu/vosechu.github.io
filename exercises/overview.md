@@ -1,9 +1,9 @@
 ---
 layout: page
 body_classes: exercise overview
+title: Major Overview
 ---
 
-## Major Overview
 ### Weeks 1-4
 * Build a github powered blog
 * Building blocks of programming
