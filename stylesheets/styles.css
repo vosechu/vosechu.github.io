@@ -89,6 +89,34 @@ audio:not([controls]) {
   display: none;
 }
 
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+    margin-bottom: 10px;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
+
 /* =============================================================================
    Base
    ========================================================================== */
@@ -584,7 +612,7 @@ section img {
 
 blockquote {
   border-left: 1px solid #ffcc00;
-  margin: 0;
+  margin: 1em 40px;
   padding: 0 0 0 20px;
   font-style: italic;
 }
@@ -824,11 +852,11 @@ small {
 }
 
 nav {
-  width: 230px;
   position: fixed;
   top: 220px;
   left: 50%;
-  margin-left: -580px;
+  width: 350px;
+  margin-left: -690px;
   text-align: right;
 }
 nav ul {
@@ -1077,4 +1105,33 @@ footer {
 .confidence .smiley {
   width: 30px;
   padding-right: 8px;
+}
+.creation img {
+  float: left;
+  width: 150px;
+}
+.creation h3, .creation p {
+  margin-left: 170px;
+}
+.about-me img {
+  float: left;
+}
+.about-me h3, .about-me p {
+  margin-left: 170px;
+}
+.notice {
+  font-style: italic;
+  border-radius: 3px;
+  border: 1px solid #dba500;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffe788), color-stop(100%, #ffce38));
+  background: -webkit-linear-gradient(#ffe788, #ffce38);
+  background: -moz-linear-gradient(#ffe788, #ffce38);
+  background: -o-linear-gradient(#ffe788, #ffce38);
+  background: -ms-linear-gradient(#ffe788, #ffce38);
+  background: linear-gradient(#ffe788, #ffce38);
+  padding: 6px 12px;
+  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+  -o-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
 }

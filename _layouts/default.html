@@ -37,7 +37,6 @@
           <h3>Pages</h3>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/blog.html">Blog</a></li>
             <li><a href="/exercises/overview.html">Exercises</a></li>
             <li><a class="disabled" href="/portfolio.html">Portfolio</a></li>
             <li><a class="disabled" href="/repos.html">Repo Roadmap</a></li>
@@ -47,8 +46,8 @@
         <div class="recent-posts">
           <h3>Recent Posts</h3>
           <ul>
-          {% for post in site.posts limit:3 %}
-            <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title }}</a></li>
+          {% for post in site.posts limit:5 %}
+            <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title | truncate: 30}}</a></li>
           {% endfor %}
           </ul>
           <a href="/blog.html">All Posts</a>
