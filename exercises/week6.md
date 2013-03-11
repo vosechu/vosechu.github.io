@@ -54,6 +54,7 @@ body_classes: exercise
 * Understand why we love Rails
 * Be able to talk about what the MVC components are and their responsibilities
 * Be able to generate a site with scaffolds
+* Controllers are for delegation
 
 ### Reading to do before class
 * [Getting started with Rails](http://guides.rubyonrails.org/getting_started.html)
