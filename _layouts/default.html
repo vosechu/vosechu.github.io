@@ -34,29 +34,24 @@
     <div class="wrapper">
       <nav>
         <div class="pages">
-          <h3>Pages</h3>
+          <h3>Navigation</h3>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/exercises/overview.html">Exercises</a></li>
-            <li><a class="disabled" href="/portfolio.html">Portfolio</a></li>
-            <li><a class="disabled" href="/repos.html">Repo Roadmap</a></li>
-            <li><a class="disabled" href="/code.html">Code Samples</a></li>
+            <li><a href="/blog.html">Blog</a></li>
+            <li><a href="/exercises/overview.html">Curriculum</a></li>
+            <li><a href="http://www.portlandcodeschool.com">Portland Code School</a></li>
           </ul>
-        </div>
-        <div class="recent-posts">
-          <h3>Recent Posts</h3>
-          <ul>
-          {% for post in site.posts limit:5 %}
-            <li><a href="{{ post.url }}">{{ post.date | date: '%b %Y'}} - {{ post.title | truncate: 30}}</a></li>
-          {% endfor %}
-          </ul>
-          <a href="/blog.html">All Posts</a>
         </div>
       </nav>
       <section>
         {{ content }}
       </section>
       <footer>
+        <h2>Find me</h2>
+        <a href="http://www.twitter.com/vosechu"><img src="/images/twitter.png" alt="twitter" width="32"></img></a>
+        <a href="http://www.linkedin.com/in/vosechu"><img src="/images/linkedin.png" alt="linkedin" width="32"></img></a>
+        <a href="http://www.github.com/vosechu"><img src="/images/github.png" alt="github"></img></a>
+        <a href="mailto:cvose@portlandcodeschool.com"><img src="/images/mail.png" alt="email" width="32"></img></a>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>

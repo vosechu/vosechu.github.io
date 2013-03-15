@@ -225,6 +225,14 @@ Entry.create_vote()
 {% highlight bash %}
 # Needs bootstrap gem https://github.com/seyhunak/twitter-bootstrap-rails
 rails generate simple_form:install --bootstrap
+
+# Add simpleform and twitter bootstrap to the Gemfile
+echo 'gem "therubyracer"
+gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "twitter-bootstrap-rails"' >> Gemfile
+bundle
+rails generate bootstrap:install less
+rails generate simple_form:install --bootstrap
 {% endhighlight %}
 
 ### Code for the board
