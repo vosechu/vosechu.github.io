@@ -34,7 +34,7 @@ title: Week 6 &mdash; Overview
 * Creating a Cards Against Humanity War website in Rails.
 
 ### Weekly Home<del>work</del>**fun**
-* Email me a link to your 6th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 6th Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * Email me a link to where you feature your Rails site on your portfolio
 
 ## Monday &mdash; 3/11/2013
@@ -359,6 +359,7 @@ $ ->
 
 ## Friday &mdash; 3/15/2013
 * Wrapping it all up
+* Quiz
 * Retrospective
 * Code review
 * 1-on-1’s / Catchup time

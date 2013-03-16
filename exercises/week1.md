@@ -27,7 +27,7 @@ title: Week 1 &mdash; Overview
 Creating a personal static website that contains your resume in html and pdf format, and links to your repos on github
 
 ### Weekly Home<del>work</del>**fun**
-* An email containing your 1st Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 1st Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * static HTML website w/a theme, posted on Github
 * DELETEME Either Ruby Quiz 15 (advanced) (http://www.rubyquiz.com/quiz15.html) or Rubeque Blackjack (http://rubeque.com/problems/blackjack)
 * DELETEME Questions about the homework each day

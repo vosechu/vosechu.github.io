@@ -32,7 +32,7 @@ title: Week 3 &mdash; Overview
 * Create a Rack server which can process data and be validated with an automated test suite
 
 ### Weekly Home<del>work</del>**fun**
-* 3rd Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 3rd Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * Jekyll blog on Github pages with your three blog posts, links to your resume in html and pdf format, and an index page with links to your JS rock-paper-scissors, your tested hq9f, and your rack application repos on Github.
 
 ## Monday &mdash; 2/18/2013

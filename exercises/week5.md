@@ -27,7 +27,7 @@ title: Week 5 &mdash; Overview
 Building a chat room with long-polling, jquery, and a database backend
 
 ### Weekly Home<del>work</del>**fun**
-* Email me a link to your 5th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 5th Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * Email me a link to your group's project.
 
 ## Monday &mdash; 3/4/2013

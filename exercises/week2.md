@@ -24,7 +24,7 @@ title: Week 2 &mdash; Overview
 * TODO
 
 ### Weekly Home<del>work</del>**fun**
-* 2nd Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 2nd Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * TODO
 
 ## Monday &mdash; 2/11/2013

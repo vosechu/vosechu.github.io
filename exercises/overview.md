@@ -64,17 +64,14 @@ title: Major Overview
 
 ### Other Topics
 * Reading API Docs
-* Deployment to Heroku
-* How to ask questions
-* Estimation
 
 ## Week 3
 ### Major Topics
 * [Week 3 Handout](/exercises/week3.html)
-* Javascript (Javascript Deep Dive Variables, Strings, Numbers, Arrays)
-* Rack web servers
-* Ruby (Modules, Testing)
 * Creating a blog with Jekyll
+* Ruby (Modules, Testing)
+* Javascript (Javascript Deep Dive Variables, Strings, Numbers, Arrays)
+* Javascript & jQuery
 
 ### Other Topics
 * TDD/BDD w/ Minitest
@@ -83,13 +80,12 @@ title: Major Overview
 ## Week 4
 ### Major Topics
 * [Week 4 Handout](/exercises/week4.html)
-* Sinatra and APIs
-* Ajax and jQuery
-* Regexes \[Skipped\]
+* Introduction to Sinatra
+* Sinatra Practice
+* Ajax using jQuery
 * **Exam**
 
 ### Other Topics
-* Analytics
 * Datamapper
 
 -----------
@@ -97,46 +93,41 @@ title: Major Overview
 ## Week 5
 ### Major Topics
 * [Week 5 Handout](/exercises/week5.html)
-* Sinatra Basics
+* Sinatra and APIs
 * OOP principles and Object modeling
 * SQL and Data modeling
-* jQuery & Coffeescript \[Skipped\]
 
 ### Other Topics
 * Agile methodologies review
-* How load time affects bounce rate
+* Deployment to Heroku
 
 ## Week 6
 ### Major Topics
 * [Week 6 Handout](/exercises/week6.html)
 * Intro to Rails
-* Using ORMs for database persistence
-* jQuery & Coffeescript
-* Basic Javascript MVC w/ Backbone
+* ActiveRecord (database persistence ORM)
+* Rails Forms
+* Coffeescript in Rails
 
 ### Other Topics
-* Bundler
-* Refactoring code / modularization / Code complexity analysis
 
 ## Week 7
 ### Major Topics
 * [Week 7 Handout](/exercises/week7.html)
-* Rails and rails-api (Routing, asset pipeline, mvc)
-* Gem review (Authentication, Access Control, Search, Caching)
-*   http//www.intridea.com/blog/2011/5/13/rails3-gems
-* Javascript MVC w/ Angular or Ember
+* Rails Practice
+* Introducing rails-api (Routing, asset pipeline, mvc)
 * Testing in Rails (controllers, unit, mock, stub, assertions)
+* Introduction to Backbone.js
 
 ### Other Topics
 
 ## Week 8
 ### Major Topics
 * [Week 8 Handout](/exercises/week8.html)
-* Rails without ARB
 * Gem review (Authentication, Access Control, Search, Caching)
 *   http//www.intridea.com/blog/2011/5/13/rails3-gems
-*   https//github.com/languages/Ruby/most_watched
-* Javascript Websockets and Meteor
+* Backbone.js Practice
+* Preparation for Job Fair
 * Preparation for Job Fair (resume, last touches on portfolio, etc.)
 
 ### Other Topics
@@ -149,7 +140,10 @@ title: Major Overview
 * [Week 9 Handout](/exercises/week9.html)
 * Open source development
 * Advanced deployment to EC2
-* Programming Patterns
+* Gem review (Authentication, Access Control, Search, Caching)
+*   http//www.intridea.com/blog/2011/5/13/rails3-gems
+*   https//github.com/languages/Ruby/most_watched
+* Host-a-hacker
 
 ### Other Topics
 * The plan for Host-a-Hacker
@@ -160,7 +154,6 @@ title: Major Overview
 * Monday retro
 * Queueing with ActiveMQ or RabbitMQ
 * MongoDB and MongoMapper
-* Meta-programming
 
 ### Other Topics
 
@@ -170,6 +163,7 @@ title: Major Overview
 * Monday retro
 * Concurrency in Ruby
 * \*nix systems
+* Meta-programming
 
 ### Other Topics
 
@@ -184,13 +178,18 @@ title: Major Overview
 
 EVKs
 ### Major Topics
+* Regexes
 * Intro to Clojure
 * Intro to Chef/Puppet (later assignment)
+* Programming Patterns
 
-
-
-
-
+Other Topics not covered yet
+* How to ask questions
+* Estimation
+* How load time affects bounce rate
+* Analytics
+* Bundler
+* Refactoring code / modularization / Code complexity analysis
 
 
 

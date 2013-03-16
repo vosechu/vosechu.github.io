@@ -18,7 +18,7 @@ title: Week 9 &mdash; Overview
 ### Weekly Theme
 
 ### Weekly Home<del>work</del>**fun**
-* Email me a link to your 4th Blog post. 1-2 pages (500-1000 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
+* Email me a link to your 9th Blog post. 1-2 pages (250-500 words) about your week, what you learned, something funny that happened or something about the technologies we talked about.
 * Email me a link to where you feature your javascript backed site on your portfolio
 
 ## Monday &mdash; 3/4/2013
