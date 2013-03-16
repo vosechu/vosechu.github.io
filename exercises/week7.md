@@ -12,7 +12,18 @@ title: Week 7 &mdash; Overview
 * Call for lightning talks
 
 ### Monday comprehension questions
-*
+* What projects are good for Middleman?
+* What projects are good for Jekyll?
+* What projects are good for Sinatra?
+* What projects are good for Rails?
+* What projects are good for Wordpress/Drupal?
+* What projects are good for single page Javascript sites?
+* What is a JSON API Server?
+* What is an API Server?
+* What is a Server?
+* What does the Rails asset pipeline do?
+* What is rake?
+* What is the difference between `match` and `resources` in `config/routes.rb`
 
 ### Weekly Topics
 * Rails Practice
@@ -103,17 +114,41 @@ brew install hub
 
 ## Wednesday &mdash; 3/20/2013
 ### Topics
+* Testing in Rails w/Rspec
+* Factories
 
 ### Goals
+* Understand the difference between unit and functional tests in Rails
+* Understand the argument between fixtures, stubs/mocks, and factories
+* Understand test philosophies: No testing, verification tests, test first, Strict TDD
 
 ### Important Threshold Concepts
 
 ### Reading to do before class
+* [Treehouse Rails Testing](http://teamtreehouse.com/library/programming/build-a-simple-ruby-on-rails-application/writing-tests)
+* [Testing in Rails (Chapters 1,2,3,4)](http://guides.rubyonrails.org/testing.html)
+
+### Additional reading resources
+* [Rails Testing for Zombies](http://rtfz.codeschool.com/levels/1)
 
 ### Resources
+* [RSpec Rails (test/unit replacement)](https://github.com/rspec/rspec-rails)
+* [Factory_girl (fixture replacement)](https://github.com/thoughtbot/factory_girl)
 
 ### Helpful Commands
 {% highlight bash %}
+# Run test/unit style tests
+rake test
+
+# Run rspec style tests
+rake spec
+
+# Make rspec the default
+# Add this to Gemfile:
+# group :test, :development do
+#   gem "rspec-rails", "~> 2.0"
+# end
+rails generate rspec:install
 {% endhighlight %}
 
 ### Exercises
@@ -121,35 +156,57 @@ brew install hub
 #### Stage 1 (remembering/understanding)
 
 * Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
+  * Why do we test?
+  * How are all test files named?
+  * Where do unit tests live in Rails?
+  * What is an assertion?
+  * Ideally, how many assertions should we have per test case?
+  * What is "red, green, refactor"?
 
 #### Stage 2 (application/analyzing)
 
-#### Boss Fight (evaluation/creation)
+* Individually, with a pair, or in a group
+  * Add unit tests to the cards against humanity app
+  * Add functional tests to the cards against humanity app
 
 ## Thursday &mdash; 3/21/2013
 ### Topics
+* Introduction to Backbone.js
 
 ### Goals
+* Understand what a backbone model, view, and collection are
 
 ### Important Threshold Concepts
+* Contract: If you call `model#fetch` or `collection#fetch`, the website MUST react correctly.
 
 ### Reading to do before class
+* (Watch all of these videos, follow along)
+* [Treehouse Master Class: Backbone Models](http://teamtreehouse.com/library/html5-mobile-web-applications/html5-mobile-javascript-introduction-to-backbone-and-models)
+* [Treehouse Master Class: Backbone Views](http://teamtreehouse.com/library/html5-mobile-web-applications/html5-mobile-javascript-creating-the-form-view)
+* [Treehouse Master Class: Backbone Collections](http://teamtreehouse.com/library/html5-mobile-web-applications/html5-mobile-javascript-backbone-collections)
 
 ### Resources
-
-### Helpful Commands
-{% highlight bash %}
-{% endhighlight %}
+* [Backbone\'s API docs](http://backbonejs.org/)
+* [Backbone\'s annotated source](http://backbonejs.org/docs/backbone.html)
+* [Underscore\'s API docs](http://underscorejs.org/)
+* [Underscore\'s annotated source](http://underscorejs.org/docs/underscore.html)
+* [Original Backbone source for treehouse](http://thinkvitamin.s3.amazonaws.com/membership/code-samples/html5-masterclass-Code-After-MC07.zip)
+* [Chuck's implementation of treehouse video (check branches)](https://github.com/vosechu/treehouse_backbone_example)
 
 ### Exercises
 
 #### Stage 1 (remembering/understanding)
 
 * Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
+  * In Backbone.js, what is a Model? What are its responsibilities? Who are its collaborators?
+  * In Backbone.js, what is a View? What are its responsibilities? Who are its collaborators?
+  * In Backbone.js, what is a Collection? What are its responsibilities? Who are its collaborators?
+  * How is the view in backbone different from the view in Rails?
+  * Why don't we have a collection object in Rails? Should we?
 
 #### Stage 2 (application/analyzing)
 
-#### Boss Fight (evaluation/creation)
+* Instead of using localStorage, create a Rails or rails-api app that receives saves from the model or the collection
 
 ## Friday &mdash; 3/22/2013
 * Wrapping it all up
