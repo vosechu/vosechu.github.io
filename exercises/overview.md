@@ -124,9 +124,9 @@ title: Major Overview
 ## Week 8
 ### Major Topics
 * [Week 8 Handout](/exercises/week8.html)
-* Gem review (Authentication, Access Control, Search, Caching)
-*   http//www.intridea.com/blog/2011/5/13/rails3-gems
 * Backbone.js Practice
+* Gem review (Pagination, Simple Form, Active Admin, Paperclip)
+*   http//www.intridea.com/blog/2011/5/13/rails3-gems
 * Preparation for Job Fair
 * Preparation for Job Fair (resume, last touches on portfolio, etc.)
 
