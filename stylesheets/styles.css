@@ -1092,7 +1092,10 @@ footer {
 .exercise nav .recent-posts {
   display: none;
 }
-.overview nav .pages {
+.metrics nav .pages, .overview nav .pages {
+  display: none;
+}
+.metrics footer {
   display: none;
 }
 .confidence {

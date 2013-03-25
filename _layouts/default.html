@@ -3,7 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Chuck Lauer Vose by vosechu</title>
+    {{ if page.page_title }}
+      <title>{{ page.page_title }} - Chuck Lauer Vose</title>
+    {{ else }}
+      <title>Chuck Lauer Vose</title>
+    {{ endif }}
     <link rel="stylesheet" href="/stylesheets/styles.css" media="all">
     <link rel="stylesheet" href="/stylesheets/print.css" media="print">
     <link rel="stylesheet" href="/stylesheets/pygment_trac.css">
@@ -38,8 +42,9 @@
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/blog.html">Blog</a></li>
-            <li><a href="/exercises/overview.html">Curriculum</a></li>
             <li><a href="http://www.portlandcodeschool.com">Portland Code School</a></li>
+            <li><a href="/exercises/overview.html">Exercises</a></li>
+            <li><a href="/curriculum/performance-metrics.html">Metrics</a></li>
           </ul>
         </div>
       </nav>

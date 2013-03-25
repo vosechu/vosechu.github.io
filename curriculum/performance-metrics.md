@@ -1,7 +1,52 @@
 ---
 layout: page
-body_classes: exercise overview
+body_classes: exercise metrics
+page_title: Performance Metrics
+title: Overview of Performance Metrics
 ---
+
+Performance metrics, activities, and standards, allow us to focus in on what's actually important when we're studying. This file has been approached from the standpoint of the employer:
+
+* **Basic skills** are those skills that are assumed to be true. When interviewing, if a candidate doesn't have these skills it can sometimes come as a shock to the interviewer. This is the baseline.
+* **Intermediate skills** are the skills that start to set you apart from the rest of the candidate pool. These are skills that are learned over time and absolutely make you a better developer if you can memorize or somehow find a way to do them without thinking. If you're specializing in an area, this is the group to make sure you know 100%.
+* **Advanced skills** are the skills that really set you apart and can put you in a position where you're picking from employers. These skills will often take time and research, but if you're wanting to master an area, you should be familiar. If you're specializing in an area, you should at least understand these skills and be able to implement them fairly quickly if you have access to your bookmarks.
+
+_You should come out of the program with all of the Basics in every category._ Exams are generally confined to the basic skills and leave the intermediate and advanced skills as extra credit.
+
+When you do stage 2 problems, keep these performance metrics in mind to focus you on results.
+
+##{.no-break} Core Abilities
+
+The core abilities for our program are as follows. They are designed to be the overarching goals for everything you do. Each of them have been specifically requested by the employer network and we believe that they are good goals for all developers to aspire to and flesh out.
+
+1. Create code quickly and efficiently
+2. Create high quality code
+3. Collaborate with teammates effectively
+4. Understand and apply the current technologies
+5. Learn new technologies easily
+6. Understand and apply computer science concepts
+7. Speak effectively about technology in interviews and while networking
+8. Can utilize the technical and functional aspects of each lesson’s topic
+
+##{.no-break} General Performance Standards
+
+A passing student will:
+* Demonstrate 100% of the items in the basic section in less than n minutes
+* Demonstrate the items in the basic section with no reference material
+* Demonstrate the items in the basic section with >75% correctness
+* Demonstrate >25% of the items in the intermediate section in less than <strong>n*2</strong> minutes
+* Demonstrate items in the intermediate section with limited reference materials
+* Submit work, which complies with common style guides for the languages involved
+* Submit project work for grading that includes automated tests
+* Submit project work for grading that works in the browser as well as the test suite
+
+An excellent student will (in addition to above):
+* Demonstrate >50% of the items in the intermediate section in less than <strong>n*1.5</strong> minutes
+* Demonstrate >25% of the items in the advanced section in less than <strong>n*3</strong> minutes
+* Demonstrate items in the advanced section with any reference materials
+* Submit project work which includes elements above and beyond what is specified in the homework
+
+
 ## Version Control
 
 ### Target Competencies
@@ -62,7 +107,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=15
+* Perform the general performance standards with <strong>n=15</strong>
 * Demonstrate the items from the basic section on a 30 minute exam
 
 ## CSS
@@ -121,7 +166,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=15
+* Perform the general performance standards with <strong>n=15</strong>
 * Demonstrate the items from the basic section on a 30 minute exam
 
 ## Middleman
@@ -168,7 +213,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=15
+* Perform the general performance standards with <strong>n=15</strong>
 * Demonstrate the items from the basic section on a 30 minute exam
 
 ## Programming Fundamentals
@@ -231,7 +276,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=30
+* Perform the general performance standards with <strong>n=30</strong>
 * Demonstrate the items from the basic section on a 60 minute exam
 
 An excellent student will (in addition to above):
@@ -300,7 +345,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=30
+* Perform the general performance standards with <strong>n=30</strong>
 * Demonstrate the items from the basic section on a 60 minute exam
 
 An excellent student will (in addition to above):
@@ -357,7 +402,7 @@ Students at the advanced level will be able to:
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=15
+* Perform the general performance standards with <strong>n=15</strong>
 * Demonstrate the items from the basic section on a 30 minute exam
 
 ## Rails
@@ -420,7 +465,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=30
+* Perform the general performance standards with <strong>n=30</strong>
 * Demonstrate the items from the basic section on a 60 minute exam
 
 An excellent student will (in addition to above):
@@ -474,7 +519,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=15
+* Perform the general performance standards with <strong>n=15</strong>
 * Demonstrate the items from the basic section on a 30 minute exam
 
 
@@ -529,7 +574,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=30
+* Perform the general performance standards with <strong>n=30</strong>
 * Demonstrate the items from the basic section on a 60 minute exam
 
 ## Agile Methodologies
@@ -568,7 +613,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Employment
@@ -606,7 +651,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 
@@ -644,7 +689,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Queueing
@@ -681,7 +726,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Linux
@@ -718,7 +763,7 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## EC2
@@ -754,5 +799,5 @@ Students at the advanced level will be able to: (with some reference material):
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with n=10
+* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam

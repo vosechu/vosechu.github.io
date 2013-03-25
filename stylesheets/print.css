@@ -58,4 +58,8 @@
   .overview h2 {
     page-break-before: avoid;
   }
+  h2.no-break {
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
 }
