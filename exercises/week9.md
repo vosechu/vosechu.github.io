@@ -14,13 +14,21 @@ title: Week 9 &mdash; Overview
 * Warmup exercise
 
 ### Monday comprehension questions
+* What did you learn from the job fair?
+* Why would we bother doing backbone in rails?
+* What is the purpose of the backbone-rails gem?
+* How does a backbone view relate to a rails controller?
+* In rails, what do we need to do to implement will_paginate?
+* What is the difference between app/assets and vendor/assets?
+* What are the philosophical differences between ActiveAdmin and RailsAdmin?
+* Why do we recommend simple_form over formtastic?
 
 ### Weekly Topics
 * Open source
-* Deployment
 * Gem review (Authentication, Access Control, Search, Caching)
 *   http//www.intridea.com/blog/2011/5/13/rails3-gems
 *   https//github.com/languages/Ruby/most_watched
+* Deployment
 * Host-a-hacker
 
 ### Weekly Theme
@@ -86,7 +94,7 @@ bundle exec rails s
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
   * Roughly how many open source projects fail?
   * Does an open source license guarantee hordes of volunteers?
   * Summarize the three paragraphs under the Jeremy Zawinski quote
@@ -111,17 +119,41 @@ bundle exec rails s
 
 ## Tuesday &mdash; 3/5/2013
 ### Topics
+* Gem review (Authentication, Access Control, Search, Caching)
 
 ### Goals
+* Grow our understanding of the Rails ecosystem
 
 ### Important Threshold Concepts
+* Authentication vs Authorization
 
 ### Reading to do before class
+* [Caching in Rails (Chapter 1)](http://guides.rubyonrails.org/caching_with_rails.html)
 
 ### Resources
+* [Authentication Gems](https://www.ruby-toolbox.com/categories/rails_authentication)
+* [Authorization Gems](https://www.ruby-toolbox.com/categories/rails_authorization)
+* [Search Gems](https://www.ruby-toolbox.com/categories/rails_search)
 
-### Helpful Commands
-{% highlight bash %}
+### Code for the board
+{% highlight ruby %}
+# All these caches require production environment or `perform_caching=true` in development.rb.
+# Page caching. Adds html file to public folder.
+# entries_controller.rb
+caches_page :index
+
+# Action caching. Like page caching, but allows before_filters and conditionals
+# entries_controller.rb
+caches_action :index
+
+# Fragment caching. Most common, usually used in views.
+# views/entries/index.html.haml
+- cache('some_name_here') do # This is difficult to expire without a name as the first argument
+  = something_expensive()
+
+# With memcached/Ehcache to do expiry
+- cache('some_name_here', :expires_in => 5.minutes) do
+  = something_expensive()
 {% endhighlight %}
 
 ### Exercises
@@ -132,26 +164,31 @@ bundle exec rails s
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
+  * What are the three caches for (page, action, fragment)
+  * What's the difference between authorization and authentication?
+  * Is Thinking-sphinx going to overtake Sunspot? Why?
+  * Is OmniAuth or Devise going to win? Why?
+  * In a haiku describe CanCan? (5-7-5)
 
 #### Stage 2 (application/analyzing)
 
-#### Boss Fight (evaluation/creation)
+* Implement a website using auth from scratch [link to dropbox video file](link)
+* Implement a website with Devise and CanCan
 
 ## Wednesday &mdash; 3/6/2013
 ### Topics
+* Deployment
 
 ### Goals
-
-### Important Threshold Concepts
+* Deploy to Heroku like a champ
+* Deploy to EC2 like a champ
 
 ### Reading to do before class
-
-### Resources
-
-### Helpful Commands
-{% highlight bash %}
-{% endhighlight %}
+* [Capistrano docs](https://github.com/capistrano/capistrano)
+* [AWS FAQ](http://aws.amazon.com/ec2/faqs/#What_is_Amazon_Elastic_Compute_Cloud_Amazon_EC2)
+* [Read Bezos' Mandate](http://java.dzone.com/articles/getting-soa-right-%E2%80%93-thinking)
+* [Read the Rap Genius article](http://venturebeat.com/2013/03/02/rap-genius-responds/)
 
 ### Exercises
 
@@ -161,8 +198,30 @@ bundle exec rails s
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
+  * What is EC2?
+  * What does Bezos' mandate mean for their architecture?
+  * What other interesting systems exist in AWS? Why do you like them?
+  * Does the Rap Genius article change your mind about using Heroku?
 
 #### Stage 2 (application/analyzing)
 
+* Heroku (short)
+  * Download the heroku toolbelt
+  * Get everyone on the team added to the project
+  * Ensure that everyone can do `heroku logs -t`
+  * (Optional) Ensure that everyone can deploy a project
+
+* AWS EC2 (the fun part)
+  * Register an account at `aws.amazon.com`
+  * Add SSH Key pair with your `~/.ssh/id_rsa.pub` (use cmd+shift+G in finder to navigate)
+  * Spin up a new micro instance w/ Amazon Linux AMI
+  * Connect to your server via ssh (protip, right-click on the instance and hit connect for instructions)
+  * Dabble around
+  * (Optional) use capistrano to deploy code there [Maybe decent blog post?](http://haiyanggao.blogspot.com/2012/04/deploy-rails-app-to-amazon-ec2-with.html)
+  * Terminate the instance, terminate the EBS volume (to prevent you from being charged)
+
 #### Boss Fight (evaluation/creation)
+
+* Find an AMI that's already ready for Ruby like Bitnami.
+* Provision and deploy with this server

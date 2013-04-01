@@ -40,7 +40,7 @@ title: Week 11 &mdash; Overview
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
 
 #### Stage 2 (application/analyzing)
 
@@ -65,7 +65,7 @@ title: Week 11 &mdash; Overview
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
 
 #### Stage 2 (application/analyzing)
 
@@ -90,7 +90,7 @@ title: Week 11 &mdash; Overview
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
 
 #### Stage 2 (application/analyzing)
 
@@ -115,7 +115,7 @@ title: Week 11 &mdash; Overview
 
 #### Stage 1 (remembering/understanding)
 
-* Answer these questions with your pair
+* Email me answers to these questions before the class begins. Highlight any that you didn't understand and couldn't ask about in the IRC room.
 
 #### Stage 2 (application/analyzing)
 
