@@ -16,17 +16,15 @@ title: Major Overview
 * Designing and implementing your portfolio
 * Exploring teamwork
 * Sinatra/Rails
-* Databases
-* Deployment
+* Databases and modeling
 * Prep for job fair in week 8
 
 ### Weeks 9-12
 * Open Source development
 * Host-a-hacker externships at your favorite companies
-* Javascript MVC w/ Angular or Ember
-* Advanced patterns and scaling
-* Advanced deployment
-* TBD
+* Javascript MVC w/ Backbone
+* Deployment
+* Refinements
 
 ## Handouts
 * [Week 1](/exercises/week1.html)

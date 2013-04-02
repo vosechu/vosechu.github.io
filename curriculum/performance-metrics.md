@@ -51,31 +51,28 @@ An excellent student will (in addition to above):
 
 ### Target Competencies
 
-Ability to work on a team with other collaborators
-Mastery of Git terminology and usage
-Basic understanding of other version control systems
+* Ability to work on a team with other collaborators
+* Mastery of Git terminology and usage
+* Basic understanding of other version control systems
 
 ### Learning Objectives
 
 Students will understand:
-How to start a new project
-Conflicts and resolution
-The benefits of various workflows
-How to use collaboration tools (like Github)
+* How to start a new project
+* Conflicts and resolution
+* The benefits of various workflows
+* How to use collaboration tools (like Github)
 
 ### Learning Activities
 
 Students will:
-Start a new project by cloning
-Start a new project by init/remote add
-Use standard commit process
-Fix conflicts and push to remote repos
-Push to an out-of-date repo
-Collaborate on a project using the pull request process
-Collaborate on a project as full ‘collaborators’
-Perform code review for other students on github.com
-Complete readings on the topic
-Use often in projects and other activities
+* Start a new project by cloning
+* Start a new project by init/remote add
+* Use standard commit process
+* Fix conflicts and push to remote repos
+* Collaborate on a project using the pull request process
+* Collaborate on a project as full ‘collaborators’
+* Perform code review for other students on github.com
 
 ### Performance Metrics
 
@@ -114,27 +111,27 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Familiarity with CSS sufficient to style small-scale projects
-Capable of working with a creative team to implement a properly formed style guide
+* Familiarity with CSS sufficient to style small-scale projects
+* Capable of working with a creative team to implement a properly formed style guide
 
 ### Learning Objectives
 
 
 Students will understand:
-Basic CSS for layouts
-How a team uses a CSS framework
-Valid CSS syntax and code standards
-Preprocessor syntax like SCSS/SASS
-Responsive design
+* Basic CSS for layouts
+* How a team uses a CSS framework
+* Valid CSS syntax and code standards
+* Preprocessor syntax like SCSS/SASS
+* Responsive design
 
 ### Learning Activities
 
 
 Students will:
-Implement a simple design using a community standard CSS framework
-Experiment with CSS layout structures
-Analyzing layouts of popular websites
-Use the Chrome inspector
+* Implement a simple design using a community standard CSS framework
+* Experiment with CSS layout structures
+* Analyzing layouts of popular websites
+* Use the Chrome inspector
 
 ### Performance Metrics
 
@@ -174,23 +171,23 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Ability to create sites using Middleman
-Understanding of the reasons for using Middleman instead of something bigger
-Review HTML and determine if there are any knowledge gaps
+* Ability to create sites using Middleman
+* Understanding of the reasons for using Middleman instead of something bigger
+* Review HTML and determine if there are any knowledge gaps
 
 ### Learning Objectives
 
 Students will understand:
-Why to use middleman
-How to initialize a middleman app for use on Heroku
-Basic HTML syntax (refresher)
+* Why to use middleman
+* How to initialize a middleman app for use on Heroku
+* Basic HTML syntax (refresher)
 
 ### Learning Activities
 
 Students will:
-Start a new middleman app
-Create layouts, pages, and include some basic assets
-Deploy the site to Heroku
+* Start a new middleman app
+* Create layouts, pages, and include some basic assets
+* Deploy the site to Heroku
 
 ### Performance Metrics
 
@@ -208,6 +205,7 @@ Students at an intermediate level will be able to:
 * Deploy the completed project to Heroku
 
 Students at the advanced level will be able to:
+
 * Research and find new functionality on the Middleman website
 
 ### Performance Standards
@@ -221,28 +219,28 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Fluency with Ruby syntax and data structures
-Ability to quickly create simple solutions for small problems
-Knowledge about overall architecture sufficient to solve larger problems
+* Fluency with Ruby syntax and data structures
+* Ability to quickly create simple solutions for small problems
+* Knowledge about overall architecture sufficient to solve larger problems
 
 ### Learning Objectives
 
 Students will understand:
-General data structures
-Control flow structures
-Object-oriented Programming
-Ruby syntax
-White-boarding
-Testing in command-line scripts
-Scoping, hoisting, shadowing
+* General data structures
+* Control flow structures
+* Object-oriented Programming
+* Ruby syntax
+* White-boarding
+* Testing in command-line scripts
+* Scoping, hoisting, shadowing
 
 ### Learning Activities
 
 Students will:
-Perform daily warm-up exercises
-Create several larger projects in Ruby using the command-line
-Create automated tests to validate correctness of programs
-Engage in role-play exercise about domain modeling of objects
+* Perform daily warm-up exercises
+* Create several larger projects in Ruby using the command-line
+* Create automated tests to validate correctness of programs
+* Engage in role-play exercise about domain modeling of objects
 
 ### Performance Metrics
 
@@ -290,26 +288,26 @@ An excellent student will (in addition to above):
 
 ### Target Competencies
 
-Ability to use Javascript outside of jQuery
-Ability to use jQuery and $.ajax to support async data loading
-Understanding of JSON transport
+* Ability to use Javascript outside of jQuery
+* Ability to use jQuery and $.ajax to support async data loading
+* Understanding of JSON transport
 
 ### Learning Objectives
 
 Students will understand:
-Javascript syntax
-Using pure Javascript libraries as well as jQuery
-Using jQuery for DOM related tasks
-Using $.ajax to load data from a RESTful JSON API server
-Understand document.ready
+* Javascript syntax
+* Using pure Javascript libraries as well as jQuery
+* Using jQuery for DOM related tasks
+* Using $.ajax to load data from a RESTful JSON API server
+* Understand document.ready
 
 ### Learning Activities
 
 Students will:
-Use jQuery frequently in projects to select data from websites
-Use AJAX to pull data from a RESTful API server
-Use the Chrome debugger and inspector to debug problems with javascript
-Create a game to demonstrate their understanding of syntax
+* Use jQuery frequently in projects to select data from websites
+* Use AJAX to pull data from a RESTful API server
+* Use the Chrome debugger and inspector to debug problems with javascript
+* Create a game to demonstrate their understanding of syntax
 
 ### Performance Metrics
 
@@ -358,23 +356,23 @@ An excellent student will (in addition to above):
 
 ### Target Competencies
 
-Ability to create and use Sinatra projects
-Able to decide whether to use Sinatra or some bigger/smaller framework
+* Ability to create and use Sinatra projects
+* Able to decide whether to use Sinatra or some bigger/smaller framework
 
 ### Learning Objectives
 
 Students will understand:
-Sinatra domain-specific language
-Framework independent routing concepts
-When to use Sinatra vs something else
-HTML templates
+* Sinatra domain-specific language
+* Framework independent routing concepts
+* When to use Sinatra vs something else
+* HTML templates
 
 ### Learning Activities
 
 Students will:
-Create a project in Sinatra to store and retrieve flash cards RESTfully
-Create several small projects to practice project creation
-Create a project of their own devising for the portfolio
+* Create a project in Sinatra to store and retrieve flash cards RESTfully
+* Create several small projects to practice project creation
+* Create a project of their own devising for the portfolio
 
 ### Performance Metrics
 
@@ -409,27 +407,27 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Ability to create and use Rails projects
-Ability to decide and convince about whether to use Rails or some bigger/smaller framework
-Ability to use scaffolds, or develop without them
-Ability to use ActiveRecord comfortably
+* Ability to create and use Rails projects
+* Ability to decide and convince about whether to use Rails or some bigger/smaller framework
+* Ability to use scaffolds, or develop without them
+* Ability to use ActiveRecord comfortably
 
 ### Learning Objectives
 
 Students will understand:
-Fluency in the Rails framework
-Deep understanding of the Rails gem/plugin ecosystem
-Scaffolding
-ActiveRecord
-The asset pipeline
+* Fluency in the Rails framework
+* Deep understanding of the Rails gem/plugin ecosystem
+* Scaffolding
+* ActiveRecord
+* The asset pipeline
 
 ### Learning Activities
 
 Students will:
-Create several small Rails projects to practice initialization
-Practice using scaffolds to create data structures quickly
-Use scaffolds to create JSON APIs for learning Backbone
-Practice and research various gems often used with Rails
+* Create several small Rails projects to practice initialization
+* Practice using scaffolds to create data structures quickly
+* Use scaffolds to create JSON APIs for learning Backbone
+* Practice and research various gems often used with Rails
 
 ### Performance Metrics
 
@@ -456,7 +454,7 @@ Students at an intermediate level will be able to: (with some reference material
 * Deploy projects via Capistrano
 * Debug logical errors and syntax errors
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * Find and debug performance issues
 * Create new rake tasks
 * Understand and use the many levels of caching in Rails
@@ -479,22 +477,22 @@ An excellent student will (in addition to above):
 
 ### Target Competencies
 
-Ability to create structures for storing data
-Ability to model data and relationships in a way conducive to use in Rails or Sinatra
-Ability to query the database directly or through a GUI
+* Ability to create structures for storing data
+* Ability to model data and relationships in a way conducive to use in Rails or Sinatra
+* Ability to query the database directly or through a GUI
 
 ### Learning Objectives
 
 Students will understand:
-The basics of SQL for use in the command-line interface
-The structure of databases
+* The basics of SQL for use in the command-line interface
+* The structure of databases
 
 ### Learning Activities
 
 Students will:
-Create several tables and databases manually
-Insert and manipulate data manually
-Create Rails migrations to affect the database
+* Create several tables and databases manually
+* Insert and manipulate data manually
+* Create Rails migrations to affect the database
 
 ### Performance Metrics
 
@@ -512,7 +510,7 @@ Students at an intermediate level will be able to:
 * Use EXPLAIN to understand the performance implications of a query
 * Push/pull data to heroku with the Taps gem
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * Connect to Postgres via the command-line
 * Create key constraints in MySQL or Postgres
 
@@ -525,26 +523,26 @@ A passing student will be able to:
 
 ## Backbone.js
 
-
 ### Target Competencies
 
-Ability to create applications in Backbone.js
-Ability to link Backbone applications to central servers for data persistence
+* Ability to create applications in Backbone.js
+* Ability to link Backbone applications to central servers for data persistence
 
 ### Learning Objectives
 
 Students will understand:
-Backbone’s version of MVC
-JSON as a transport language
-Event handling and callbacks
-The structure of backbone projects
+* Backbone’s version of MVC
+* JSON as a transport language
+* Event handling and callbacks
+* The structure of backbone projects
+* Navigation and routing in backbone
 
 ### Learning Activities
 
 Students will:
-Create several backbone projects from scratch in different frameworks
-Create several backbone projects isolating the individual components of the MVC
-Create a project using an external API instead of a local server or localStorage
+* Create several backbone projects from scratch in different frameworks
+* Create several backbone projects isolating the individual components of the MVC
+* Create a project using an external API instead of a local server or localStorage
 
 ### Performance Metrics
 
@@ -563,8 +561,9 @@ Students at an intermediate level will be able to:
 * Use a mediator to communicate between objects
 * Ensure that objects are getting destroyed and not becoming zombies
 * Connect to a central RESTful API to fetch data for models and collections
+* Use a router to enable navigation
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * Use grunt to create your application
 * Use ERB or Haml to prepopulate collections on load
 * Use Websockets or EventSource to continually monitor models/collections
@@ -581,20 +580,20 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Ability use and guide others on Agile methodologies used during weekly iterations
-Understanding of the project beginning and end rituals
+* Ability use and guide others on Agile methodologies used during weekly iterations
+* Understanding of the project beginning and end rituals
 
 ### Learning Objectives
 
 Students will understand:
-The rituals used at all phases of a project
-The underlying purpose of each ritual
+* The rituals used at all phases of a project
+* The underlying purpose of each ritual
 
 ### Learning Activities
 
 Students will:
-Brainstorm and pitch a product idea, find backers, and build a development team
-Follow all the rituals during development of their product
+* Brainstorm and pitch a product idea, find backers, and build a development team
+* Follow all the rituals during development of their product
 
 ### Performance Metrics
 
@@ -621,28 +620,28 @@ A passing student will be able to:
 
 ### Target Competencies
 
-Strong interviewing skills and ability to answer common tech challenges
-Ability to create an effective digital presence
-Ability to use networking skills and connections to further their employment goals
+* Strong interviewing skills and ability to answer common tech challenges
+* Ability to create an effective digital presence
+* Ability to use networking skills and connections to further their employment goals
 
 ### Learning Objectives
 
 Students will understand:
-What employers are looking for and how to discover more target skills
-How to answer difficult questions and technical challenges
-Different types of companies and some advantages/disadvantages
-The importance of a portfolio
+* What employers are looking for and how to discover more target skills
+* How to answer difficult questions and technical challenges
+* Different types of companies and some advantages/disadvantages
+* The importance of a portfolio
 
 ### Learning Activities
 
 Students will:
-Participate in several mock interviews / speed dating scenarios
-Recreate their resume
-Create a portfolio with their in-class projects
-Strengthen their digital presence on social networks and other visible websites
-Interact with open source communities and attempt to improve highly-public projects
-Give lightning talks each week
-White-board technical challenges in a low-stress environment
+* Participate in several mock interviews / speed dating scenarios
+* Recreate their resume
+* Create a portfolio with their in-class projects
+* Strengthen their digital presence on social networks and other visible websites
+* Interact with open source communities and attempt to improve highly-public projects
+* Give lightning talks each week
+* White-board technical challenges in a low-stress environment
 
 ### Performance Metrics
 
@@ -662,34 +661,36 @@ Students at an intermediate level will be able to:
 * Give lightning talks at conferences or meetups
 * Solve/work on difficult tech challenges with the interviewer (possibly pair)
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
+
 * Commit open source patches
 
 ### Performance Standards
 
 A passing student will be able to:
+
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Open Source
 
 ### Target Competencies
 
-Ability to articulate the differences between open source, FOSS, and closed-source
-Ability to navigate open source communities
-Ability to fix bugs or commit features on open source projects
+* Ability to articulate the differences between open source, FOSS, and closed-source
+* Ability to navigate open source communities
+* Ability to fix bugs or commit features on open source projects
 
 ### Learning Objectives
 
 Students will understand:
-The value of Open Source and some history
-The structure of several open source communities or archetypes
-Use version control appropriate to the project
+* The value of Open Source and some history
+* The structure of several open source communities or archetypes
+* Use version control appropriate to the project
 
 ### Learning Activities
 
 Students will:
-Validate a bugfix/feature for a community member in class
-Create documentation fixes for prominent open source projects
+* Validate a bugfix/feature for a community member in class
+* Create documentation fixes for prominent open source projects
 
 ### Performance Metrics
 
@@ -706,12 +707,14 @@ Students at an intermediate level will be able to:
 * Perform code review or security audits on patches
 * Identify small bugs for new community members to try out
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
+
 * Create small features and have them accepted to the project
 
 ### Performance Standards
 
 A passing student will be able to:
+
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Queueing
@@ -742,7 +745,7 @@ Students at a basic level will be able to:
 Students at an intermediate level will be able to:
 * h
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * h
 
 ### Performance Standards
@@ -779,7 +782,7 @@ Students at a basic level will be able to:
 Students at an intermediate level will be able to:
 * h
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * h
 
 ### Performance Standards
@@ -815,7 +818,7 @@ Students at a basic level will be able to:
 Students at an intermediate level will be able to:
 * h
 
-Students at the advanced level will be able to: (with some reference material):
+Students at the advanced level will be able to (with some reference material):
 * h
 
 ### Performance Standards
