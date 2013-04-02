@@ -579,7 +579,6 @@ A passing student will be able to:
 
 ## Agile Methodologies
 
-
 ### Target Competencies
 
 Ability use and guide others on Agile methodologies used during weekly iterations
@@ -602,22 +601,23 @@ Follow all the rituals during development of their product
 Students will be expected to perform at an intermediate level or above.
 
 Students at a basic level will be able to:
-* h
+* Create stories in "As a User" style
+* Estimate stories using planning poker
+* Choose stories in an IPM
+* Perform and organize daily standups
 
 Students at an intermediate level will be able to:
-* h
-
-Students at the advanced level will be able to: (with some reference material):
-* h
+* Demonstrate the completion of stories in the demo
+* Organize a constructive retrospective with data before opinions
+* Calculate velocity manually
 
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
+* Perform the general performance standards without a time limit
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Employment
-
 
 ### Target Competencies
 
@@ -628,35 +628,49 @@ Ability to use networking skills and connections to further their employment goa
 ### Learning Objectives
 
 Students will understand:
-
+What employers are looking for and how to discover more target skills
+How to answer difficult questions and technical challenges
+Different types of companies and some advantages/disadvantages
+The importance of a portfolio
 
 ### Learning Activities
 
 Students will:
-
+Participate in several mock interviews / speed dating scenarios
+Recreate their resume
+Create a portfolio with their in-class projects
+Strengthen their digital presence on social networks and other visible websites
+Interact with open source communities and attempt to improve highly-public projects
+Give lightning talks each week
+White-board technical challenges in a low-stress environment
 
 ### Performance Metrics
 
 Students will be expected to perform at an intermediate level or above.
 
 Students at a basic level will be able to:
-* h
+* Shake hands with confidence
+* Present a personal sales-pitch
+* Quickly explain any projects they worked on
+* Answer questions about all skills listed on their resume
+* Use the white-board to diagram simple tech challenges
+* Answer difficult soft-skill questions
 
 Students at an intermediate level will be able to:
-* h
+* Redirect difficult soft-skill questions to positives
+* Guide interviews when the interviewer is not proficient
+* Give lightning talks at conferences or meetups
+* Solve/work on difficult tech challenges with the interviewer (possibly pair)
 
 Students at the advanced level will be able to: (with some reference material):
-* h
+* Commit open source patches
 
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
-
 ## Open Source
-
 
 ### Target Competencies
 
@@ -667,29 +681,37 @@ Ability to fix bugs or commit features on open source projects
 ### Learning Objectives
 
 Students will understand:
-
+The value of Open Source and some history
+The structure of several open source communities or archetypes
+Use version control appropriate to the project
 
 ### Learning Activities
 
 Students will:
+Validate a bugfix/feature for a community member in class
+Create documentation fixes for prominent open source projects
 
 ### Performance Metrics
 
 Students will be expected to perform at an intermediate level or above.
 
 Students at a basic level will be able to:
-* h
+* Create documentation fixes
+* Validate bugfixes/features for community members
+* Discuss features that have been proposed
+* Identify key contributors and maintainers
 
 Students at an intermediate level will be able to:
-* h
+* Create bugfixes and have them accepted to the project
+* Perform code review or security audits on patches
+* Identify small bugs for new community members to try out
 
 Students at the advanced level will be able to: (with some reference material):
-* h
+* Create small features and have them accepted to the project
 
 ### Performance Standards
 
 A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
 
 ## Queueing
