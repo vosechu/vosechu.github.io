@@ -380,7 +380,8 @@ Students will be expected to perform at an intermediate level or above.
 
 Students at a basic level will be able to:
 * Create a new Sinatra project with a config.ru and a Gemfile
-* Create RESTful routes and respond with HTML
+* Create routes using any HTTP verb
+* Create routes which can render HTML via ERb
 * Return static assets from a public folder
 * Use a reloader to make development faster
 * Use Basic authentication
@@ -388,6 +389,7 @@ Students at a basic level will be able to:
 Students at an intermediate level will be able to:
 * Use a preprocessor to allow SCSS or Coffeescript
 * Enable HAML instead of ERb
+* Create routes which can render JSON
 * Use correct content-types to return JSON or XML
 * Use correct status codes to communicate with the browser when responding with JSON or XML
 * Use before filters to add functionality to specific urls
@@ -444,6 +446,8 @@ Students at a basic level will be able to:
 * Use simple relationships to link models together
 * Deploy projects to Heroku
 * Create migrations
+* Use flash and flash.now messages to send feedback to users
+* Use sessions and cookies to store user data
 
 Students at an intermediate level will be able to: (with some reference material):
 * Use advanced relationships like hmt and habtm
@@ -715,114 +719,4 @@ Students at the advanced level will be able to (with some reference material):
 
 A passing student will be able to:
 
-* Demonstrate the items from the basic section on a 20 minute exam
-
-## Queueing
-
-
-### Target Competencies
-
-Ability to use Queues to pass messages to other systems
-Ability to use Queues to advertise existence of new services
-
-### Learning Objectives
-
-Students will understand:
-
-
-### Learning Activities
-
-Students will:
-
-
-### Performance Metrics
-
-Students will be expected to perform at an intermediate level or above.
-
-Students at a basic level will be able to:
-* h
-
-Students at an intermediate level will be able to:
-* h
-
-Students at the advanced level will be able to (with some reference material):
-* h
-
-### Performance Standards
-
-A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
-* Demonstrate the items from the basic section on a 20 minute exam
-
-## Linux
-
-
-### Target Competencies
-
-Ability to navigate Linux via the command line
-Familiarity with package management in common Linux distributions
-Basic ability to build Linux servers to host Ruby application servers
-
-### Learning Objectives
-
-Students will understand:
-
-
-### Learning Activities
-
-Students will:
-
-### Performance Metrics
-
-Students will be expected to perform at an intermediate level or above.
-
-Students at a basic level will be able to:
-* h
-
-Students at an intermediate level will be able to:
-* h
-
-Students at the advanced level will be able to (with some reference material):
-* h
-
-### Performance Standards
-
-A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
-* Demonstrate the items from the basic section on a 20 minute exam
-
-## EC2
-
-
-### Target Competencies
-
-Able to use Amazon’s EC2 to provision new servers and services
-Able to log into an EC2 instance and complete installation of Ruby application servers
-
-### Learning Objectives
-
-Students will understand:
-
-
-### Learning Activities
-
-Students will:
-
-### Performance Metrics
-
-Students will be expected to perform at an intermediate level or above.
-
-Students at a basic level will be able to:
-* h
-
-Students at an intermediate level will be able to:
-* h
-
-Students at the advanced level will be able to (with some reference material):
-* h
-
-### Performance Standards
-
-A passing student will be able to:
-* Perform the general performance standards with <strong>n=10</strong>
 * Demonstrate the items from the basic section on a 20 minute exam
