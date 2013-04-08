@@ -22,24 +22,14 @@ title: #{@title}
 ---\n\n"
     msg += @sections.map(&:to_s).join("\n")
 
-    msg += "\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
-    msg += "\n  Questions w/o Answers: #{questions_without_answers.count}"
-    msg += "\n  Questions w/o Alternate Answers: #{questions_without_alternate_answers.count}"
-    msg += "\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
-    msg += "\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
-    msg += "\nTotal Estimate: #{total_estimate} hours"
+    msg += "\n\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
+    msg += "\n\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
+    msg += "\n\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
+    msg += "\n\nTotal Estimate: #{total_estimate} hours"
   end
 
   def questions
     self.sections.reduce([]) {|sum, s| sum += s.questions }
-  end
-
-  def questions_without_answers
-    self.sections.reduce([]) {|sum, s| sum += s.questions.reject {|q| !q.answer.empty?} }
-  end
-
-  def questions_without_alternate_answers
-    self.sections.reduce([]) {|sum, s| sum += s.questions.reject {|q| !q.alt_answers.reject(&:empty?).empty?} }
   end
 
   def short_answers
@@ -78,14 +68,14 @@ class Section
     unless @questions.empty?
       msg = "## #{@title}\n"
       msg += "### Multiple-choice Answer\n\n"
-      @questions.each do |question|
+      @questions.shuffle.each do |question|
         msg += "#{question.to_s}\n"
         msg += "***\n\n"
       end
     end
     unless @short_answers.empty?
       msg += "### Short Answer\n\n"
-      @short_answers.each do |question|
+      @short_answers.shuffle.each do |question|
         msg += "#{question.to_s}\n"
         msg += "***\n\n"
       end
@@ -96,7 +86,7 @@ class Section
       @project_answers.each_with_index do |question, index|
         msg += "#{index+1}. #{question.to_s}\n"
       end
-      msg += "\nUsername:\nRepo name:\n\n"
+      msg += "\nUsername:\n\nRepo name:\n\n"
       msg += "***\n\n"
     end
     return msg
@@ -121,7 +111,7 @@ class Question
       if r == index
         msg += "* #{choice}#{answer}\n"
       else
-        msg += "* #{choice}\n"
+        msg += "* #{choice}#{alt_answers.pop}\n"
       end
     end
     return msg
@@ -142,7 +132,7 @@ class CodeQuestion < Question
       if r == index
         msg += "* #{choice}\n{% highlight #{@style} %}\n#{answer}\n{% endhighlight %}\n"
       else
-        msg += "* #{choice}\n{% highlight #{@style} %}\n{% endhighlight %}\n"
+        msg += "* #{choice}\n{% highlight #{@style} %}\n#{alt_answers.pop}\n{% endhighlight %}\n"
       end
     end
     return msg
