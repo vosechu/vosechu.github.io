@@ -23,7 +23,8 @@ title: #{@title}
     msg += @sections.map(&:to_s).join("\n")
 
     msg += "\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
-    # msg += "\nQuestions w/o Answers: #{questions_without_answers.count}"
+    msg += "\n  Questions w/o Answers: #{questions_without_answers.count}"
+    msg += "\n  Questions w/o Alternate Answers: #{questions_without_alternate_answers.count}"
     msg += "\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
     msg += "\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
     msg += "\nTotal Estimate: #{total_estimate} hours"
@@ -35,6 +36,10 @@ title: #{@title}
 
   def questions_without_answers
     self.sections.reduce([]) {|sum, s| sum += s.questions.reject {|q| !q.answer.empty?} }
+  end
+
+  def questions_without_alternate_answers
+    self.sections.reduce([]) {|sum, s| sum += s.questions.reject {|q| !q.alt_answers.reject(&:empty?).empty?} }
   end
 
   def short_answers
@@ -100,11 +105,12 @@ end
 
 class Question
   attr_reader :question
-  attr_accessor :answer
+  attr_accessor :answer, :alt_answers
 
-  def initialize(question, answer)
+  def initialize(question, answer, alt_answers=[])
     @question = question
     @answer = answer
+    @alt_answers = alt_answers
   end
 
   def to_s
@@ -123,9 +129,9 @@ class Question
 end
 
 class CodeQuestion < Question
-  def initialize(question, answer, style = "ruby")
+  def initialize(question, answer, alt_answers, style = "ruby")
     @style = style
-    super(question, answer)
+    super(question, answer, alt_answers)
   end
 
   def to_s
