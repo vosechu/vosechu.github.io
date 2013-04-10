@@ -7,7 +7,7 @@ section = Section.new("Sinatra")
 exam2.sections << section
 
 # Create a new Sinatra project with a config.ru and a Gemfile
-section.project_answers << ProjectAnswer.new(%{Create a new sinatra project with an main file, a file for rackup, a file for bundler, and a folder for static assets as well as a folder for templates.})
+section.project_answers << ProjectAnswer.new(%{Create a new sinatra project with a main file, a file for rackup, a file for bundler, and a folder for static assets as well as a folder for templates.})
 section.project_answers << ProjectAnswer.new(%{Create a route that responds to `/entries/:id` via GET and displays an index.erb from the templates directory.})
 section.project_answers << ProjectAnswer.new(%{Create a route that responds to `/entries/:id` via PUT and redirects to `/entries/3`.})
 section.project_answers << ProjectAnswer.new(%{Download jQuery and put it in your static assets directory. Link to this javascript file in your layout template.})
@@ -68,7 +68,7 @@ section.project_answers << ProjectAnswer.new(%{Create a new Rails project.})
 section.project_answers << ProjectAnswer.new(%{Install rspec and make it the default test framework})
 section.project_answers << ProjectAnswer.new(%{Install haml and make it the default template language})
 section.project_answers << ProjectAnswer.new(%{create a scaffold for a Card which has attributes: color (string), family (string), and number (integer)})
-section.project_answers << ProjectAnswer.new(%{create a model User which has a username, has_many Votes, and belongs_to Profile?})
+section.project_answers << ProjectAnswer.new(%{create a model User which has a username, has_many Votes, and belongs_to Profile})
 section.project_answers << ProjectAnswer.new(%{create a controller for User without using the scaffolder. Only implement show and index.})
 section.project_answers << ProjectAnswer.new(%{create a static controller which has the actions about and contact. Have these render an erb file at "app/views/shared/steve.erb"})
 
@@ -144,13 +144,13 @@ section.questions << Question.new(
 
 # Use simple relationships to link models together
 section.questions << Question.new(
-  %{If model A has 'belongs_to :b' in the model file, which one has an extra _id column in the database table?},
+  %{If model A has 'belongs_to :b' in the model file, which one has an extra `_id` column in the database table?},
   %{Model A}, [
     %{Model B},
     %{Neither, it's handled by the database},
     %{Both, we have to be able to traverse both ways}])
 section.questions << Question.new(
-  %{If model A has 'has_many :cs' in the model file, which one has an extra _id column in the database table?},
+  %{If model A has 'has_many :cs' in the model file, which one has an extra `_id` column in the database table?},
   %{Model C}, [
     %{Model A},
     %{Neither, it's handled by the database},
@@ -197,7 +197,7 @@ section.questions << Question.new(
   %{What command is used to find and return data?},
   %{SELECT}, [
     %{FIND},
-    %{RETURN *},
+    %{RETURN},
     %{SELECT_IN}])
 section.questions << Question.new(
   %{What sub-expression do you use to filter data?},
@@ -208,13 +208,13 @@ section.questions << Question.new(
 
 # Understand relationships and be able to discuss on a whiteboard or pseudo-code
 section.questions << Question.new(
-  %{When a model `has_many` other models, how does that affect the database?},
+  %{When a model declares in Rails that it `has_many` other models, how does that affect the database?},
   %{Nothing special happens on any database, it's a Rails only method.}, [
     %{It adds an index to the model that has_many so that lookups are fast.},
     %{In some databases (InnoDB/Postgres) it'll add a foreign key, otherwise it doesn't affect it.},
-    %{It adds an id column and a primary key index to the originating table.}])
+    %{It adds an id column and a primary key index to the parent table.}])
 section.questions << Question.new(
-  %{When a model Car `belongs_to` a Driver, how does that affect the database?},
+  %{When a model Car declares in Rails that it `belongs_to` a Driver, how does that affect the database?},
   %{The cars table must include a column driver_id}, [
     %{The drivers table must include a column car_id},
     %{The cars table gets a new column called driver_ids which lists all driver ids.},
@@ -347,7 +347,7 @@ section.questions << Question.new(
     %{Yes, but only if you use the extend syntax},
     %{No, jQuery is only needed for IE6 compatibility}])
 section.questions << Question.new(
-  %{What order should you include your javascript files?},
+  %{In what order should you include your javascript files?},
   %{jquery, underscore, backbone}, [
     %{backbone, underscore, jquery},
     %{backbone, underscore, jquery, jquery-min, backbone-min},
@@ -388,13 +388,13 @@ section.questions << Question.new(
   %{To orchestrate between the DOM and any attached collections or models}, [
     %{To append templates to the DOM},
     %{To start collection fetches and model fetches},
-    %{All of the above}])
+    %{All of these}])
 
 section.project_answers << ProjectAnswer.new(%{Create a new backbone project in middleman with an index.html and the javascript includes needed for Backbone.})
 section.project_answers << ProjectAnswer.new(%{Create a Model and a Collection with a urlRoot or a url attribute.})
 section.project_answers << ProjectAnswer.new(%{Create a ListView with an initialize function, el, an addOne and an addAll method.})
 section.project_answers << ProjectAnswer.new(%{Bind the ListView to collection#reset and collection#add. Call collection#fetch from the initializer.})
-section.project_answers << ProjectAnswer.new(%{Make the whole process to start by simply calling `new ListView()`.})
+section.project_answers << ProjectAnswer.new(%{Make the whole process start by simply calling `new ListView()`.})
 section.project_answers << ProjectAnswer.new(%{Make a button that calls collection#fetch. This should replace the already rendered content instead of adding to the bottom.})
 
 # Create a model-view and a list-view composed of templates or other sub-views
