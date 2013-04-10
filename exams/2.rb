@@ -15,7 +15,7 @@ section.project_answers << ProjectAnswer.new(%{Download jQuery and put it in you
 # Return static assets from a public folder
 section.questions << Question.new(
   %{If you have a file called `index` in your public folder, can you override that file with `get "index" do; end`?},
-  %{No. The static asset will always override the dynamic route}, [
+  %{No. The static asset will always override the dynamic route.}, [
     %{Yes, but only if you're not running apache/nginx.},
     %{Yes, but only if you've done `set :serve_assets_first, true`.},
     %{No, it will throw an error.}])
@@ -23,10 +23,16 @@ section.questions << Question.new(
 # Use a reloader to make development faster
 section.questions << CodeQuestion.new(
   %{How do you enable reloading if you've already added sinatra-contrib to your Gemfile?},
-    %{require "sinatra/reloader" if development?}, [
-      %{set :reloading, true},
-      %{def reloader\n  true\n end},
-      %{include RackReloader}])
+    %{
+require "sinatra/reloader" if development?}, [
+    %{
+set :reloading, true},
+    %{
+def reloader
+  true
+end},
+    %{
+include RackReloader}])
 
 # Use Basic authentication
 section.questions << CodeQuestion.new(
@@ -57,12 +63,12 @@ section = Section.new("Rails")
 exam2.sections << section
 
 # Initialize a new project with Rails or rails-api
-section.questions << Question.new(
-  %{How do you see a list of all rake tasks},
+section.questions << CodeQuestion.new(
+  %{How do you see a list of all rake tasks?},
   %{rake -T}, [
     %{rake -h},
     %{rake help commands},
-    %{rake tasks:list}])
+    %{rake tasks:list}], 'bash')
 
 section.project_answers << ProjectAnswer.new(%{Create a new Rails project.})
 section.project_answers << ProjectAnswer.new(%{Install rspec and make it the default test framework})
@@ -73,50 +79,57 @@ section.project_answers << ProjectAnswer.new(%{create a controller for User with
 section.project_answers << ProjectAnswer.new(%{create a static controller which has the actions about and contact. Have these render an erb file at "app/views/shared/steve.erb"})
 
 # Use scaffolds to create new resources and models outside of the scaffolds
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{How do you see a list of generators that are available to you?},
   %{rails generate -h}, [
     %{rails generate list},
     %{rails help generate},
-    %{rails list generators}])
+    %{rails list generators}], 'bash')
 section.questions << Question.new(
   %{What is a scaffold?},
-  %{A scaffold is a generator that creates a model, migration, and controller sufficient for use as a RESTful API}, [
-    %{A scaffold is the javascript file that combines multiple other javascript files},
-    %{A scaffold is a generator that creates views for a controller},
-    %{A scaffold provides an admin interface complete with user login}])
+  %{A scaffold is a generator that creates a model, migration, and controller sufficient for use as a RESTful API.}, [
+    %{A scaffold is the javascript file that combines multiple other javascript files.},
+    %{A scaffold is a generator that creates views for a controller.},
+    %{A scaffold provides an admin interface complete with user login.}])
 
 # Use generic non-scaffold generators to create new resources
 
 # Create a static_controller or a pages_controller for non-dynamic content
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{In the controller, how do you redirect to the winning entries path?},
   %{redirect_to winning_entries_path}, [
     %{redirect winningest_path},
     %{redirect :to => winning_entries_path},
     %{render :wining_entries}])
 
+section.questions << CodeQuestion.new(
+  %{Given we have a named route winning_entries, how do you construct a relative link to it?},
+  %{link_to "Winningest", winning_entries_path}, [
+    %{link_to "Winningest", winning_entries_url},
+    %{link :to => winning_entries_path},
+    %{link_to :wining_entries, "Winningest"}])
+
 # Add routes to the Router
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{How do you create a route that allows the 7 standard RESTful controller actions for an object?},
   %{resources 'entries'}, [
     %{resource entries_route},
     %{resources Entry},
     %{resources :entries, :rest => true}])
-section.questions << Question.new(
-  %{How do you create a route that matches '/submit' with the method "POST" and directs to the entries controller},
+section.questions << CodeQuestion.new(
+  %{How do you create a route that matches '/submit' with the method "POST" and directs to the entries controller?},
   %{post "submit", :to => 'entries#submit'}, [
     %{post "submit"},
     %{controller: entries, action: submit},
     %{match 'submit#entries'}])
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{How do you see a list of all the routes?},
   %{rake routes}, [
     %{rails routes},
     %{rake -T},
-    %{rake routes:draw}])
-section.questions << Question.new(
-  %{How do you create a route that matches '/'},
+    %{rake routes:draw}], 'bash')
+section.questions << CodeQuestion.new(
+  %{How do you create a route that matches '/'?},
   %{root :to => 'entries#index'}, [
     %{match ""},
     %{get ""},
@@ -136,41 +149,55 @@ section.questions << Question.new(
     %{RAILS_ROOT/app/assets/scss},
     %{RAILS_ROOT/public/}])
 section.questions << Question.new(
-  %{How do you include a javascript file before all the other javascript files},
-  %{Add that file to the manifest above `require_tree .`}, [
-    %{Add it to the layout before `javascript_include_tag :all`},
-    %{Use RequireJS to ensure ordering},
-    %{Set it in `config/assets/pipeline.rb`}])
+  %{How do you include a javascript file before all other javascript files?},
+  %{Add that file to the manifest above `require_tree .`.}, [
+    %{Add it to the layout before `javascript_include_tag :all`.},
+    %{Use RequireJS to ensure ordering.},
+    %{All of these.}])
 
 # Use simple relationships to link models together
 section.questions << Question.new(
-  %{If model A has 'belongs_to :b' in the model file, which one has an extra `_id` column in the database table?},
-  %{Model A}, [
-    %{Model B},
-    %{Neither, it's handled by the database},
-    %{Both, we have to be able to traverse both ways}])
+  %{Given we have a table `bears` with a column `anteaters_id`, which model needs to have `belongs_to` in its class definition?},
+  %{Model Bear.}, [
+    %{Model Anteater.},
+    %{Neither, it's handled by the database and Rails can detect that.},
+    %{Both, we have to be able to traverse both ways.}])
 section.questions << Question.new(
-  %{If model A has 'has_many :cs' in the model file, which one has an extra `_id` column in the database table?},
-  %{Model C}, [
-    %{Model A},
-    %{Neither, it's handled by the database},
-    %{Both, we have to be able to traverse both ways}])
+  %{Given we have a table `carnivores` with a column `anteaters_id`, which model needs to have `has_many` or `has_one` in its class definition? (assume we aren't using `has_and_belongs_to_many`)},
+  %{Model Anteater.}, [
+    %{Model Carnivore.},
+    %{Neither, it's handled by the database and Rails can detect that.},
+    %{Both, we have to be able to traverse both ways.}])
 
 # Deploy projects to Heroku
-section.questions << Question.new(
-  %{If you need to get data from your database to Heroku, how do you do it?},
+section.questions << CodeQuestion.new(
+  %{If you need to upload data from your local database to Heroku, how do you do it?},
   %{heroku db:push}, [
     %{heroku pgdata:backup},
     %{heroku pg:download},
-    %{mysql -u postgres -p -h `<myname>`.herokuapp.com}])
+    %{mysql -u postgres -p -h `<myname>`.herokuapp.com}], 'bash')
+
+section.questions << CodeQuestion.new(
+  %{How do you upload changes to heroku?},
+  %{git push heroku master}, [
+    %{heroku update},
+    %{heroku run upload},
+    %{git push origin master}], 'bash')
+
+section.questions << CodeQuestion.new(
+  %{How do you view heroku logs?},
+  %{heroku logs -t}, [
+    %{heroku logtail},
+    %{tail heroku},
+    %{git pull heroku logs}], 'bash')
 
 # Short answers
 section.short_answers << ShortAnswer.new(%{What types of projects lend themselves to Rails?})
-section.short_answers << ShortAnswer.new(%{Assuming you've been developing with Postgres locally, what do you need to do to deploy to Heroku?})
 section.short_answers << ShortAnswer.new(%{Draw a diagram and label the major parts of Rails.})
-
+section.short_answers << ShortAnswer.new(%{Draw an entity diagram of the project that follows these questions. Include model name, model data, any special model functions, and relationships with other models})
 
 # Rails Gems
+# TODO: Add rails gems questions
 # Pagination, Simple Form, Active Admin, Paperclip
 # Authentication, Access Control, Search, Caching
 
@@ -179,28 +206,28 @@ section = Section.new("SQL")
 exam2.sections << section
 
 # Connect to mysql or sqlite3 via the command-line
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{How do you connect to MySQL via the network from the command line?},
   %{mysql -u root -p -h localhost}, [
     %{mysql -u root -p -t network},
     %{mysql -n en0},
-    %{mysql -u root -p -s /var/spool/mysql.sock}])
-section.questions << Question.new(
+    %{mysql -u root -p -s /var/spool/mysql.sock}], 'bash')
+section.questions << CodeQuestion.new(
   %{How do you connect to Sqlite3 via the command line?},
   %{sqlite3 db/development.sqlite3}, [
     %{sqlite db/development.sqlite},
     %{sqlite3 .},
-    %{cd db && sqlite "." -d humanitywar-rails}])
+    %{cd db && sqlite "." -d humanitywar-rails}], 'bash')
 
 # Execute SELECT, INSERT, UPDATE, and DELETE statements from the command-line
 section.questions << Question.new(
-  %{What command is used to find and return data?},
+  %{What command is used to find data in a table?},
   %{SELECT}, [
     %{FIND},
     %{RETURN},
     %{SELECT_IN}])
 section.questions << Question.new(
-  %{What sub-expression do you use to filter data?},
+  %{What expression do you use to filter data?},
   %{WHERE}, [
     %{FILTER},
     %{REDUCE},
@@ -208,19 +235,13 @@ section.questions << Question.new(
 
 # Understand relationships and be able to discuss on a whiteboard or pseudo-code
 section.questions << Question.new(
-  %{When a model declares in Rails that it `has_many` other models, how does that affect the database?},
-  %{Nothing special happens on any database, it's a Rails only method.}, [
-    %{It adds an index to the model that has_many so that lookups are fast.},
-    %{In some databases (InnoDB/Postgres) it'll add a foreign key, otherwise it doesn't affect it.},
-    %{It adds an id column and a primary key index to the parent table.}])
+  %{If we have two models (Badger and Capybara) that need to be linked together in the db, how does Rails recommend we do this?},
+  %{Add a `badger_id` to the table `capybaras` that matches the `id` column in the `badgers` (or vice versa).}, [
+    %{Add a `badger_ids` to the table `capybaras` that contains a list of ids that match the `id` column in `badgers`.},
+    %{Rails can do this all for us without needing to change the database.},
+    %{Use Redis to provide a Webscale linking structure outside of the database.}])
 section.questions << Question.new(
-  %{When a model Car declares in Rails that it `belongs_to` a Driver, how does that affect the database?},
-  %{The cars table must include a column driver_id}, [
-    %{The drivers table must include a column car_id},
-    %{The cars table gets a new column called driver_ids which lists all driver ids.},
-    %{Nothing happens in either table, belongs_to is a Rails only method.}])
-section.questions << Question.new(
-  %{What sub-expression do we use to add results from another table (not results from another query)},
+  %{What sub-expression do we use to add results from another table (not results from another query)?},
   %{LEFT JOIN or INNER JOIN}, [
     %{UNION},
     %{OUTER JOIN},
@@ -277,9 +298,9 @@ WHERE hair_type = 'mullet'
 section.questions << CodeQuestion.new(
   %{If you need to find all drivers that have a particular car (id: 42), how do you do that?},
   %{
-SELECT cars.*
-FROM cars
-INNER JOIN drivers
+SELECT drivers.*
+FROM drivers
+INNER JOIN cars
   ON drivers.id = cars.driver_id
 WHERE cars.id = 42
 }, [
@@ -305,12 +326,12 @@ WHERE car.id = 42
       }], 'sql')
 
 # Create migrations in Rails or Sinatra
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{How do you create a migration from the Rails command line?},
   %{rails generate migration `<name>`}, [
     %{rake db:migrate:new `<name>`},
     %{rake db:migration:create `<name>`},
-    %{rails migrate new `<name>`}])
+    %{rails migrate new `<name>`}], 'bash')
 
 # Understand ORDER and LIMIT
 section.questions << Question.new(
@@ -320,14 +341,14 @@ section.questions << Question.new(
     %{FOLD n},
     %{REJECT n}])
 section.questions << Question.new(
-  %{How do you order data?},
+  %{How do you sort data?},
   %{ORDER BY}, [
     %{ORDER_WHERE},
     %{SORT},
     %{GROUP BY}])
 
 section.short_answers << ShortAnswer.new(%{What is a join and what is it useful for?})
-section.short_answers << ShortAnswer.new(%{Write a query that finds all the rows in a table which have more than 1000 'wins', sorted by 'text', and restricted to only 25 rows })
+section.short_answers << ShortAnswer.new(%{Write a query that finds all the rows in a table which have more than 1000 'wins', sorted by 'text', and restricted to only 25 rows.})
 
 # Backbone.js
 section = Section.new("Backbone")
@@ -344,31 +365,31 @@ section.questions << Question.new(
   %{Do you need jQuery to use Backbone?},
   %{Yes, For DOM manipulation it requires jQuery or Zepto and json2.js.}, [
     %{No, underscore is perfectly capable of doing everything jQuery does.},
-    %{Yes, but only if you use the extend syntax},
-    %{No, jQuery is only needed for IE6 compatibility}])
+    %{Yes, but only if you use the extend syntax.},
+    %{No, jQuery is only needed for IE6 compatibility.}])
 section.questions << Question.new(
   %{In what order should you include your javascript files?},
-  %{jquery, underscore, backbone}, [
-    %{backbone, underscore, jquery},
-    %{backbone, underscore, jquery, jquery-min, backbone-min},
-    %{backbone, jquery}])
+  %{jquery, underscore, and backbone.}, [
+    %{backbone, underscore, and jquery.},
+    %{backbone, underscore, jquery, jquery-min, and backbone-min.},
+    %{backbone and jquery.}])
 section.questions << Question.new(
-  %{Should your backbone includes be in the head or the end of the body?},
-  %{In the end of the body for performance reasons}, [
-    %{In the header for compatibility reasons},
-    %{After the body to make sure it's been loaded},
-    %{Before all other content to ensure that the DOM is loaded}])
+  %{Ideally, where should javascript files be included in the layout?},
+  %{They should be the last things before the closing body tag.}, [
+    %{They should be the last things before the closing head tag.},
+    %{They should be after the closing body tag.},
+    %{They should be scattered throughout the page at random.}])
 
 # Create a backbone app from scratch in multiple Ruby frameworks
-section.short_answers << ShortAnswer.new(%{How do you create a backbone app in Sinatra?})
-section.short_answers << ShortAnswer.new(%{How do you create a backbone app in Rails?})
+section.short_answers << ShortAnswer.new(%{Write out two possible ways you could create a one-page app in Sinatra? What are some benefits/drawbacks of each?})
+section.short_answers << ShortAnswer.new(%{Write out two possible ways you could create a one-page app in Rails? What are some benefits/drawbacks of each?})
 
 section.questions << Question.new(
   %{What does the rails-backbone gem give us?},
   %{Scaffolding support and files for the asset pipeline.}, [
     %{It installs backbone from a CDN.},
-    %{It turns scaffolds into backbone compatible views},
-    %{It removes controllers and turns them into backbone routers}])
+    %{It turns scaffolds into backbone compatible views.},
+    %{It removes controllers and turns them into backbone routers.}])
 
 # Create models, views, and collections in one file
 section.questions << Question.new(
@@ -385,10 +406,10 @@ section.questions << Question.new(
     %{Fetching single objects from a database.}])
 section.questions << Question.new(
   %{What is the main purpose of a view in Backbone?},
-  %{To orchestrate between the DOM and any attached collections or models}, [
-    %{To append templates to the DOM},
-    %{To start collection fetches and model fetches},
-    %{All of these}])
+  %{To orchestrate between the DOM and any attached collections or models.}, [
+    %{To append templates to the DOM.},
+    %{To start collection fetches and model fetches.},
+    %{All of these.}])
 
 section.project_answers << ProjectAnswer.new(%{Create a new backbone project in middleman with an index.html and the javascript includes needed for Backbone.})
 section.project_answers << ProjectAnswer.new(%{Create a Model and a Collection with a urlRoot or a url attribute.})
