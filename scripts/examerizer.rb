@@ -1,5 +1,7 @@
 # ruby scripts/examerizer.rb > exams/2.md
 
+$question_number = 1
+
 class Exam
   TIME_TO_ANSWER = {
     questions: 2,
@@ -68,23 +70,25 @@ class Section
     unless @questions.empty?
       msg = "## #{@title}\n"
       msg += "### Multiple-choice Answer\n\n"
-      @questions.shuffle.each_with_index do |question, index|
-        msg += "#{index+1}\\. #{question.to_s}\n"
+      @questions.shuffle.each do |question|
+        msg += "#{$question_number}\\. #{question.to_s}\n"
         msg += "***\n\n"
+        $question_number += 1
       end
     end
     unless @short_answers.empty?
       msg += "### Short Answer\n\n"
-      @short_answers.shuffle.each_with_index do |question, index|
-        msg += "#{index+1}\\. #{question.to_s}\n"
+      @short_answers.shuffle.each do |question|
+        msg += "#{$question_number}\\. #{question.to_s}\n"
         msg += "***\n\n"
+        $question_number += 1
       end
     end
     unless @project_answers.empty?
       msg += "### Project Answers\n\n"
       msg += "Demonstrate the following steps by creating a repo and committing your work:\n\n"
       @project_answers.each_with_index do |question, index|
-        msg += "#{index+1}\\. #{question.to_s}\n"
+        msg += "#{index+1}. #{question.to_s}\n"
       end
       msg += "\nUsername:\n\nRepo name:\n\n"
       msg += "***\n\n"
