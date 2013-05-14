@@ -46,6 +46,38 @@ An excellent student will (in addition to above):
 * Demonstrate items in the advanced section with any reference materials
 * Submit project work which includes elements above and beyond what is specified in the homework
 
+# Unfinished
+
+* Command-line
+* HTML
+Basic:
+* Create a basic html5 boilerplate without use of a template generator
+* Create a bootstrap boilerplate without the use of a template generator
+* Use lists, links, tables, images, div/spans
+* Create valid forms with correct action/method attributes
+* Create valid forms with linked labels
+* Create valid forms with inputs using the name attribute
+* Use id/class attributes to identify elements
+
+* Testing w/Ruby,JS
+* OS X command-keys
+* jQuery
+
+# Finished
+
+* Version Control
+* CSS
+* Middleman
+* Programming fundamentals  w/Ruby,JS
+* Javascript
+* Sinatra
+* Rails
+* SQL
+* Backbone.js / Ember / Angular
+* Agile Methodologies
+* Employment
+* Open Source
+
 
 ## Version Control
 

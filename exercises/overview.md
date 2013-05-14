@@ -5,26 +5,63 @@ title: Major Overview
 ---
 
 ### Weeks 1-4
-* Build a github powered blog
-* Building blocks of programming
-* Pairing and Agile
-* CSS Frameworks
-* Beginning Object Oriented Programming, Testing
-* Networking
+#### Artifacts
+* Personal portfolio on github pages
+* Daily commit of warmups/exercises
+* TODO: Small project using Ruby/JS
+* Four blog posts
+* Comments on assigned reading
+* 1 Lightning talk
+
+#### Topics
+* Classroom logistics (No learning plan associated)
+* Portfolios (Employment)
+* Programming fundamentals w/Ruby,JS
+* Testing w/Ruby,JS
+* Git and Github (Version Control)
+* Command-line
+* OS X command-keys
+* Algorithm development TODO: Add to programming fundamentals
+* Pairing and Agile TODO: Add pairing to Agile
+* Networking (Employment)
 
 ### Weeks 5-8
-* Designing and implementing your portfolio
-* Exploring teamwork
+#### Artifacts
+* Personal project for your portfolio
+* TODO: Small project using Rails/Sinatra
+* Four blog posts on personal blog
+* Comments on assigned reading
+* 1 Lightning talk
+
+#### Topics
 * Sinatra/Rails
-* Databases and modeling
-* Prep for job fair in week 8
+* Databases and object modeling
+* Exploring teamwork
+* Networking expansion
 
 ### Weeks 9-12
-* Open Source development
-* Host-a-hacker externships at your favorite companies
+#### Artifacts
+* Second project for your portfolio with a group (possibly sponsored)
+* TODO: Small project using Ember or Angular
+* Four blog posts
+* Comments on assigned reading
+* 1 Lightning talk
+
+#### Topics
 * Javascript MVC w/ Backbone
-* Deployment
-* Refinements
+*
+* More focus on networking
+
+## Reading list
+TODO: Approve books
+Week 0: HTML & CSS by Jon Duckett
+Week 1: Drive by Dan Pink (Antoine de Saint-Exupery quote)
+Week 2-3: Eloquent Ruby
+Week 4-5: Learning jQuery
+Week 6-7: Agile Web Dev with Rails 4e
+Week 8-9: JS Patterns
+Week 10-11: Pragmatic Programmer
+Week 12: Being Geek
 
 ## Handouts
 * [Week 1](/exercises/week1.html)

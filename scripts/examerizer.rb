@@ -68,15 +68,15 @@ class Section
     unless @questions.empty?
       msg = "## #{@title}\n"
       msg += "### Multiple-choice Answer\n\n"
-      @questions.shuffle.each do |question|
-        msg += "#{question.to_s}\n"
+      @questions.shuffle.each_with_index do |question, index|
+        msg += "#{index+1}. #{question.to_s}\n"
         msg += "***\n\n"
       end
     end
     unless @short_answers.empty?
       msg += "### Short Answer\n\n"
-      @short_answers.shuffle.each do |question|
-        msg += "#{question.to_s}\n"
+      @short_answers.shuffle.each_with_index do |question, index|
+        msg += "#{index+1}. #{question.to_s}\n"
         msg += "***\n\n"
       end
     end
@@ -104,14 +104,14 @@ class Question
   end
 
   def to_s
-    msg = "Q: #{@question}\n\n"
+    msg = "Q: #{@question}\n"
     choices = ["A: ", "B: ", "C: ", "D: "]
     r = Random.rand(0..3)
     choices.each_with_index do |choice, index|
       if r == index
-        msg += "* #{choice}#{answer}\n"
+        msg += "  * #{choice}#{answer}\n"
       else
-        msg += "* #{choice}#{alt_answers.pop}\n"
+        msg += "  * #{choice}#{alt_answers.pop}\n"
       end
     end
     return msg
@@ -125,14 +125,14 @@ class CodeQuestion < Question
   end
 
   def to_s
-    msg = "Q: #{@question}\n\n"
+    msg = "Q: #{@question}\n"
     choices = ["A: ", "B: ", "C: ", "D: "]
     r = Random.rand(0..3)
     choices.each_with_index do |choice, index|
       if r == index
-        msg += "* #{choice}\n{% highlight #{@style} %}\n#{answer}\n{% endhighlight %}\n"
+        msg += "  * #{choice}\n  {% highlight #{@style} %}\n  #{answer.split("\n").join("\n  ")}\n  {% endhighlight %}\n"
       else
-        msg += "* #{choice}\n{% highlight #{@style} %}\n#{alt_answers.pop}\n{% endhighlight %}\n"
+        msg += "  * #{choice}\n  {% highlight #{@style} %}\n  #{alt_answers.pop.split("\n").join("\n  ")}\n  {% endhighlight %}\n"
       end
     end
     return msg
