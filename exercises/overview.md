@@ -49,7 +49,6 @@ title: Major Overview
 
 #### Topics
 * Javascript MVC w/ Backbone
-*
 * More focus on networking
 
 ## Reading list

@@ -2,27 +2,19 @@ require './scripts/examerizer'
 
 exam1 = Exam.new("Exam 1")
 
-# # Create a new Sinatra project with a config.ru and a Gemfile
-# section.project_answers << ProjectAnswer.new(%{Create a new sinatra project with a main file, a file for rackup, a file for bundler, and a folder for static assets as well as a folder for templates.})
-
-# # Use a reloader to make development faster
-# section.questions << CodeQuestion.new(
-#   %{How do you enable reloading if you've already added sinatra-contrib to your Gemfile?},
-#     %{
-# require "sinatra/reloader" if development?}, [
-#     %{
-# set :reloading, true},
-#     %{
-# def reloader
-#   true
-# end},
-#     %{
-# include RackReloader}])
-# section.short_answers << ShortAnswer.new(%{What projects lend themselves well to Sinatra and why?})
+## HTML
+# Create a basic html5 boilerplate without use of a template generator
+# Create a bootstrap boilerplate without the use of a template generator
+# Use lists, links, tables, images, div/spans
+# Create valid forms with correct action/method attributes
+# Create valid forms with linked labels
+# Create valid forms with inputs using the name attribute
+# Use id/class attributes to identify elements
 
 section = Section.new("HTML")
 exam1.sections << section
 
+# Use lists, links, tables, images, div/spans
 section.questions << Question.new(
   %{How do you define an bulleted list in HTML?},
   %{`<ul>`}, [
@@ -37,20 +29,14 @@ section.questions << Question.new(
     %{`<a src="http://www.google.com/">Google</a>`},
     %{`<a src="/cherries.html">Cherries</a>`}])
 
-section.questions << Question.new(
+section.questions << CodeQuestion.new(
   %{Which of the following correctly embeds an image from placekitten.com?},
-  %{`<img src="http://placekitten.com/100/100.png">`}, [
-    %{`<image src="http://placekitten.com/100/100.png">`},
-    %{`<img href="http://placekitten.com/100/100">`},
-    %{`<img src="/images/placekitten.jpg">`}])
+  %{<img src="http://placekitten.com/100/100.png">}, [
+    %{<image src="http://placekitten.com/100/100.png">},
+    %{<img href="http://placekitten.com/100/100">},
+    %{<img src="/images/placekitten.jpg">}], 'html')
 
-# section.questions << Question.new(
-#   %{When we use HTML5 why do we need a shim or a polyfill?},
-#   %{Because IE treats all unknown elements as `display: inline`.}, [
-#     %{Because HTML5 is new enough that most browsers don't support everything yet.},
-#     %{To warn older browsers that they may not be able to render correctly.},
-#     %{Spite.}])
-
+# Create valid forms with inputs using the name attribute
 section.questions << Question.new(
   %{What's wrong with this code: `<input type="text" id="name" placeholder="Enter your name"></input>`},
   %{It's missing the name attribute.}, [
@@ -58,6 +44,7 @@ section.questions << Question.new(
     %{In HTML5, the input should be self-closing instead of using `</input>`},
     %{The placeholder attribute is experimental and shouldn't be used.}])
 
+# Create valid forms with correct action/method attributes
 section.questions << Question.new(
   %{What does the `action` attribute mean in a form tag?},
   %{It contains the URL to send data to.}, [
@@ -65,24 +52,36 @@ section.questions << Question.new(
     %{Action is not an attribute.},
     %{It specifies whether to validate or not.}])
 
-# APIs
-# section.questions << Question.new(
-#   %{What is an API server?},
-#   %{A server that presents data instead of visual representations, like HTML.}, [
-#     %{A mathematical reasoning engine for the web.},
-#     %{A type of authentication server.},
-#     %{A server that creates API Objects for other Ruby servers.}])
-# section.questions << Question.new(
-#   %{What are the 5 RESTful actions?},
-#   %{Get, post, put, delete, get(List)}, [
-#     %{"Create, read, update, delete, head"},
-#     %{"Fetch, store, create, list, add"}])
+# TODO: Create valid forms with linked labels
+# TODO: Use id/class attributes to identify elements
 
-### Short Answer
 
-# section.short_answers << ShortAnswer.new(%{When the HTML5 authors said they were going to 'pave the cowpaths', what were they talking about?})
-# section.short_answers << ShortAnswer.new(%{Under what circumstances would we consider a static site generator over a CMS?})
+
+# Short Answer
+
 section.short_answers << ShortAnswer.new(%{Why do we keep CSS and HTML separate?})
+
+# Project answers
+
+# Create a basic html5 boilerplate without use of a template generator
+section.project_answers << ProjectAnswer.new(%{Create a basic html5 boilerplate, called index.html, without use of a template generator})
+# Create a bootstrap boilerplate without the use of a template generator
+section.project_answers << ProjectAnswer.new(%{Create a bootstrap boilerplate, called index2.html, without the use of a template generator})
+
+# section.questions << Question.new(
+#   %{},
+#   %{}, [
+#     %{},
+#     %{},
+#     %{}])
+# section.questions << CodeQuestion.new(
+#   %{},
+#   %{}, [
+#     %{},
+#     %{},
+#     %{}], 'bash')
+# section.short_answers << ShortAnswer.new(%{})
+# section.project_answers << ProjectAnswer.new(%{})
 
 section = Section.new("CSS")
 exam1.sections << section
@@ -173,6 +172,7 @@ section.short_answers << ShortAnswer.new(%{What does it mean to delay Javascript
 
 section = Section.new("Version Control")
 exam1.sections << section
+
 section.questions << Question.new(
   %{When we have untracked files in our working directory, how do we prepare them for committing?},
   %{`git add .`}, [
@@ -284,11 +284,11 @@ section.short_answers << ShortAnswer.new(%{What's the difference between a Hash 
 # section.short_answers << ShortAnswer.new(%{What is TDD and why do we practice it?})
 # section.short_answers << ShortAnswer.new(%{What is Pair Programming and why do we practice it?})
 
-section = Section.new("Servers")
-exam1.sections << section
+# section = Section.new("Servers")
+# exam1.sections << section
 
-# Short Answer
+# # Short Answer
 
-section.short_answers << ShortAnswer.new(%{Draw and label what happens when we make a request to http://www.google.com.})
+# section.short_answers << ShortAnswer.new(%{Draw and label what happens when we make a request to http://www.google.com.})
 
 puts exam1.to_s
