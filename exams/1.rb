@@ -2,15 +2,6 @@ require './scripts/examerizer'
 
 exam1 = Exam.new("Exam 1")
 
-## HTML
-# Create a basic html5 boilerplate without use of a template generator
-# Create a bootstrap boilerplate without the use of a template generator
-# Use lists, links, tables, images, div/spans
-# Create valid forms with correct action/method attributes
-# Create valid forms with linked labels
-# Create valid forms with inputs using the name attribute
-# Use id/class attributes to identify elements
-
 section = Section.new("HTML")
 exam1.sections << section
 
@@ -52,10 +43,28 @@ section.questions << Question.new(
     %{Action is not an attribute.},
     %{It specifies whether to validate or not.}])
 
-# TODO: Create valid forms with linked labels
-# TODO: Use id/class attributes to identify elements
+# Create valid forms with linked labels
+section.questions << Question.new(
+  %{What does the `for` attribute mean in a label tag?},
+  %{It links the label to an input via the input's id attribute.}, [
+    %{It links the label to an input via the input's name attribute.},
+    %{It tells browsers what the input is used for (eg: date, password, etc).},
+    %{It is a deprecated attribute that was used in XHTML1.1 only.}])
 
+# Use id/class attributes to identify elements
+section.questions << Question.new(
+  %{Can you use the same id multiple times on a website?},
+  %{No. Behavior will vary between browsers and it might crash entirely.}, [
+    %{Yes. As long as the elements are in separate `section` elements.},
+    %{No. All browsers will throw an error immediately if you do this.},
+    %{Yes. All browsers can handle this problem easily.}])
 
+section.questions << Question.new(
+  %{How to you specify multiple classes on an element? (IE7+)},
+  %{Separate the class names with a space inside the class attribute.}, [
+    %{Separate the class names with a comma inside the class attribute.},
+    %{This isn't possible, elements can only have one class at a time.},
+    %{This isn't wise because IE can only read the first class specified.}])
 
 # Short Answer
 
@@ -64,28 +73,24 @@ section.short_answers << ShortAnswer.new(%{Why do we keep CSS and HTML separate?
 # Project answers
 
 # Create a basic html5 boilerplate without use of a template generator
-section.project_answers << ProjectAnswer.new(%{Create a basic html5 boilerplate, called index.html, without use of a template generator})
-# Create a bootstrap boilerplate without the use of a template generator
-section.project_answers << ProjectAnswer.new(%{Create a bootstrap boilerplate, called index2.html, without the use of a template generator})
-
-# section.questions << Question.new(
-#   %{},
-#   %{}, [
-#     %{},
-#     %{},
-#     %{}])
-# section.questions << CodeQuestion.new(
-#   %{},
-#   %{}, [
-#     %{},
-#     %{},
-#     %{}], 'bash')
-# section.short_answers << ShortAnswer.new(%{})
-# section.project_answers << ProjectAnswer.new(%{})
+section.project_answers << ProjectAnswer.new(%{Create a basic boilerplate html file (just the index.html) without any css files.})
+section.project_answers << ProjectAnswer.new(%{Include an HTML5 Doctype.})
+section.project_answers << ProjectAnswer.new(%{Include an html, head, body, and title tag.})
+section.project_answers << ProjectAnswer.new(%{Add a header tag which includes an h1 and an image tag with an alt attribute})
+section.project_answers << ProjectAnswer.new(%{Add an aside which includes 3 links. One should use a relative link, one should use an absolute link, and the last should link to an id on the page.})
+section.project_answers << ProjectAnswer.new(%{Add an article tag which includes 3 paragraphs of text (lorem ipsum generator)})
+section.project_answers << ProjectAnswer.new(%{Inside the article, add a bulleted list and a numbered list})
+section.project_answers << ProjectAnswer.new(%{Add a section tag after the article which includes a form})
+section.project_answers << ProjectAnswer.new(%{Use attributes on the form tag to submit data via GET to the url '/contact/submit'})
+section.project_answers << ProjectAnswer.new(%{Inside the form create a label and a text input. Link them with the `for` attribute})
+section.project_answers << ProjectAnswer.new(%{Inside the form create a textarea with initial content of "Hello world!"})
+section.project_answers << ProjectAnswer.new(%{Inside the form create a submit button with the word "Activate!" on the button})
+section.project_answers << ProjectAnswer.new(%{Add a footer tag which includes the text "&copy; 2013"})
 
 section = Section.new("CSS")
 exam1.sections << section
 
+# Understand margin vs padding
 section.questions << Question.new(
   %{What is the difference between padding and margin?},
   %{Padding is inside the border, margin is outside.}, [
@@ -93,19 +98,13 @@ section.questions << Question.new(
     %{Padding collapses when it gets near another element with padding.},
     %{Margin is only used on the sides and top of the window.}])
 
+# Implement an HTML structure informed by a CSS framework or style-guide
 section.questions << Question.new(
   %{Why should you use a css normalizer?},
   %{Because all browsers are slightly different and normalize gives us a nice base.}, [
     %{To prevent browser manufacturers from breaking our site when users upgrade.},
     %{It allows us to nest CSS and use variables.},
     %{Because it makes all our colors match nicely.}])
-
-section.questions << Question.new(
-  %{How are css selectors weighted?},
-  %{element: 1, class: 10, id: 100}, [
-    %{attribute: 5, class: 20, id: 50},
-    %{id: 1, class: 10, element: 100},
-    %{p: 1, div: 10, html: 100}])
 
 section.questions << Question.new(
   %{Why do we often place an id on the body?},
@@ -121,6 +120,15 @@ section.questions << Question.new(
     %{By using, `float: right` on the last item.},
     %{By putting the items inside a section or nav tag.}])
 
+# Understand weighting and cascade
+section.questions << Question.new(
+  %{How are css selectors weighted?},
+  %{element: 1, class: 10, id: 100}, [
+    %{attribute: 5, class: 20, id: 50},
+    %{id: 1, class: 10, element: 100},
+    %{p: 1, div: 10, html: 100}])
+
+# Be able to center content
 section.questions << Question.new(
   %{What's the best way to center content horizontally?},
   %{`margin: 0 auto`}, [
@@ -129,8 +137,35 @@ section.questions << Question.new(
     %{`padding: -1`}])
 
 # Short answer
-# section.short_answers << ShortAnswer.new(%{Describe what these four css files are for and what types of declarations they contain: reset.css, responsive.css, global.css, pages.css?})
-section.short_answers << LongAnswer.new(%{Draw out 4 diagrams that show 4 divs that are: `display: inline`, `display: block`, `display: inline-block`, and `float: left`})
+# Discuss the differences between block and inline
+section.short_answers << LongAnswer.new(%{Draw out 4 diagrams with the following base CSS/HTML:
+
+HTML:
+`<div></div><div></div><div></div><div></div>`
+
+CSS:
+`div { width: 100px; height: 100px; border: 1px solid black }`
+
+For each diagram, assume this additional css is inserted after the base styles. What does this look like in the browser?
+1. `div { display: inline; }`
+2. `div { display: block; }`
+3. `div { display: inline-block; }`
+4. `div { float: left }`})
+
+# Include external stylesheets
+# Include vendor provided frameworks
+# Use IDs and classes to reference styles in an external stylesheet
+# Be able to do simple floats
+section.project_answers << ProjectAnswer.new(%{Create a basic boilerplate html file (just the index.html) without any css files and without using a template generator.})
+section.project_answers << ProjectAnswer.new(%{Download the bootstrap files and link them in your head tag (don't link the JS yet).})
+section.project_answers << ProjectAnswer.new(%{Create the HTML structure needed to enable the bootstrap grid.})
+section.project_answers << ProjectAnswer.new(%{Inside your container div, add some placeholder text and heading tags from h1-h4.})
+section.project_answers << ProjectAnswer.new(%{Insert an image and have the text wrap around it on the right.})
+section.project_answers << ProjectAnswer.new(%{Create an external stylesheet called global.css and link it from the html file.})
+section.project_answers << ProjectAnswer.new(%{Give the container div nice light green background.})
+section.project_answers << ProjectAnswer.new(%{Give the heading tags a white color.})
+section.project_answers << ProjectAnswer.new(%{Create four divs with the class "squad", make them 100x100, give them a background color of white.})
+section.project_answers << ProjectAnswer.new(%{Give each div 20px of margin, and arrange them into a square (2x2).})
 
 section = Section.new("Javascript")
 exam1.sections << section
@@ -156,49 +191,33 @@ section.questions << Question.new(
     %{Any assignment to `a` will be hoisted out of the function.},
     %{We will get a DuplicateVariableError.}])
 
-# JSONP is not included in the basic section
-# section.questions << Question.new(
-#   %{If you only need to GET data, what's the easiest way to request it from another domain via AJAX?},
-#   %{Using JSON-P.}, [
-#     %{Just request directly.},
-#     %{Using CORS and a Polyfill for old browsers.},
-#     %{Using Ruby's net/http or httparty.}])
+section.questions << Question.new(
+  %{What is a callback?},
+  %{A function which we want to run after something happens.}, [
+    %{A special data structure that allows message passing after code is run.},
+    %{A symbol that identifies an object.},
+    %{A trick you do after a job interview to confuse your interviewers.}])
+
+section.questions << Question.new(
+  %{What are some common data types in JS?},
+  %{Number, String, Boolean, Function, Object, Null, Undefined}, [
+    %{String, Fixnum, NilClass, Hash, Symbol},
+    %{Boolean, Integer, Float, String, Tuple, Nil, List, Set, Dictionary},
+    %{Byte, Short, Int, Long, Float, Double, Boolean, Char}])
 
 ### Short Answer
 
-section.short_answers << ShortAnswer.new(%{What does it mean to delay Javascript until domReady?})
-# Prototypes not included in basic section
-# section.short_answers << ShortAnswer.new(%{What is an Object prototype? Why do we use it?})
+section.short_answers << ShortAnswer.new(%{What does it mean to delay Javascript until the document is ready?})
 
-section = Section.new("Version Control")
-exam1.sections << section
+# Project Answers
 
-section.questions << Question.new(
-  %{When we have untracked files in our working directory, how do we prepare them for committing?},
-  %{`git add .`}, [
-    %{`git add -m`},
-    %{`git commit -am ""`},
-    %{`git stage .`}])
-
-section.questions << Question.new(
-  %{When we want to clone a repo from Github, which command should we use?},
-  %{`git clone git@github.com:vosechu/test.git`}, [
-    %{`git clone origin vosechu/test`},
-    %{`git init git@github.com:vosechu/test.git`},
-    %{`git checkout vosechu/test`}])
-
-section.questions << Question.new(
-  %{When we push files to Github and it throws an error saying it can't 'fast-forward', what do we do?},
-  %{`git pull origin master`}, [
-    %{`git push -f origin master`},
-    %{`git fast-forward master`},
-    %{`git fetch origin`}])
-
-
-### Short Answer
-
-section.short_answers << ShortAnswer.new(%{Why do we use Git over some other method of sharing code?})
-# section.short_answers << ShortAnswer.new(%{What is Rack and how is it related to Sinatra?})
+section.project_answers << ProjectAnswer.new(%{Use a template generator to create a base project (or create a basic index.html)})
+section.project_answers << ProjectAnswer.new(%{Include jQuery from a CDN. Also include jQuery migrate.})
+section.project_answers << ProjectAnswer.new(%{Create a local js file (called head.js) and link it from inside the head tag of your document})
+section.project_answers << ProjectAnswer.new(%{Create a local js file (called foot.js) and link to it from the end of the body tag of your document})
+section.project_answers << ProjectAnswer.new(%{Create a div somewhere with the id: "content", inside this add a div with id: "steve", a paragraph of text, and a button.})
+section.project_answers << ProjectAnswer.new(%{In the head.js, use jQuery to find the "steve" div and add the class "squiggly"})
+section.project_answers << ProjectAnswer.new(%{In the foot.js, use jQuery to add a click handler to the button that shows or hides the div with class "squiggly"})
 
 section = Section.new("Ruby")
 exam1.sections << section
@@ -246,11 +265,32 @@ section.questions << Question.new(
     %{`def happiness(self)`}])
 
 section.questions << Question.new(
-  %{If you have a module `Happiness` and you want to import its methods, how should you do it?},
-  %{`include Happiness`}, [
-    %{`require 'Happiness'`},
-    %{`import Happiness`},
-    %{`Happiness.extend(self)`}])
+  %{How do you make an instance method?},
+  %{`def happiness`}, [
+    %{`def self.happiness`},
+    %{`cdef happiness`},
+    %{`def happiness(self)`}])
+
+section.questions << Question.new(
+  %{How do you call a class method (class Emotion)?},
+  %{`Emotion.happiness`}, [
+    %{`happiness`},
+    %{`@emotion.happiness`},
+    %{`Emotion.send(:happiness(self))`}])
+
+section.questions << Question.new(
+  %{How do you call an instance method (class Emotion)?},
+  %{`@emotion.happiness`}, [
+    %{`happiness(Emotion)`},
+    %{`Emotion.happiness`},
+    %{`Emotion.send(:happiness(self))`}])
+
+# section.questions << Question.new(
+#   %{If you have a module `Happiness` and you want to import its methods, how should you do it?},
+#   %{`include Happiness`}, [
+#     %{`require 'Happiness'`},
+#     %{`import Happiness`},
+#     %{`Happiness.extend(self)`}])
 
 section.questions << Question.new(
   %{What is the difference between a string and a symbol?},
@@ -278,11 +318,20 @@ section.questions << Question.new(
 
 ### Short Answer
 
-section.short_answers << ShortAnswer.new(%{Why does Ruby have only two values that are false? Does that make life better or worse?})
 section.short_answers << ShortAnswer.new(%{What is the difference between a class method and an instance method?})
-section.short_answers << ShortAnswer.new(%{What's the difference between a Hash and an Array?})
-# section.short_answers << ShortAnswer.new(%{What is TDD and why do we practice it?})
-# section.short_answers << ShortAnswer.new(%{What is Pair Programming and why do we practice it?})
+section.short_answers << ShortAnswer.new(%{What is the difference between an instance variable and a local variable?})
+section.short_answers << ShortAnswer.new(%{What is a post-conditional and how can we use it with `return` to guard expensive computations?})
+
+# Project questions
+
+section.project_answers << ProjectAnswer.new(%{Create a new ruby file called twixt.rb})
+section.project_answers << ProjectAnswer.new(%{Inside twixt create a class called Twixt.})
+section.project_answers << ProjectAnswer.new(%{Create a class method called "shout" that takes 2 arguments and simply outputs "Cowabunga!" to the command line.})
+section.project_answers << ProjectAnswer.new(%{Create an instance method called "twist" that takes 0 arguments and calls the shout method.})
+section.project_answers << ProjectAnswer.new(%{Create a constructor method on the class that takes 1 argument and assigns it to an instance variable called "pound".})
+section.project_answers << ProjectAnswer.new(%{Outside the class, create a function called "bazinga", that creates a new Twixt object and calls the twist method.})
+section.project_answers << ProjectAnswer.new(%{Inside bazinga, also have it puts the value of the instance variable called "pound".})
+section.project_answers << ProjectAnswer.new(%{Outside the function declaration, call the function bazinga.})
 
 # section = Section.new("Servers")
 # exam1.sections << section
@@ -290,5 +339,36 @@ section.short_answers << ShortAnswer.new(%{What's the difference between a Hash 
 # # Short Answer
 
 # section.short_answers << ShortAnswer.new(%{Draw and label what happens when we make a request to http://www.google.com.})
+
+section = Section.new("Version Control")
+exam1.sections << section
+
+section.questions << Question.new(
+  %{When we have untracked files in our working directory, how do we prepare them for committing?},
+  %{`git add .`}, [
+    %{`git init -m`},
+    %{`git commit --force-add -m ""`},
+    %{`git stage .`}])
+
+section.questions << Question.new(
+  %{When we want to clone a repo from Github, which command should we use?},
+  %{`git clone git@github.com:vosechu/test.git`}, [
+    %{`git clone origin vosechu/test`},
+    %{`git init git@github.com:vosechu/test.git`},
+    %{`git checkout vosechu/test`}])
+
+section.questions << Question.new(
+  %{When we push files to Github and it throws an error saying it can't 'fast-forward', what do we do?},
+  %{`git pull origin master`}, [
+    %{`git push -f origin master`},
+    %{`git fast-forward master`},
+    %{`git fetch origin`}])
+
+### Short Answer
+
+section.short_answers << ShortAnswer.new(%{Why do we use Git over some other method of sharing code?})
+section.short_answers << ShortAnswer.new(%{What are the three commands we use to save code changes and send them to Github?})
+# section.short_answers << ShortAnswer.new(%{What is Rack and how is it related to Sinatra?})
+
 
 puts exam1.to_s

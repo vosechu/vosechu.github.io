@@ -1,12 +1,12 @@
-# ruby scripts/examerizer.rb > exams/2.md
+# ruby exams/2.rb > exams/2.md
 
 $question_number = 1
 
 class Exam
   TIME_TO_ANSWER = {
     questions: 2,
-    short_answers: 8,
-    project_answers: 10
+    short_answers: 7,
+    project_answers: 5
   }
 
   attr_reader :title
@@ -27,7 +27,7 @@ title: #{@title}
     msg += "\n\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
     msg += "\n\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
     msg += "\n\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
-    msg += "\n\nTotal Estimate: #{total_estimate} hours"
+    msg += "\n\nTotal Estimate: #{sprintf("%.2f", total_estimate)} hours"
   end
 
   def questions
