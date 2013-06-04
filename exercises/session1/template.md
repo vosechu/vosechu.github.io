@@ -4,22 +4,14 @@ body_classes: exercise
 title: Week 8 &mdash; Overview
 ---
 
-### Monday Stuff
-* How was the weekend?
-* Announcements
-* Network points awards
-* Networking events for the week
-* Call for lightning talks
-
-### Monday comprehension questions
-### Weekly Topics
-### Weekly Theme
-### Weekly Home<del>work</del>**fun**
-
+### Topics
+### Main Project
+### Announcements
+### Goals
 
 ## Monday &mdash; 3/25/2013
-### Topics
-### Goals
+### Warmup
+### Announcements
 ### Reading to do before class
 ### Additional reading resources
 ### Resources

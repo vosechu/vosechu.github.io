@@ -54,23 +54,23 @@ DELETEME
 
 ### Helpful Commands
 {% highlight bash %}
-# Normal git process
-git add .
-git commit -m "my commit message"
-git push origin master
+      # Normal git process
+      git add .
+      git commit -m "my commit message"
+      git push origin master
 
-# Cloning a new repo from github
-# Copy the SSH link from github: git@github.com:username/repo_name.git
-git clone git@github.com:username/repo_name.git
+      # Cloning a new repo from github
+      # Copy the SSH link from github: git@github.com:username/repo_name.git
+      git clone git@github.com:username/repo_name.git
 
-# Adding your files to a new repo
-git init
-git add .
-git commit -m "initial commit"
-# Copy the SSH link from github: git@github.com:username/repo_name.git
-git remote add origin git@github.com:username/repo_name.git
-git pull origin master # This pulls down the .gitignore and the README.md
-git push origin master
+      # Adding your files to a new repo
+      git init
+      git add .
+      git commit -m "initial commit"
+      # Copy the SSH link from github: git@github.com:username/repo_name.git
+      git remote add origin git@github.com:username/repo_name.git
+      git pull origin master # This pulls down the .gitignore and the README.md
+      git push origin master
 {% endhighlight %}
 
 TODO Refactor to stages
