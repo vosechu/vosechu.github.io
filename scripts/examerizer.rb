@@ -1,12 +1,14 @@
 # ruby exams/2.rb > exams/2.md
 
-$question_number = 1
+$question_number = 1 # Initial question number and counter
+
+PRINT_VERSION = ENV['PRINT_VERSION'] || false
 
 class Exam
   TIME_TO_ANSWER = {
-    questions: 2,
-    short_answers: 7,
-    project_answers: 5
+    questions: 1,
+    short_answers: 4,
+    project_answers: 3
   }
 
   attr_reader :title
@@ -71,7 +73,7 @@ class Section
       msg = "## #{@title}\n"
       msg += "### Multiple-choice Answer\n\n"
       @questions.shuffle.each do |question|
-        msg += "#{$question_number}\\. #{question.to_s}\n"
+        msg += "#{$question_number}#{"\\" unless PRINT_VERSION}. #{question.to_s}\n"
         msg += "***\n\n"
         $question_number += 1
       end
@@ -79,7 +81,7 @@ class Section
     unless @short_answers.empty?
       msg += "### Short Answer\n\n"
       @short_answers.shuffle.each do |question|
-        msg += "#{$question_number}\\. #{question.to_s}\n"
+        msg += "#{$question_number}#{"\\" unless PRINT_VERSION}. #{question.to_s}\n"
         msg += "***\n\n"
         $question_number += 1
       end
@@ -133,10 +135,18 @@ class CodeQuestion < Question
     choices = ["A: ", "B: ", "C: ", "D: "]
     r = Random.rand(0..3)
     choices.each_with_index do |choice, index|
-      if r == index
-        msg += "* #{choice}\n{% highlight #{@style} %}\n#{answer.split("\n").join("\n")}\n{% endhighlight %}\n"
+      if PRINT_VERSION
+        if r == index
+          msg += "* #{choice}\n#{answer.split("\n").join("\n")}\n"
+        else
+          msg += "* #{choice}\n#{alt_answers.pop.split("\n").join("\n")}\n"
+        end
       else
-        msg += "* #{choice}\n{% highlight #{@style} %}\n#{alt_answers.pop.split("\n").join("\n")}\n{% endhighlight %}\n"
+        if r == index
+          msg += "* #{choice}\n{% highlight #{@style} %}\n#{answer.split("\n").join("\n")}\n{% endhighlight %}\n"
+        else
+          msg += "* #{choice}\n{% highlight #{@style} %}\n#{alt_answers.pop.split("\n").join("\n")}\n{% endhighlight %}\n"
+        end
       end
     end
     return msg
@@ -152,7 +162,11 @@ class ShortAnswer
 
   def to_s
     msg = "Q: #{@question}\n\n"
-    msg += "A: \n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n"
+    if PRINT_VERSION
+      msg += "A: \n\n\n\n\n\n"
+    else
+      msg += "A: \n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n"
+    end
 
     return msg
   end
@@ -161,7 +175,11 @@ end
 class LongAnswer < ShortAnswer
   def to_s
     msg = "Q: #{@question}\n\n"
-    msg += "A: \n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n"
+    if PRINT_VERSION
+      msg += "A: \n\n\n\n\n\n\n\n\n\n\n"
+    else
+      msg += "A: \n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n"
+    end
 
     return msg
   end
