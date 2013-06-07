@@ -20,16 +20,25 @@ class Exam
   end
 
   def to_s
-    msg = "---
+    msg = ""
+
+    unless PRINT_VERSION
+      msg += "---
 layout: page
 title: #{@title}
 ---\n\n"
+    end
+
     msg += @sections.map(&:to_s).join("\n")
 
-    msg += "\n\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
-    msg += "\n\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
-    msg += "\n\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
-    msg += "\n\nTotal Estimate: #{sprintf("%.2f", total_estimate)} hours"
+    unless PRINT_VERSION
+      msg += "\n\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
+      msg += "\n\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
+      msg += "\n\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
+      msg += "\n\nTotal Estimate: #{sprintf("%.2f", total_estimate)} hours"
+    end
+
+    return msg
   end
 
   def questions
@@ -69,8 +78,8 @@ class Section
   end
 
   def to_s
+    msg = "## #{@title}\n"
     unless @questions.empty?
-      msg = "## #{@title}\n"
       msg += "### Multiple-choice Answer\n\n"
       @questions.shuffle.each do |question|
         msg += "#{$question_number}#{"\\" unless PRINT_VERSION}. #{question.to_s}\n"

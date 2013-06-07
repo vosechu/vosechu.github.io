@@ -5,13 +5,6 @@ exam1 = Exam.new("Week 1 &mdash; Exam")
 section = Section.new("Fluffy")
 exam1.sections << section
 
-section.questions << Question.new(
-  %{},
-  %{}, [
-    %{},
-    %{},
-    %{}])
-
 section.short_answers << ShortAnswer.new(%{List 3 of your favorite keyboard shortcuts and what they do?})
 section.short_answers << ShortAnswer.new(%{List 3 of your favorite command-line programs and what they do?})
 section.short_answers << ShortAnswer.new(%{If your favorite command-line program was a vegetable, what would it be and why?})
