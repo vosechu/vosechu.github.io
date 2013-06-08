@@ -3,6 +3,7 @@
 $question_number = 1 # Initial question number and counter
 
 PRINT_VERSION = ENV['PRINT_VERSION'] || false
+TEACHER_VERSION = ENV['TEACHER_VERSION'] || false
 
 class Exam
   TIME_TO_ANSWER = {
@@ -31,7 +32,7 @@ title: #{@title}
 
     msg += @sections.map(&:to_s).join("\n")
 
-    unless PRINT_VERSION
+    unless TEACHER_VERSION
       msg += "\n\nQuestions: #{questions.count} Est: #{estimate(:questions)} hours @ #{TIME_TO_ANSWER[:questions]} min / answer"
       msg += "\n\nShort Answers: #{short_answers.count} Est: #{estimate(:short_answers)} hours @ #{TIME_TO_ANSWER[:short_answers]} min / answer"
       msg += "\n\nProject Answers: #{project_answers.count} Est: #{estimate(:project_answers)} hours @ #{TIME_TO_ANSWER[:project_answers]} min / answer"
@@ -124,7 +125,7 @@ class Question
     r = Random.rand(0..3)
     choices.each_with_index do |choice, index|
       if r == index
-        msg += "* #{choice}#{answer}\n"
+        msg += "#{"=> " if TEACHER_VERSION}* #{choice}#{answer}\n"
       else
         msg += "* #{choice}#{alt_answers.pop}\n"
       end
@@ -146,13 +147,13 @@ class CodeQuestion < Question
     choices.each_with_index do |choice, index|
       if PRINT_VERSION
         if r == index
-          msg += "* #{choice}\n#{answer.split("\n").join("\n")}\n"
+          msg += "#{"=> " if TEACHER_VERSION}* #{choice}\n#{answer.split("\n").join("\n")}\n"
         else
           msg += "* #{choice}\n#{alt_answers.pop.split("\n").join("\n")}\n"
         end
       else
         if r == index
-          msg += "* #{choice}\n{% highlight #{@style} %}\n#{answer.split("\n").join("\n")}\n{% endhighlight %}\n"
+          msg += "#{"=> " if TEACHER_VERSION}* #{choice}\n{% highlight #{@style} %}\n#{answer.split("\n").join("\n")}\n{% endhighlight %}\n"
         else
           msg += "* #{choice}\n{% highlight #{@style} %}\n#{alt_answers.pop.split("\n").join("\n")}\n{% endhighlight %}\n"
         end
