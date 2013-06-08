@@ -5,7 +5,9 @@ title: Major Overview
 ---
 
 ### Weeks 1-4
+
 #### Artifacts
+
 * Personal portfolio on github pages
 * Daily commit of warmups/exercises
 * TODO: Small project using Ruby/JS
@@ -14,6 +16,7 @@ title: Major Overview
 * 1 Lightning talk
 
 #### Topics
+
 * Classroom logistics (No learning plan associated)
 * Portfolios (Employment)
 * Programming fundamentals w/Ruby,JS
@@ -26,7 +29,9 @@ title: Major Overview
 * Networking (Employment)
 
 ### Weeks 5-8
+
 #### Artifacts
+
 * Personal project for your portfolio
 * TODO: Small project using Rails/Sinatra
 * Four blog posts
@@ -34,6 +39,7 @@ title: Major Overview
 * 1 Lightning talk
 
 #### Topics
+
 * Sinatra/Rails
 * Databases
 * Javascript patterns
@@ -41,37 +47,43 @@ title: Major Overview
 * Networking expansion
 
 ### Weeks 9-12
+
 #### Artifacts
+
 * Second project for your portfolio with a group (possibly sponsored)
 * Four blog posts
 * Comments on assigned reading
 * 1 Lightning talk
 
 ## Reading list
-Week 0: HTML & CSS by Jon Duckett
-Week 1: Learn to program by Chris Pine
-Week 2: Eloquent Ruby by Russ Olsen
-Week 3: Learning jQuery
-Week 4: Learning jQuery
-Week 5: Hartl
-Week 6: Hartl
-Week 7: Hartl
-Week 8: JS Patterns
-Week 9: Student Choice
-Week 10: Student Choice
-Week 11: Student Choice
-Week 12: Student Choice
+
+* Week 0: HTML & CSS by Jon Duckett
+* Week 1: Learn to program by Chris Pine
+* Week 2: Eloquent Ruby by Russ Olsen
+* Week 3: Learning jQuery
+* Week 4: Learning jQuery
+* Week 5: Hartl
+* Week 6: Hartl
+* Week 7: Hartl
+* Week 8: JS Patterns
+* Week 9: Student Choice
+* Week 10: Student Choice
+* Week 11: Student Choice
+* Week 12: Student Choice
 
 ## Recommended week 9-12 books
-Pragmatic Programmer
-Being Geek
-The Rails 3 Way
-Service Oriented Design w/ Rails
-Ember.js docs
-Practical Object Oriented Design in Ruby
+
+* Pragmatic Programmer
+* Being Geek
+* The Rails 3 Way
+* Service Oriented Design w/ Rails
+* Ember.js docs
+* Practical Object Oriented Design in Ruby
 
 ## Week 1
+
 ### Major Topics
+
 * **Ruby**
 * Introduction
 * Machine setup
@@ -81,9 +93,11 @@ Practical Object Oriented Design in Ruby
 * Troubleshooting
 
 ### Other Topics
+
 * What is a server
 
 ### Daily Notes and Exercises
+
 * [Week 1 - Homefun](/exercises/session2/week1/homefun.html)
 * [Week 1 - Overview](/exercises/session2/week1/overview.html)
 * [Week 1 - Monday](/exercises/session2/week1/monday.html)
@@ -93,8 +107,9 @@ Practical Object Oriented Design in Ruby
 * [Week 1 - Friday](/exercises/session2/week1/friday.html)
 
 ## Week 2
+
 ### Major Topics
-* [Week 2 Handout](/exercises/session2/week2.html)
+
 * **Ruby+Testing**
 
 ### Other Topics
@@ -102,6 +117,7 @@ Practical Object Oriented Design in Ruby
 * How to play Go
 
 ### Daily Notes and Exercises
+
 * [Week 2 - Homefun](/exercises/session2/week2/homefun.html)
 * [Week 2 - Overview](/exercises/session2/week2/overview.html)
 * [Week 2 - Monday](/exercises/session2/week2/monday.html)
@@ -112,12 +128,15 @@ Practical Object Oriented Design in Ruby
 
 
 ## Week 3
+
 ### Major Topics
+
 * **Javascript**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 3 - Homefun](/exercises/session2/week3/homefun.html)
 * [Week 3 - Overview](/exercises/session2/week3/overview.html)
 * [Week 3 - Monday](/exercises/session2/week3/monday.html)
@@ -127,12 +146,15 @@ Practical Object Oriented Design in Ruby
 * [Week 3 - Friday](/exercises/session2/week3/friday.html)
 
 ## Week 4
+
 ### Major Topics
+
 * **Javascript+Testing**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 4 - Homefun](/exercises/session2/week4/homefun.html)
 * [Week 4 - Overview](/exercises/session2/week4/overview.html)
 * [Week 4 - Monday](/exercises/session2/week4/monday.html)
@@ -142,12 +164,15 @@ Practical Object Oriented Design in Ruby
 * [Week 4 - Friday](/exercises/session2/week4/friday.html)
 
 ## Week 5
+
 ### Major Topics
+
 * **Rails**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 5 - Homefun](/exercises/session2/week5/homefun.html)
 * [Week 5 - Overview](/exercises/session2/week5/overview.html)
 * [Week 5 - Monday](/exercises/session2/week5/monday.html)
@@ -157,12 +182,15 @@ Practical Object Oriented Design in Ruby
 * [Week 5 - Friday](/exercises/session2/week5/friday.html)
 
 ## Week 6
+
 ### Major Topics
+
 * **Rails**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 6 - Homefun](/exercises/session2/week6/homefun.html)
 * [Week 6 - Overview](/exercises/session2/week6/overview.html)
 * [Week 6 - Monday](/exercises/session2/week6/monday.html)
@@ -172,12 +200,15 @@ Practical Object Oriented Design in Ruby
 * [Week 6 - Friday](/exercises/session2/week6/friday.html)
 
 ## Week 7
+
 ### Major Topics
+
 * **Rails**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 7 - Homefun](/exercises/session2/week7/homefun.html)
 * [Week 7 - Overview](/exercises/session2/week7/overview.html)
 * [Week 7 - Monday](/exercises/session2/week7/monday.html)
@@ -187,12 +218,15 @@ Practical Object Oriented Design in Ruby
 * [Week 7 - Friday](/exercises/session2/week7/friday.html)
 
 ## Week 8
+
 ### Major Topics
+
 * **Javascript Patterns**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 8 - Homefun](/exercises/session2/week8/homefun.html)
 * [Week 8 - Overview](/exercises/session2/week8/overview.html)
 * [Week 8 - Monday](/exercises/session2/week8/monday.html)
@@ -202,12 +236,15 @@ Practical Object Oriented Design in Ruby
 * [Week 8 - Friday](/exercises/session2/week8/friday.html)
 
 ## Week 9
+
 ### Major Topics
+
 * **Student Choice**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 9 - Homefun](/exercises/session2/week9/homefun.html)
 * [Week 9 - Overview](/exercises/session2/week9/overview.html)
 * [Week 9 - Monday](/exercises/session2/week9/monday.html)
@@ -217,12 +254,15 @@ Practical Object Oriented Design in Ruby
 * [Week 9 - Friday](/exercises/session2/week9/friday.html)
 
 ## Week 10
+
 ### Major Topics
+
 * **Student Choice**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 10 - Homefun](/exercises/session2/week10/homefun.html)
 * [Week 10 - Overview](/exercises/session2/week10/overview.html)
 * [Week 10 - Monday](/exercises/session2/week10/monday.html)
@@ -232,12 +272,15 @@ Practical Object Oriented Design in Ruby
 * [Week 10 - Friday](/exercises/session2/week10/friday.html)
 
 ## Week 11
+
 ### Major Topics
+
 * **Student Choice**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 11 - Homefun](/exercises/session2/week11/homefun.html)
 * [Week 11 - Overview](/exercises/session2/week11/overview.html)
 * [Week 11 - Monday](/exercises/session2/week11/monday.html)
@@ -247,12 +290,15 @@ Practical Object Oriented Design in Ruby
 * [Week 11 - Friday](/exercises/session2/week11/friday.html)
 
 ## Week 12
+
 ### Major Topics
+
 * **Student Choice**
 
 ### Other Topics
 
 ### Daily Notes and Exercises
+
 * [Week 12 - Homefun](/exercises/session2/week12/homefun.html)
 * [Week 12 - Overview](/exercises/session2/week12/overview.html)
 * [Week 12 - Monday](/exercises/session2/week12/monday.html)
