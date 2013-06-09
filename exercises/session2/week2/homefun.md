@@ -6,7 +6,7 @@ title: Week 2 &mdash; Homefun
 
 ### Main project
 
-Replacing followcost.com with a command-line utility
+<!-- Replacing followcost.com with a command-line utility
 
 Followcost was a great site when it began but it had a few problems.  Now that its off the Internet it has even more.
 
@@ -41,7 +41,7 @@ To create a command-line interface you should use Thor or Rake. Thor docs can be
 
 To create network connections use ruby's built-in 'net/http': [net/http docs](http://ruby-doc.org/stdlib-2.0/libdoc/net/http/rdoc/Net/HTTP.html), [cheat sheet](http://www.rubyinside.com/nethttp-cheat-sheet-2940.html)
 
-Twitter's search api can be found here: [search api](https://dev.twitter.com/docs/api/1/get/search). That should do most of the work but there may be other api endpoints that you need.
+Twitter's search api can be found here: [search api](https://dev.twitter.com/docs/api/1/get/search). That should do most of the work but there may be other api endpoints that you need. -->
 
 #### Homework
 
