@@ -1,4 +1,5 @@
 require './scripts/examerizer'
+include Examerizer
 
 exam1 = Exam.new("Week 1 &mdash; Exam")
 
@@ -343,7 +344,7 @@ section.questions << Question.new(
 
 # section.short_answers << ShortAnswer.new(%{Why do we use Git over some other method of sharing code?})
 # section.short_answers << ShortAnswer.new(%{How do you create a repo and pull down the initial code?})
-section.short_answers << ShortAnswer.new(%{What are the three commands we use to save code changes and send them to Github? (70% of all the commands I type)})
+section.short_answers << ShortAnswer.new(%{What are the three commands we use to save code changes and send them an existing repo on Github? (70% of all the commands I type)})
 # section.short_answers << ShortAnswer.new(%{What is Rack and how is it related to Sinatra?})
 
 

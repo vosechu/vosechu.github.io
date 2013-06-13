@@ -30,5 +30,5 @@ doc.css('.forkers .actions a').each do |link|
   File.write("#{answers_dir}/#{handle}-answers.txt", exam.read)
 
   # Diff the answers against the official answers
-  File.write("#{answers_dir}/#{handle}-diff.txt", `diff -u '#{answers_file}' '#{answers_dir}/#{handle}-answers.txt'`)
+  File.write("#{answers_dir}/#{handle}-diff.txt", `diff -u '#{answers_dir}/#{handle}-answers.txt' '#{answers_file}'`)
 end
