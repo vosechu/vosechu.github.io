@@ -1,7 +1,7 @@
 require './scripts/examerizer'
 include Examerizer
 
-exam1 = Exam.new("Week 1 &mdash; Exam")
+exam1 = Exam.new("Week 1 &mdash; Exam", 1)
 
 section = Section.new("Fluffy")
 exam1.sections << section

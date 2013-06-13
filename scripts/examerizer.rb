@@ -15,9 +15,12 @@ module Examerizer
     attr_reader :title
     attr_accessor :sections
 
-    def initialize(title)
+    def initialize(title, seed)
       @title = title
       @sections = []
+
+      # Ensure that between runs the exam orders don't change. Increment the seed to change the order of the exam
+      srand(seed)
     end
 
     def to_s
