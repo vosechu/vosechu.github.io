@@ -102,4 +102,9 @@ section.questions << Question.new(
 
 section.short_answers << ShortAnswer.new(%{What are the three commands we use to save code changes and send them an existing repo on Github? (70% of all the commands I type)})
 
+section = Section.new("Testing Fundamentals")
+exam.sections << section
+
+section.short_answers << ShortAnswer.new(%{})
+
 puts exam.to_s
