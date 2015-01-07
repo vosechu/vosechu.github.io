@@ -62,3 +62,47 @@ RSpec.describe 'XSS sanitization', :type => :feature do
   end
 end
 {% endhighlight %}
+
+## Source
+
+This info came from another blog here: http://shift.mirego.com/post/68808986788/how-to-write-tests-for-rack-middleware
+
+Just in case I'll reproduce the code here:
+
+{% highlight ruby %}
+# rack_date.rb
+class Rack::Date
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    status, headers, body = @app.call(env)
+    headers.merge! 'Date' => Time.now.httpdate unless Time.now.month == 1
+    [status, headers, body]
+  end
+end
+
+# rack_date_spec.rb
+describe Rack::Date do
+  let(:app) { proc{[200,{},['Hello, world.']]} }
+  let(:stack) { Rack::Date.new(app) }
+  let(:request) { Rack::MockRequest.new(stack) }
+
+  before { Time.stub(:now).and_return(time) }
+
+  describe 'Date header' do
+    let(:response) { request.get('/') }
+
+    context 'when month is January' do
+      let(:time) { Time.parse('January 19, 2014 00:00:00') }
+      it { expect(response.headers['Date']).to be_nil }
+    end
+
+    context 'when month is not January' do
+      let(:time) { Time.parse('November 19, 2014 00:00:00') }
+      it { expect(response.headers['Date']).to eql time.httpdate }
+    end
+  end
+end
+{% endhighlight %}
