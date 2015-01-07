@@ -21,18 +21,18 @@ Even if Capybara does his a real server, the server it boots often doesn't use t
 
 So in order to get Rack::Test to see the config.ru you'll have to manually load it like so:
 
-```
+{% highlight ruby %}
 # Ensure that the config.ru gets loaded before these tests
 let(:app) {
   Rack::Builder.new do
     eval File.read(Rails.root.join('config.ru'))
   end
 }
-```
+{% endhighlight %}
 
 For greater context, here's what it looked like in the test file (Rory is a little rack server we use internally):
 
-```
+{% highlight ruby %}
 RSpec.describe 'XSS sanitization', :type => :feature do
   class EchoController < ApplicationController
     def echo
@@ -59,4 +59,4 @@ RSpec.describe 'XSS sanitization', :type => :feature do
     expect(body_hash['address']).to eq('obvious_post();')
   end
 end
-```
+{% endhighlight %}
