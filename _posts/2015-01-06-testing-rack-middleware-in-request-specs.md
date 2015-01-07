@@ -15,9 +15,9 @@ For clarity, we'll say escaping is the process of neutering tags by turning them
 
 ## Testing middlewares
 
-Testing middleware is a little weird, there's some things you should know in order to begin. First off, Rack::Test (which you're probably using for your request specs and not realizing it) doesn't actually make real requests to a webserver. This probably shouldn't shock you, but it is surprising. Capybara on the other hand, will hit a real server (in most cases?) but is also capable of using Rack::Test to skip that step. 
+Testing middleware is a little weird, there's some things you should know in order to begin. First off, Rack::Test (which you're probably using for your request specs and not realizing it, `get` and `post`) doesn't actually make real requests to a webserver. This probably shouldn't shock you, but it is surprising. Capybara on the other hand, will hit a real server (in most cases?) but is also capable of using Rack::Test to skip that step. 
 
-Even if Capybara does his a real server, the server it boots often doesn't use the `config.ru` because that is sometimes used to represent just the production environment. We use config.ru for all environments because we use Pow. 
+Even if Capybara (`visit`) does his a real server, the server it boots often doesn't use the `config.ru`. Possibly this is because the config.ru is sometimes used to represent just the production environment. We use config.ru for all environments because we use Pow. 
 
 So in order to get Rack::Test to see the config.ru you'll have to manually load it like so:
 
@@ -30,7 +30,9 @@ let(:app) {
 }
 {% endhighlight %}
 
-For greater context, here's what it looked like in the test file (Rory is a little rack server we use internally):
+Overriding `app` will let Rack::Test know where to send requests. Rack::Builder creates a new Rack app out of anything within the block, so you can do the `eval` or even use `use` or `run` to load up more middlewares or apps (Like Rack::Lobster!).
+
+I'm running out of steam, the day is growing late, so I'll just post the larger snippet. Here's what it looked like in the test file (Rory is a little rack server we use internally):
 
 {% highlight ruby %}
 RSpec.describe 'XSS sanitization', :type => :feature do
