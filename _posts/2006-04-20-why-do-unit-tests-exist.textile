@@ -1,11 +1,11 @@
 ---
 layout: post
-
 categories: life
 published: false
 title: Why Do Unit Tests Exist?
-typo_id: 3
+tags: testing
 ---
+
 Holy crap I finally figured out why unit tests exist! To give me something to think about in the shower. Yep, simple as that.
 
 No, wait, there are two really good uses off the top of my head: packaging and testing filesystem crap.
