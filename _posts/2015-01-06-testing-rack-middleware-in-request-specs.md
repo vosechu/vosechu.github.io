@@ -2,6 +2,7 @@
 layout: post
 categories: tech
 title: Testing rack middleware in a request spec
+tags: testing
 ---
 
 ## Introduction
