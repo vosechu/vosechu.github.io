@@ -1,32 +1,32 @@
 @font-face {
   font-family: 'font-icons';
-  src:url("http://localhost:4000/stylesheets/fonts/font-icons.eot");
-  src:url("http://localhost:4000/stylesheets/fonts/font-icons.eot") format('embedded-opentype'),
-    url("http://localhost:4000/stylesheets/fonts/font-icons.woff") format('woff'),
-    url("http://localhost:4000/stylesheets/fonts/font-icons.ttf") format('truetype'),
-    url("http://localhost:4000/stylesheets/fonts/font-icons.svg") format('svg');
+  src:url("/stylesheets/fonts/font-icons.eot");
+  src:url("/stylesheets/fonts/font-icons.eot") format('embedded-opentype'),
+    url("/stylesheets/fonts/font-icons.woff") format('woff'),
+    url("/stylesheets/fonts/font-icons.ttf") format('truetype'),
+    url("/stylesheets/fonts/font-icons.svg") format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'lined-icons';
-  src:url("http://localhost:4000/stylesheets/fonts/lined-icons.eot");
-  src:url("http://localhost:4000/stylesheets/fonts/lined-icons.eot") format('embedded-opentype'),
-    url("http://localhost:4000/stylesheets/fonts/lined-icons.woff") format('woff'),
-    url("http://localhost:4000/stylesheets/fonts/lined-icons.ttf") format('truetype'),
-    url("http://localhost:4000/stylesheets/fonts/lined-icons.svg") format('svg');
+  src:url("/stylesheets/fonts/lined-icons.eot");
+  src:url("/stylesheets/fonts/lined-icons.eot") format('embedded-opentype'),
+    url("/stylesheets/fonts/lined-icons.woff") format('woff'),
+    url("/stylesheets/fonts/lined-icons.ttf") format('truetype'),
+    url("/stylesheets/fonts/lined-icons.svg") format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Simple-Line-Icons';
-  src:url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.eot");
-  src:url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.eot#iefix") format('embedded-opentype'),
-    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.woff") format('woff'),
-    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.ttf") format('truetype'),
-    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.svg#Simple-Line-Icons") format('svg');
+  src:url("/stylesheets/fonts/Simple-Line-Icons.eot");
+  src:url("/stylesheets/fonts/Simple-Line-Icons.eot#iefix") format('embedded-opentype'),
+    url("/stylesheets/fonts/Simple-Line-Icons.woff") format('woff'),
+    url("/stylesheets/fonts/Simple-Line-Icons.ttf") format('truetype'),
+    url("/stylesheets/fonts/Simple-Line-Icons.svg#Simple-Line-Icons") format('svg');
   font-weight: normal;
   font-style: normal;
 }
