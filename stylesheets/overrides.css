@@ -1,8 +1,10 @@
+/* NON-STANDARD USE OF H1 IN HEADER */
 header h1 {
   font-size: 24px;
   padding-top: 5px;
 }
 
+/* CODE SNIPPET OVERRIDES */
 .highlight {
   margin-bottom: 20px;
 }
@@ -13,6 +15,7 @@ header h1 {
   border-width: 2px;
 }
 
+/* LAYOUT TWEAKS FOR POST CONTENT */
 .postcontent p {
   margin: 0 0 10px;
 }
