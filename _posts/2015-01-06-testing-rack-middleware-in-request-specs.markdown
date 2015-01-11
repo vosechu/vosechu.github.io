@@ -15,26 +15,26 @@ For clarity, we'll say escaping is the process of neutering tags by turning them
 
 ## Testing middlewares
 
-Testing middleware is a little weird, there's some things you should know in order to begin. First off, Rack::Test (which you're probably using for your request specs and not realizing it, `get` and `post`) doesn't actually make real requests to a webserver. This probably shouldn't shock you, but it is surprising. Capybara on the other hand, will hit a real server (in most cases?) but is also capable of using Rack::Test to skip that step. 
+Testing middleware is a little weird, there's some things you should know in order to begin. First off, Rack::Test (which you're probably using for your request specs and not realizing it, `get` and `post`) doesn't actually make real requests to a webserver. This probably shouldn't shock you, but it is surprising. Capybara on the other hand, will hit a real server (in most cases?) but is also capable of using Rack::Test to skip that step.
 
-Even if Capybara (`visit`) does his a real server, the server it boots often doesn't use the `config.ru`. Possibly this is because the config.ru is sometimes used to represent just the production environment. We use config.ru for all environments because we use Pow. 
+Even if Capybara (`visit`) does his a real server, the server it boots often doesn't use the `config.ru`. Possibly this is because the config.ru is sometimes used to represent just the production environment. We use config.ru for all environments because we use Pow.
 
 So in order to get Rack::Test to see the config.ru you'll have to manually load it like so:
 
-{% highlight ruby %}
+```ruby
 # Ensure that the config.ru gets loaded before these tests
 let(:app) {
   Rack::Builder.new do
     eval File.read(Rails.root.join('config.ru'))
   end
 }
-{% endhighlight %}
+```
 
 Overriding `app` will let Rack::Test know where to send requests. Rack::Builder creates a new Rack app out of anything within the block, so you can do the `eval` or even use `use` or `run` to load up more middlewares or apps (Like Rack::Lobster!).
 
 I'm running out of steam, the day is growing late, so I'll just post the larger snippet. Here's what it looked like in the test file (Rory is a little rack server we use internally):
 
-{% highlight ruby %}
+```ruby
 RSpec.describe 'XSS sanitization', :type => :feature do
   class EchoController < ApplicationController
     def echo
@@ -61,7 +61,7 @@ RSpec.describe 'XSS sanitization', :type => :feature do
     expect(body_hash['address']).to eq('obvious_post();')
   end
 end
-{% endhighlight %}
+```
 
 ## Source
 
@@ -69,7 +69,7 @@ This info came from another blog here: http://shift.mirego.com/post/68808986788/
 
 Just in case I'll reproduce the code here:
 
-{% highlight ruby %}
+```ruby
 # rack_date.rb
 class Rack::Date
   def initialize(app)
@@ -105,4 +105,4 @@ describe Rack::Date do
     end
   end
 end
-{% endhighlight %}
+```

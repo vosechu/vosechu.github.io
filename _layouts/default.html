@@ -1,78 +1,239 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    {{ if page.page_title }}
-      <title>{{ page.page_title }} - Chuck Lauer Vose</title>
-    {{ else }}
-      <title>Chuck Lauer Vose</title>
-    {{ endif }}
-    <link rel="stylesheet" href="/stylesheets/styles.css" media="all">
-    <link rel="stylesheet" href="/stylesheets/print.css" media="print">
-    <link rel="stylesheet" href="/stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="/javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="author" content="Chuck Lauer Vose" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  </head>
-  <body class="{{ page.body_classes }}">
-    <header>
-      <a href="/"><h1>Chuck Lauer Vose</h1></a>
-      <p></p>
-    </header>
+  <!-- Stylesheets ============================================= -->
+  <link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/style.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/dark.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/font-icons.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/responsive.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/pygment_trac.css" type="text/css" />
+  <link rel="stylesheet" href="/stylesheets/overrides.css" type="text/css" />
 
-    <div id="banner">
-      <span id="logo"></span>
-      <a href="https://github.com/vosechu" class="button fork"><strong>View On GitHub</strong></a>
-      <ul>
-        <li>
-          <a href="/" class="button"><strong>Home</strong></a>
-        </li>
-      </ul>
-    </div><!-- end banner -->
+  <!-- External JavaScripts ============================================= -->
+  <!--[if lt IE 9]>
+  <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+  <![endif]-->
 
-    <div class="wrapper">
-      <nav>
-        <div class="pages">
-          <h3>Navigation</h3>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog.html">Blog</a></li>
-            <li><a href="http://www.portlandcodeschool.com">Portland Code School</a></li>
-            <li><a href="/exercises/overview.html">Exercises</a></li>
-            <li><a href="/curriculum/performance-metrics.html">Metrics</a></li>
-          </ul>
+  <!-- Document Title ============================================= -->
+  {{ if page.page_title }}
+    <title>{{ page.page_title }} - Chuck Lauer Vose</title>
+  {{ else }}
+    <title>Chuck Lauer Vose</title>
+  {{ endif }}
+</head>
+<body class="stretched {{ page.body_classes }}">
+  <!-- Document Wrapper ============================================= -->
+  <div id="wrapper" class="clearfix">
+    <!-- Top Bar ============================================= -->
+    <header id="top-bar">
+      <div class="container clearfix">
+        <div class="col_half nobottommargin">
+          <!-- Top Links ============================================= -->
+          <div class="top-links">
+            <ul>
+              <li><a href="/"><h1>Chuck Lauer Vose</h1></a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/blog.html">Blog</a></li>
+            </ul>
+          </div><!-- .top-links end -->
         </div>
-      </nav>
-      <section>
-        {{ content }}
-      </section>
-      <footer>
-        <h2>Find me</h2>
-        <a href="http://www.twitter.com/vosechu"><img src="/images/twitter.png" alt="twitter" width="32"></img></a>
-        <a href="http://www.linkedin.com/in/vosechu"><img src="/images/linkedin.png" alt="linkedin" width="32"></img></a>
-        <a href="http://www.github.com/vosechu"><img src="/images/github.png" alt="github"></img></a>
-        <a href="mailto:vosechu@gmail.com"><img src="/images/mail.png" alt="email" width="32"></img></a>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
-      </footer>
-      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
-    </div>
+        <div class="col_half fright col_last nobottommargin">
+          <!-- Top Social ============================================= -->
+          <div id="top-social">
+            <ul>
+              <li><a href="http://www.twitter.com/vosechu" class="si-twitter"><span class="ts-icon"><i class="icon-twitter"></i></span><span class="ts-text">Twitter</span></a></li>
+              <li><a href="http://www.github.com/vosechu" class="si-github"><span class="ts-icon"><i class="icon-github-circled"></i></span><span class="ts-text">Github</span></a></li>
+              <li><a href="http://www.linkedin.com/in/vosechu" class="si-linkedin"><span class="ts-icon"><i class="icon-linkedin"></i></span><span class="ts-text">LinkedIn</span></a></li>
+              <li><a href="tel:5033676226" class="si-call"><span class="ts-icon"><i class="icon-call"></i></span><span class="ts-text">(503) 367-6226</span></a></li>
+              <li><a href="mailto:vosechu@gmail.com" class="si-email3"><span class="ts-icon"><i class="icon-email3"></i></span><span class="ts-text">vosechu@gmail.com</span></a></li>
+            </ul>
+          </div><!-- #top-social end -->
+        </div>
+      </div>
+    </header><!-- #top-bar end -->
+    <!-- Content ============================================= -->
+    <section id="content">
+      <div class="content-wrap">
+        <div class="container clearfix">
+          <!-- Post Content ============================================= -->
+          <div class="postcontent nobottommargin col_last clearfix">
+            {{ content }}
+          </div><!-- .postcontent end -->
+          <!-- Sidebar ============================================= -->
+          <div class="sidebar nobottommargin clearfix">
+            <div class="sidebar-widgets-wrap">
+              <div class="widget widget_links clearfix">
+                <h4>Recent Posts</h4>
+                <ul>
+                  {% for post in site.categories.tech | limit:5 %}
+                    <li>
+                      <a href="{{ post.url }}">{{post.title | truncate:35 }}</a><br />
+                      {{ post.date | date: '%B %d, %Y' }}
 
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    <script type="text/javascript">
-      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-      try {
-        var pageTracker = _gat._getTracker("UA-37234345-1");
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <div class="widget clearfix">
+                <h4>Favorite Posts</h4>
+              </div>
+
+              <div class="widget clearfix">
+                <h4>Links</h4>
+              </div>
+            </div>
+          </div><!-- .sidebar end -->
+        </div>
+      </div>
+    </section><!-- #content end -->
+    <!-- Footer ============================================= -->
+    <footer id="footer" class="dark">
+      <div class="container">
+        <!-- Footer Widgets ============================================= -->
+        <div class="footer-widgets-wrap clearfix">
+          <div class="col_two_third">
+            <div class="col_one_third">
+              <div class="widget clearfix">
+                <img src="" alt="" class="footer-logo">
+                <p>We believe in <strong>Simple</strong>, <strong>Creative</strong> &amp; <strong>Flexible</strong> Design Standards.</p>
+                <div>
+                  <address>
+                    <strong>Headquarters:</strong><br>
+                    795 Folsom Ave, Suite 600<br>
+                    San Francisco, CA 94107<br>
+                  </address>
+                  <abbr title="Phone Number"><strong>Phone:</strong></abbr> (91) 8547 632521<br>
+                  <abbr title="Fax"><strong>Fax:</strong></abbr> (91) 11 4752 1433<br>
+                  <abbr title="Email Address"><strong>Email:</strong></abbr> info@canvas.com
+                </div>
+              </div>
+            </div>
+            <div class="col_one_third">
+              <div class="widget clearfix">
+                <h4>Blogroll</h4>
+                <ul>
+                  <li><a href="http://example.com/">Example</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col_one_third col_last">
+              <div class="widget clearfix">
+                <h4>Recent Posts</h4>
+                <div id="post-list-footer">
+                  <div class="spost clearfix">
+                    <div class="entry-c">
+                      <div class="entry-title">
+                        <h4><a href="#">Lorem ipsum dolor sit amet, consectetur</a></h4>
+                      </div>
+                      <ul class="entry-meta">
+                        <li>10th July 2014</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="spost clearfix">
+                    <div class="entry-c">
+                      <div class="entry-title">
+                        <h4><a href="#">Elit Assumenda vel amet dolorum quasi</a></h4>
+                      </div>
+                      <ul class="entry-meta">
+                        <li>10th July 2014</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="spost clearfix">
+                    <div class="entry-c">
+                      <div class="entry-title">
+                        <h4><a href="#">Debitis nihil placeat, illum est nisi</a></h4>
+                      </div>
+                      <ul class="entry-meta">
+                        <li>10th July 2014</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col_one_third col_last">
+            <div class="widget clearfix" style="margin-bottom: -20px;">
+              <div class="row">
+
+              </div>
+            </div>
+          </div>
+        </div><!-- .footer-widgets-wrap end -->
+      </div>
+      <!-- Copyrights ============================================= -->
+      <div id="copyrights">
+        <div class="container clearfix">
+          <div class="col_half">
+            Copyrights &copy; 2014 All Rights Reserved by Canvas Inc.<br>
+            <div class="copyright-links"><a href="#">Terms of Use</a> / <a href="#">Privacy Policy</a></div>
+          </div>
+          <div class="col_half col_last tright">
+            <div class="fright clearfix">
+              <a href="#" class="social-icon si-small si-borderless si-facebook">
+                <i class="icon-facebook"></i>
+                <i class="icon-facebook"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-twitter">
+                <i class="icon-twitter"></i>
+                <i class="icon-twitter"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-gplus">
+                <i class="icon-gplus"></i>
+                <i class="icon-gplus"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-pinterest">
+                <i class="icon-pinterest"></i>
+                <i class="icon-pinterest"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-vimeo">
+                <i class="icon-vimeo"></i>
+                <i class="icon-vimeo"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-github">
+                <i class="icon-github"></i>
+                <i class="icon-github"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-yahoo">
+                <i class="icon-yahoo"></i>
+                <i class="icon-yahoo"></i>
+              </a>
+              <a href="#" class="social-icon si-small si-borderless si-linkedin">
+                <i class="icon-linkedin"></i>
+                <i class="icon-linkedin"></i>
+              </a>
+            </div>
+            <div class="clear"></div>
+            <i class="icon-envelope2"></i> vosechu@gmail.com <span class="middot">&middot;</span> <i class="icon-headphones"></i> (503) 367-6226 <span class="middot">&middot;</span>
+          </div>
+        </div>
+      </div><!-- #copyrights end -->
+    </footer><!-- #footer end -->
+  </div><!-- #wrapper end -->
+
+  <!-- Go To Top ============================================= -->
+  <div id="gotoTop" class="icon-angle-up"></div>
+
+  <!-- Footer Scripts ============================================= -->
+  <!-- <script type="text/javascript" src="/javascripts/functions.js"></script> -->
+  <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script type="text/javascript">
+    try {
+      var pageTracker = _gat._getTracker("UA-37234345-1");
       pageTracker._trackPageview();
-      } catch(err) {}
-    </script>
-
-  </body>
+    } catch(err) {}
+  </script>
+</body>
 </html>

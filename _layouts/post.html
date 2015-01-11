@@ -1,23 +1,28 @@
 ---
 layout: default
 ---
-<div class="post-header">
-  <h2><a href="{{ page.url }}">
-    {{ page.title }}
-  </a></h2>
-  <div id="byline">{{ page.date | date: '%B %d, %Y' }} &mdash; by <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></div>
+<div class="entry-title">
+  <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+</div>
+
+<ul class="entry-meta clearfix">
+  <li><i class="icon-calendar3"></i> {{ page.date | date: '%B %d, %Y' }}</li>
+  <li><a href="#"><i class="icon-user"></i> <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></a></li>
   {% if page.tags != empty %}
-  <div id="tags">Tags:
+  <li><i class="icon-folder-open"></i>
+    {{ page.tags.pop }}
     {% for tag in page.tags %}
       {{ tag }}
     {% endfor %}
-  </div>
+  </li>
   {% endif %}
+</ul>
+
+<div class="entry-content">
+  <p>{{ content }}</p>
 </div>
-<div class="content">
-  {{ content }}
-</div>
-<div class="pagination">
-  <a class="previous" href="{{ page.previous.url }}">Previous Post</a>
-  <a class="next" href="{{ page.next.url }}">Next Post</a>
-</div>
+
+<ul class="pager nomargin">
+  <li class="previous"><a href="{{ page.previous.url }}">&larr; Older</a></li>
+  <li class="next"><a href="{{ page.next.url }}">Newer &rarr;</a></li>
+</ul> <!-- .pager end -->

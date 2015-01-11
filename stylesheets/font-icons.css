@@ -1,0 +1,136 @@
+@font-face {
+  font-family: 'font-icons';
+  src:url("http://localhost:4000/stylesheets/fonts/font-icons.eot");
+  src:url("http://localhost:4000/stylesheets/fonts/font-icons.eot") format('embedded-opentype'),
+    url("http://localhost:4000/stylesheets/fonts/font-icons.woff") format('woff'),
+    url("http://localhost:4000/stylesheets/fonts/font-icons.ttf") format('truetype'),
+    url("http://localhost:4000/stylesheets/fonts/font-icons.svg") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'lined-icons';
+  src:url("http://localhost:4000/stylesheets/fonts/lined-icons.eot");
+  src:url("http://localhost:4000/stylesheets/fonts/lined-icons.eot") format('embedded-opentype'),
+    url("http://localhost:4000/stylesheets/fonts/lined-icons.woff") format('woff'),
+    url("http://localhost:4000/stylesheets/fonts/lined-icons.ttf") format('truetype'),
+    url("http://localhost:4000/stylesheets/fonts/lined-icons.svg") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Simple-Line-Icons';
+  src:url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.eot");
+  src:url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.eot#iefix") format('embedded-opentype'),
+    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.woff") format('woff'),
+    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.ttf") format('truetype'),
+    url("http://localhost:4000/stylesheets/fonts/Simple-Line-Icons.svg#Simple-Line-Icons") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"] {
+  display: inline-block;
+  font-family: 'font-icons';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
+}
+@-ms-keyframes spin {
+  0% {
+    -ms-transform: rotate(0deg);
+  }
+  100% {
+    -ms-transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+.icon-user:before {
+  content: "\e66c";
+}
+.icon-gplus:before {
+  content: "\e838";
+}
+.icon-call:before {
+  content: "\e844";
+}
+.icon-linkedin:before {
+  content: "\e858";
+}
+.icon-twitter:before {
+  content: "\e85f";
+}
+.icon-vimeo:before {
+  content: "\e861";
+}
+.icon-yahoo:before {
+  content: "\e864";
+}
+.icon-email3:before {
+  content: "\e866";
+}
+.icon-facebook:before {
+  content: "\e86f";
+}
+.icon-github:before {
+  content: "\e870";
+}
+.icon-github-circled:before {
+  content: "\e871";
+}
+.icon-pinterest:before {
+  content: "\e83e";
+}
+.icon-envelope2:before {
+  content: "\e6bf";
+}
+.icon-headphones:before {
+  content: "\e6de";
+}
+.icon-calendar3:before {
+  content: "\e728";
+}
+.icon-folder-open:before {
+  content: "\e731";
+}
+.icon-angle-up:before {
+  content: "\e7a6";
+}
