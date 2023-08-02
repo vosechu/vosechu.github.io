@@ -2,5 +2,8 @@
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://chuckvose.com" # the base hostname & protocol for your site
 
-highlighter: pygments
-markdown:    redcarpet
+markdown: kramdown
+highlighter: rouge
+kramdown:
+    input: GFM
+    syntax_highlighter: rouge

@@ -1,25 +1,27 @@
 ---
 layout: default
 ---
-<div class="entry-title">
-  <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
-</div>
+<div class="entry">
+  <div class="entry-title">
+    <h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+  </div>
 
-<ul class="entry-meta clearfix">
-  <li><i class="icon-calendar3"></i> {{ page.date | date: '%B %d, %Y' }}</li>
-  <li><a href="#"><i class="icon-user"></i> <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></a></li>
-  {% if page.tags != empty %}
-  <li><i class="icon-folder-open"></i>
-    {{ page.tags.pop }}
-    {% for tag in page.tags %}
-      {{ tag }}
-    {% endfor %}
-  </li>
-  {% endif %}
-</ul>
+  <ul class="entry-meta clearfix">
+    <li><i class="icon-calendar3"></i> {{ page.date | date: '%B %d, %Y' }}</li>
+    <li><a href="#"><i class="icon-user"></i> <a href="mailto:vosechu@gmail.com">Chuck Lauer Vose</a></a></li>
+    {% if page.tags != empty %}
+    <li><i class="icon-folder-open"></i>
+      {{ page.tags.pop }}
+      {% for tag in page.tags %}
+        {{ tag }}
+      {% endfor %}
+    </li>
+    {% endif %}
+  </ul>
 
-<div class="entry-content">
-  <p>{{ content }}</p>
+  <div class="entry-content">
+    <p>{{ content }}</p>
+  </div>
 </div>
 
 <ul class="pager nomargin">
