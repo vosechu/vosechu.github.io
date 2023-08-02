@@ -9,7 +9,7 @@ tags: docker
 
 Today I received this question and it was a stumper for me. After a bunch of research, I wanted to write something up in case I needed to send this again later.
 
-> So yesterday we moved all of the non global `npm installs` from `Dockerfile.test` to the `test_suites` command section of the `grandcentral.yml`. Why was having all of those `npm installs` in `Docerfile.test` not resulting in the container having `node_modules`( not in root, server, or client…), but having those same commands in the `test_suites` does result in the `node_modules` being there? :ty-blob:
+> So yesterday we moved all of the non global `npm installs` from `Dockerfile.test` to the `test_suites` command section of the `grandcentral.yml`. Why was having all of those `npm installs` in `Dockerfile.test` not resulting in the container having `node_modules`( not in root, server, or client…), but having those same commands in the `test_suites` does result in the `node_modules` being there? :ty-blob:
 
 Great question, challenging answer. I'll do my best :)
 
