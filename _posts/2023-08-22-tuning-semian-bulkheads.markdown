@@ -3,6 +3,7 @@ layout: post
 categories: tech
 title: How to tune Semian's Bulkheads
 tags: semian
+published: false
 ---
 
 Feedback
@@ -15,6 +16,11 @@ Feedback
 	- How could this be done with metrics instead of custom events?
 - David Howell
 	- Did lots of Hystrix back in 2015
+- Noah
+  - Ditch the icons
+  - Renumber the services/dbs
+  - Change the title on the first image
+  - Circuit breaker should be attached to the arrow, ditch the little API Client knob (at least until the circuit breakers are introduced)
 
 Topics I want to cover
 - Protecting our service vs protecting downstreams
