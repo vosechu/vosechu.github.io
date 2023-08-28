@@ -2,7 +2,7 @@
 layout: post
 categories: tech
 title: How to tune Semian's Bulkheads
-tags: semian
+tags: semian, bulkhead, resilience, nr-architect
 published: false
 ---
 
