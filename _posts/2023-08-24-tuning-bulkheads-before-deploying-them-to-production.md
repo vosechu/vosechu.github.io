@@ -77,14 +77,14 @@ You're going to need to send this telemetry to your timeseries datastore of choi
 Probably this is going to look something like this:
 ```json
 {
-  appName: 'RPM API Production',
-  host: 'api-grape-5fcbf68bcb-cgp74',
-  resource: 'nethttp_summary-record-service.vip.cf.nr-ops.net_80',
-  adapter: 'http',
-  workers: '15',
-  count: '14',
-  tickets: '14',
-  event: 'success'
+  "appName": "RPM API Production",
+  "host": "api-grape-5fcbf68bcb-cgp74",
+  "resource": "nethttp_summary-record-service.vip.cf.nr-ops.net_80",
+  "adapter": "http",
+  "workers": "15",
+  "count": "14",
+  "tickets": "14",
+  "event": "success"
 }
 ```
 
