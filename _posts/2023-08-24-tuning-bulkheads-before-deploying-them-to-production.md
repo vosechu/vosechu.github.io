@@ -74,6 +74,20 @@ You're going to need to send this telemetry to your timeseries datastore of choi
 + **Current state of the bulkhead**
   - For Semian this is 'success', 'busy', and 'circuit_open'
 
+Probably this is going to look something like this:
+```json
+{
+  appName: 'RPM API Production',
+  host: 'api-grape-5fcbf68bcb-cgp74',
+  resource: 'nethttp_summary-record-service.vip.cf.nr-ops.net_80',
+  adapter: 'http',
+  workers: '15',
+  count: '14',
+  tickets: '14',
+  event: 'success'
+}
+```
+
 ### Next steps
 
 I wish I could give you more concrete steps on how to do this in your language of choice, but I can't. What I can do now is show you how this would be done in Ruby with Semian, and maybe that will help you understand how to do it in _your_ language.
@@ -333,3 +347,7 @@ I'm glad you could join me on this adventure! It's been a wild ride, hasn't it?
 If you remember only one thing from this, I hope it's this:
 
 **Tuning bulkheads _requires_ historical information, and if you try to guess, you're going to piss off your customers.**
+
+But I don't want you to be scared off; this _is_ a solvable problem and using historical data we can absolutely find viable numbers _before_ going to production.
+
+As always, I'd love to hear your thoughts on this post. Please email me any feedback at [chuck@newrelic.com](mailto:chuck@newrelic.com), [vosechu@gmail.com](mailto:vosechu@gmail.com) (please send to both!).
