@@ -67,6 +67,15 @@
           <div class="sidebar nobottommargin clearfix">
             <div class="sidebar-widgets-wrap">
               <div class="widget clearfix">
+                <h4>Recent Nuggets</h4>
+                <ul>
+                  {% for post in site.categories.nuggets limit:5 %}
+                    <li>
+                      <a href="{{ post.url }}">{{post.title | truncate:35 }}</a><br />
+                      {{ post.date | date: '%B %d, %Y' }}
+                    </li>
+                  {% endfor %}
+                </ul>
                 <h4>Recent Posts</h4>
                 <ul>
                   {% for post in site.categories.tech limit:5 %}
