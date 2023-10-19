@@ -5,13 +5,26 @@ title: Setting Bulkhead parameters before deploying them to production
 tags: semian, bulkhead, resilience, nr-architect
 ---
 
+Notes:
+- Add more details about why teams should use Semian (assume that this is on ruby weekly)
+- Intro is already assuming that you know what a bulkhead is, need the 2 sentence version
+- Stronger call to action: move into something like the quickstarts, ruby instrumentation docs, etc
+
 ## Introduction
 
-There are a lot of articles describing bulkheads/connection pools and circuit breakers, but remarkably few about how to tune them. I've found a few lonely articles on tuning circuit breakers, but I've found zero about tuning bulkheads and connection pools. Even GPT4 doesn't seem to know how to do it outside of "rigorous monitoring after deploying them to production", which seems... unwise.
+**When bulkheads and circuit breakers work together, one struggling external service or database will no longer take out your entire service.**
 
-The problem here is that a poorly tuned bulkhead can be catastrophic. Worse, the problem can be subtle and hard to detect, only affecting maybe 0.1% of traffic in a maddeningly random way.
+This article exists to help you find the right configuration for your bulkhead system of choice _before_ finding out the config is insufficient for production loads.
 
-I'm going to give you a framework to get your exact tuning numbers _before_ shipping them to production, as well as examples of the exact graphs you'll need to monitor them.
+Bulkheads can be implemented in many different ways and at a lot of different levels, so I'll try to cover the general process for finding the right config. But because we all know it's helpful to have a specific example, I'll talk about the Ruby library [Semian](https://www.ruby-toolbox.com/projects/semian) in this article.
+
+Semian is a unified, low-effort tool that adds circuit breakers and bulkheads to _most_ network requests automatically. It covers http, mysql/postgres, redis and grpc out of the box.
+
+There are a lot of articles describing bulkheads/connection pools and circuit breakers, but remarkably few about how to tune them. I've found a few lonely articles on tuning circuit breakers, but I've found zero about tuning bulkheads and connection pools.
+
+**The problem here is that a poorly tuned bulkhead can be catastrophic.** Worse, the problem can be subtle and hard to detect, only affecting maybe 0.1% of traffic in a maddeningly random way.
+
+I'm going to give you a framework to get your exact tuning numbers _before_ turning them on in production, as well as examples of the exact graphs you'll need to monitor them.
 
 Here's what we're going to cover:
 * A general, pseudo-code example
@@ -52,18 +65,16 @@ Sounds easy right? Let's get started by finding that data!
 
 ### The data you need to gather are:
 
-Unfortunately, I don't know of a system that already gathers this data for you. New Relic certainly doesn't (yet!), so we're going to have to get a little creative.
+You'll need to send this telemetry, with the attributes specified below, to your timeseries datastore of choice. At New Relic, we send this data as events to NRDB, our timeseries database.
 
-You're going to need to send this telemetry to your timeseries datastore of choice. I'll show how to send this to NRDB in the next section.
-
-+ **Application name** (After you've deployed it in all your apps, you'll ned a way to filter them!)
++ **Application name** (After you've deployed it in all your apps, you'll need a way to filter them!)
 + **Host name** of the container or machine this worker is running on.
   - Specifically, you need the hostname of the thing that's going to hold the connection pool or the semaphore, so if you're running containers on ECS, you want the container, not the EC2 instance that's holding the containers.
 + **Resource name**
   - For Semian we use a string like `nethttp_authorization.service.nr-ops.net_443` (Net::HTTP is the client library, then the url, then the port)
   - Whatever the format, this is the namespace that you want to isolate from all other namespaces, so be thoughtful about whether you want port 80 isolated from 443 or not.
 + **Client library name**
-  - For semian, this called `adapter` and is set to 'http', 'mysql', 'redis', etc.
+  - For semian, this is called `adapter` and is set to 'http', 'mysql', 'redis', etc.
   - This is useful because mysql and http work differently, so they'll likely have different settings and different failure conditions.
 + **Total number of current workers** on this host.
   - This uses the same definition for host as above.
@@ -74,7 +85,7 @@ You're going to need to send this telemetry to your timeseries datastore of choi
 + **Current state of the bulkhead**
   - For Semian this is 'success', 'busy', and 'circuit_open'
 
-Probably this is going to look something like this:
+Probably the telemetry data is going to look something like this:
 ```json
 {
   "appName": "RPM API Production",
@@ -88,32 +99,15 @@ Probably this is going to look something like this:
 }
 ```
 
-### Next steps
-
-I wish I could give you more concrete steps on how to do this in your language of choice, but I can't. What I can do now is show you how this would be done in Ruby with Semian, and maybe that will help you understand how to do it in _your_ language.
-
-**If you want, you can skip down to the section titled "The charts you need (and how to read them)".**
-
 ## A specific example using Semian in Ruby
 
-### Introduction
-
-Recalling the pseudo-code from above, in this section, we're going to start in on the first two points.
-
-1. **Wrap every resource (network request, db, rpc, etc) with a method that sends some data to a timeseries datastore.**
-1. **Store that data for a couple of weeks.**
-1. Find the longest period of time that doesn't have any obvious incidents or oddities and adjust your time picker to only include that time range.
-1. Determine the maximum number of connections that happened in non-incident conditions, and configure your bulkhead/connection pool max to one more than that value.
-1. (Optional) If possible, find an incident and confirm that this value is _low enough_ that it would catch and incident, but _high enough_ that it doesn't catch any traffic during a slight slowdown.
-1. Update your bulkhead config and use the same charts to monitor that it's working.
-
 ### Implementation
+
+I will now show you how this can be done in Ruby with Semian, and maybe that will help you understand how to do it in your language.
 
 Semian is kind enough to give us a callback which fires every time Semian connects to _any_ kind of supported resource, for both bulkheads and circuit breakers. We'll hook into that first and use it to send our timeseries data.
 
 For the example below, I'm going to _only_ show network requests, but Semian is happy to cover mysql/postgres, redis, and grpc. They're configured slightly differently, but the core ideas are going to be the same.
-
-**Sidenote:** Using Custom Events for this is pretty expensive and I'd like to do it with Dimensional Metrics, but I haven't had time to figure this out yet. If you're reading this before I've updated this section and want an update, send me an email (contact in the Audience section above).
 
 ```ruby
 # config/initializers/semian_init.rb
@@ -181,20 +175,9 @@ At this point, you should be able to ship this to some innocuous environment lik
 
 ## The charts you need (and how to read them)
 
-### Introduction
-
-Recalling the pseudo-code from above, we've just wrapped our resource and started storing data, so we're on to the next two parts.
-
-1. Wrap every resource (network request, db, rpc, etc) with a method that sends some data to a timeseries datastore.
-1. Store that data for a couple of weeks.
-1. **Find the longest period of time that doesn't have any obvious incidents or oddities and adjust your time picker to only include that time range.**
-1. **Determine the maximum number of connections that happened in non-incident conditions, and configure your bulkhead/connection pool max to one more than that value.**
-1. (Optional) If possible, find an incident and confirm that this value is _low enough_ that it would catch and incident, but _high enough_ that it doesn't catch any traffic during a slight slowdown.
-1. Update your bulkhead config and use the same charts to monitor that it's working.
-
 ### Looking at the raw data
 
-Now that you have that running, execute this query (or something like it) in your timeseries database:
+Now that you have that running, execute the following query (or something like it) in your timeseries database:
 
 ```sql
 SELECT *
@@ -209,7 +192,7 @@ This will output a few lines that look like this:
 |RPM API Production|api-grape-5fcbf68bcb-cgp74|nethttp_summary-record-service.vip.cf.nr-ops.net_80|15|13|30|success|http|84.3k|
 |RPM API Production|api-grape-5fcbf68bcb-cgp74|nethttp_summary-record-service.vip.cf.nr-ops.net_80|15|12|30|success|http|82k|
 
-Before we dig into how to use it, let's go over what some of them mean:
+Before we dig into how to use this data, let’s go over what some of these attributes mean:
 
 * `tickets` is the maximum configured number of concurrent connections to this resource per host.
 * `workers` is the number of processes/threads that are currently running on this host.
@@ -235,9 +218,9 @@ FACET appName
 
 ### Finding a good baseline
 
-Now that you've adjusted your filters to select only the one Application and only one resource, we can work to find a good baseline time range.
+Now that you've adjusted your filters to select only one Application and only one resource, we can work to find a good baseline time range.
 
-I'll use this query:
+I'll use the following query:
 ```sql
 SELECT
   max(tickets - count - 1) AS 'Max connections',
@@ -245,7 +228,7 @@ SELECT
 FROM SemianEvent
 ```
 
-**Note:** In the following screenshots, that query is the one on the right. On the left, you can see a sneak peak of the final query I'll show you at the end of this section.
+**Note:** In the following screenshots, that above query is the one on the right. On the left, you can see a sneak peak of the final query I'll show you at the end of this section.
 
 This is what those queries look like:
 ![A chart titled 'Percentile connection count' which has two wiggly lines, one labeled 'Max connections' and one labeled 'Percentile connections (99%)'. The Max line is above the 99% line. Both lines have a short spike of connections on the left side, and both have a long hump of increased connections in the middle of the line around 8pm. There is a red box drawn around the spike and the hump that's labeled 'Problem areas', and a green box drawn around the area between the spike and hump labeled 'Good baseline'. On the left of the image are 3 numbers: the number labeled 99.999% is 14, 99.99% is also 14, and 99.9% is 12. We don't understand those numbers yet.](/images/posts/good_baseline.png "A chart titled 'Percentile connection count' which has two wiggly lines, one labeled 'Max connections' and one labeled 'Percentile connections (99%)'. The Max line is above the 99% line. Both lines have a short spike of connections on the left side, and both have a long hump of increased connections in the middle of the line around 8pm. There is a red box drawn around the spike and the hump that's labeled 'Problem areas', and a green box drawn around the area between the spike and hump labeled 'Good baseline'. On the left of the image are 3 numbers: the number labeled 99.999% is 14, 99.99% is also 14, and 99.9% is 12. We don't understand those numbers yet.")
@@ -289,7 +272,7 @@ Welp, unfortunately we don't know how you did. It looks like the graph is cut of
 
 But we _can_ look at the errors that came out! That should be a pretty good approximation!
 
-Using this query:
+Using the following query:
 ```sql
 SELECT rate(count(*), 1 minute)
 FROM SemianEvent
@@ -314,7 +297,7 @@ Please forgive me for not giving this query to you earlier. I really need you to
 
 But now that you've gone through the entire doc above, I feel like I can trust you to use historical data to calculate an acceptable value that is low enough to catch incidents, and high enough to not cut off real customers.
 
-This is the query that was on the left side of all the screenshots above:
+Below is the query that was on the left side of all the screenshots above:
 
 ```sql
 SELECT
@@ -330,9 +313,9 @@ From this chart, you can choose one of these numbers and put it straight into yo
 
 ### What if the numbers are too high?
 
-**Note**: If all of numbers on this chart are the same (which happen to _also_ be the same number as your worker count), it means that there _is no acceptable number_. You need more workers per host, or you need more workers in general (with more hosts to run them).
+**Note**: If all of the numbers on this chart are the same (which happen to _also_ be the same number as your worker count), it means that there _is no acceptable number_. You need more workers per host, or you need more workers in general (with more hosts to run them).
 
-**Note**: The same is true if the numbers on that chart are above some acceptable limit (for instance, if you want to reserve 2 workers for healthchecks). The remedy is the same, you need more workers per host or more workers in general.
+**Note**: The same is true if the numbers on that chart are above some acceptable limit (for instance, if you want to reserve 2 workers for health checks). The remedy is the same, you need more workers per host or more workers in general.
 
 We had this exact problem in the beginning. In our case, we used to run 15 unicorn workers, and we wanted to make sure that 2 were left in reserve for health checks. So we didn't want any services to exceed 13 tickets. Unfortunately, one of our services frequently reached 15 during baseline times. So we know that it is fully saturating all workers on one server on occasion; maybe our load balancing is off, or maybe it's just bad luck. 13 tickets on 15 workers meant that we were reserving 13% of our capacity for health checks.
 
@@ -349,5 +332,7 @@ If you remember only one thing from this, I hope it's this:
 **Tuning bulkheads _requires_ historical information, and if you try to guess, you're going to piss off your customers.**
 
 But I don't want you to be scared off; this _is_ a solvable problem and using historical data we can absolutely find viable numbers _before_ going to production.
+
+**Once you have this deployed to production, you’ll need to continue to monitor these numbers.** My team reviews them once a month, but also any time we change the number of processes/threads and any time someone introduces a new external service.
 
 As always, I'd love to hear your thoughts on this post. Please email me any feedback at [chuck@newrelic.com](mailto:chuck@newrelic.com), [vosechu@gmail.com](mailto:vosechu@gmail.com) (please send to both!).
