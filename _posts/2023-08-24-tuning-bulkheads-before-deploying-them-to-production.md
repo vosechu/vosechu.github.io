@@ -5,11 +5,6 @@ title: Setting Bulkhead parameters before deploying them to production
 tags: semian, bulkhead, resilience, nr-architect
 ---
 
-Notes:
-- Add more details about why teams should use Semian (assume that this is on ruby weekly)
-- Intro is already assuming that you know what a bulkhead is, need the 2 sentence version
-- Stronger call to action: move into something like the quickstarts, ruby instrumentation docs, etc
-
 ## Introduction
 
 **When bulkheads and circuit breakers work together, one struggling external service or database will no longer take out your entire service.**
