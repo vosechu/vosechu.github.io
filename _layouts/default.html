@@ -79,8 +79,10 @@
   <![endif]-->
 
   <!-- Document Title ============================================= -->
-  {% if page.page_title %}
-    <title>{{ page.page_title }} - Chuck Lauer Vose</title>
+  {% if page.title %}
+    <title>{{ page.title }} - Chuck Lauer Vose</title>
+  {% elsif post.title %}
+    <title>{{ post.title }} - Chuck Lauer Vose</title>
   {% else %}
     <title>Chuck Lauer Vose</title>
   {% endif %}
