@@ -44,8 +44,6 @@
     <meta content="{{ site.url }}/images/pages/{{ page.image }}" property="og:image">
   {% elsif post.image %}
     <meta content="{{ site.url }}/images/posts/{{ post.image }}" property="og:image">
-  {% else %}
-    <meta content="{{ site.url }}/images/orange_rose_transparent.png" property="og:image">
   {% endif %}
   {% if page.categories %}
     {% for category in page.categories limit:1 %}
