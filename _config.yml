@@ -1,6 +1,7 @@
 # Site settings
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://chuckvose.com" # the base hostname & protocol for your site
+title: "Ramblings of Chuck Lauer Vose"
 
 markdown: kramdown
 highlighter: rouge
