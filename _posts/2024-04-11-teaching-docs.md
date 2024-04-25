@@ -1,8 +1,8 @@
 ---
 layout: post
 categories: nuggets
-title: Simple format for killer internal documentation
-description: Some context and a format for writting incredible internal documentation.
+title: How to write onboarding docs for large organizations
+description: This is the strategy I use to write docs for current practitioners, and how I help newcomers to the field gain the context they need to become current practitioners.
 tags: nuggets
 ---
 
