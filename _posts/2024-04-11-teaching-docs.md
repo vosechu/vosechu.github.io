@@ -34,14 +34,28 @@ So someone tries to refactor it and make it easier to read. They simplify it, pu
 
 The problem is that newcomers need different formats, and are missing different things from their history.
 
+### Current practitioners need different things than newcomers
+
 ![A graph of learning over time. The line slants up and to the right, then levels out. It's divided into two parts, the left says "videos, 1-1, etc. Everyone is different here". The one on the right says "Reference docs, source code, people's heads". The left side looks like swiss cheese; it has holes in it.](/images/posts/learning_chart.jpg)
 
 This chart is how I think people learn. On the left is all the content needed to get people up to speed as current practitioners. On the right is all the knowledge you gain after you've become a practitioner. Current practitioners favor resources that are searchable, bookmarkable, or fixed in location. But newcomers will have different histories and backgrounds, they will have different problems. Many of them will hit the same _rough_ problems, but no one document will work for all newcomers in the same way that it _does_ work for current practitioners.
 
 So we need to split the process into two parts. Get current practitioners the information they need, then get newcomers to the point where they can read those documents.
 
+### What newcomers need
+
 Newcomers will likely need 1-1 interactions to determine which gaps they have. There may still be docs that can be written, but it helps to have a real human say, "hey, I see you're hitting this problem, I wrote this doc about exactly that". We can't expect them to search the wiki and magically find just the right doc to help them onboard; they need help to find that doc. There is no search engine that can help them find just the right resources, or rather, there is, it's called a human.
 
 So my recommendation is that we focus first on producing great reference docs for current practitioners. Then as we teach more people, we try to document the things that help our trainees feel comfortable and get over the hurdles. It's a little bit like the airplane "put your mask on first, then help others".
 
 But make no mistake, failing to write onboarding docs will ensure that _you_ will be the only trainer. If you write docs, newcomers will help _other_ newcomers onboard; that is why we write newcomer docs. Not so they can be found by newcomers, but so that they can be referenced and linked to by people that you train!
+
+### Conclusion
+
+Current practitioners and newcomers need different things. Current practitioners need reference docs, but newcomers need all manner of different strategies, so they need a real human guide.
+
+Write docs for current practitioners. Then teach enough people that you get a feeling for the common problems and start writing about those problems. People you train will then train other newcomers, and you can start in on a different domain.
+
+But if you don't write docs for newcomers, you will be the trainer forever.
+
+I hope this helps!
