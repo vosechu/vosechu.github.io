@@ -11,10 +11,10 @@ tags: nuggets
 When people change, they go through these stages and as a compassionate human, it's important to understand what others are going through, what each stage looks like, how to help them move through the stages, and how to help if/when they fall off the wagon.
 
 Favorite links
-* https://www.youtube.com/watch?v=Oj5lA7FfUkI (I watch your videos but never change my life)
-* https://sphweb.bumc.bu.edu/otlt/mph-modules/sb/behavioralchangetheories/behavioralchangetheories6.html
-* https://medicine.llu.edu/academics/resources/stages-change-model
-* https://www.ncbi.nlm.nih.gov/books/NBK556005/
+* [Youtube: I watch your videos but never change my life](https://www.youtube.com/watch?v=Oj5lA7FfUkI)
+* [https://sphweb.bumc.bu.edu/otlt/mph-modules/sb/behavioralchangetheories/behavioralchangetheories6.html](https://sphweb.bumc.bu.edu/otlt/mph-modules/sb/behavioralchangetheories/behavioralchangetheories6.html)
+* [https://medicine.llu.edu/academics/resources/stages-change-model](https://medicine.llu.edu/academics/resources/stages-change-model)
+* [https://www.ncbi.nlm.nih.gov/books/NBK556005/](https://www.ncbi.nlm.nih.gov/books/NBK556005/)
 
 The stages (Thank you to sphweb.bumc.bu.edu website for this incredible text!)
 * Precontemplation - In this stage, people do not intend to take action in the foreseeable future (defined as within the next 6 months). People are often unaware that their behavior is problematic or produces negative consequences. People in this stage often **underestimate the pros of changing behavior and place too much emphasis on the cons** of changing behavior.
