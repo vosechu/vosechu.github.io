@@ -52,16 +52,9 @@
       padding: 10px 12px 4px;
       backdrop-filter: blur(6px);
     }
-    /* Little's Law: a collapsible panel tucked into the diagram's lower-left. It
-       is always available; the saturation act springs it open. */
-    #little {
-      position: absolute; left: 16px; bottom: 12px; width: 320px; max-width: 48%;
-      background: var(--panel-solid); border: 1px solid var(--border); border-radius: 10px;
-      padding: 6px 11px; font-size: 12px; color: var(--ink-dim); z-index: 5;
-    }
-    #little summary { cursor: pointer; font-weight: 700; color: var(--ink); font-size: 10.5px; text-transform: uppercase; letter-spacing: 1px; }
-    #little .little-law { margin: 7px 0 0; font-size: 11px; color: var(--ink-dim); line-height: 1.45; }
-    #little-body { margin-top: 7px; font-variant-numeric: tabular-nums; }
+    /* Little's Law: a collapsible section in the controls panel (built by controls.js). */
+    .little-law { margin: 6px 0 0; font-size: 11px; color: var(--ink-dim); line-height: 1.45; }
+    #little-body { margin-top: 7px; font-variant-numeric: tabular-nums; font-size: 12px; }
     #little-body .eq { color: var(--ink); }
     #little-body .eq b { color: var(--ink); font-weight: 700; }
     #little-body .have { margin-top: 3px; color: var(--ink-dim); }
@@ -237,11 +230,6 @@
           <span class="chip" id="chip-q"><b id="m-q">0</b> queued</span>
         </div>
         <svg id="stage" viewBox="0 0 1200 508" role="img" aria-label="system topology"></svg>
-        <details id="little">
-          <summary>Little's Law</summary>
-          <p class="little-law">Workers you need = request rate × how long each request is held. The pool size is not part of the math; it is what you have to compare against.</p>
-          <div id="little-body"></div>
-        </details>
       </div>
 
       <div id="tour">
