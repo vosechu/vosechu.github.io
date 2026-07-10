@@ -116,6 +116,7 @@ export function initRender(root, config) {
   root.appendChild(queueBar);
   const queueLabel = el('text', { class: 'outlabel', x: 428, y: GW.y + 70, 'text-anchor': 'middle' }, '');
   root.appendChild(queueLabel);
+  root.appendChild(el('text', { class: 'queuecap', x: 428, y: GW.y + 288, 'text-anchor': 'middle' }, 'queue'));
 
   // Dependencies
   names.forEach((name, i) => {
@@ -150,6 +151,8 @@ export function initRender(root, config) {
     root.appendChild(depQueueBar);
     const depQueueLabel = el('text', { class: 'outlabel', x: NODE_X - 12, y: y - 3, 'text-anchor': 'middle' }, '');
     root.appendChild(depQueueLabel);
+    const qcx = NODE_X - 22, qcy = y + NODE_H / 2;   // vertical "queue" caption left of the bar
+    root.appendChild(el('text', { class: 'queuecap', x: qcx, y: qcy, 'text-anchor': 'middle', transform: `rotate(-90 ${qcx} ${qcy})` }, 'queue'));
     Object.assign(deps[name], { card, badge, badgeLabel, fire, capSlots, capLabel, depQueueBar, depQueueLabel, depQueueBottom: y + NODE_H });
   });
 
