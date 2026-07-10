@@ -270,7 +270,7 @@ function section(label, entering) {
 // Little's Law as its own collapsible section: the required-workers readout,
 // updated live by updateLittle. Opens at the saturation act; collapsible anytime.
 function littleSection(open) {
-  const sec = section("Little's Law", false);
+  const sec = section("Little's Law (safe to ignore)", false);
   sec.open = open;
   const law = document.createElement('p');
   law.className = 'little-law';

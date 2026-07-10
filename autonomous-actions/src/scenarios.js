@@ -9,19 +9,19 @@ export const ACTS = [
     caption: 'Every request calls all dependencies at once and holds a worker until the slowest one replies, so throughput is the pool divided by that hold time.',
     readoutVisible: false },
 
-  { title: 'Incident: External refuses connections',
-    instruction: 'Set its error rate to 100% and watch availability fall, since every request calls it. What is the maximum error rate we can handle and still meet our SLO?',
+  { title: 'Incident: the External Service refuses connections',
+    instruction: 'The External Service is a third-party dependency we do not control, like a payment gateway or a maps API. Set its error rate to 100% and watch availability fall, since every request calls it. What is the maximum error rate we can handle and still meet our SLO?',
     caption: 'Fast failures return instantly, so they never tie up a worker. But with nothing to catch them, they pass straight to the client and the SLO breaks.',
     readoutVisible: false },
 
   { title: 'Response: circuit breaker',
-    instruction: 'Turn the External error rate up to 5% and confirm the SLO breaches. Then ship a breaker: turn breakers on with a threshold around 5 errors per second, and watch it trip. The failing calls become degraded responses instead of errors, so availability recovers.',
+    instruction: 'Turn the External Service error rate up to 5% and confirm the SLO breaches. Then add a circuit breaker: turn breakers on with a threshold around 5 errors per second, and watch it trip. The failing calls become degraded responses instead of errors, so availability recovers.',
     caption: 'A breaker short-circuits calls to a dependency we already know is down, so we stop paying for them. Availability recovers, but only if that feature can be switched off: the feature that needed the External Service is now down for 100% of people, instead of the whole service being down for some of them. It is a difficult call.',
     readoutVisible: false },
 
   { title: 'Incident: Analytics hangs',
-    instruction: 'Analytics is supposed to be fast, so a tight timeout on it is cheap. Set its outgoing timeout to about 200 ms and notice healthy traffic is untouched. Then make it hang: drag its latency up to several seconds. The timeout cuts the hung calls at 200 ms, they count as errors, and the breaker you already shipped trips and turns them into degraded responses.',
-    caption: 'A timeout limits the damage one runaway call can do: it caps how long we will wait, so a single hung request cannot tie up a worker indefinitely. On a dependency that is meant to be fast, a tight timeout is cheap insurance: set just above normal latency, it almost never fires in health, but it cuts a hang short, and the breaker then catches the errors it produces.',
+    instruction: 'Analytics is supposed to be fast, so a tight timeout on it is cheap. Set its outgoing timeout to about 200 ms and notice healthy traffic is untouched. Then make it stall: drag its latency up to several seconds. The timeout cuts those stalled calls off at 200 ms, they count as errors, and the breaker you added earlier trips and turns them into degraded responses.',
+    caption: 'A timeout limits the damage from a call that never comes back: it caps how long we will wait, so one stuck call cannot tie up a worker forever. On a dependency that is meant to be fast, a tight timeout is cheap insurance: set just above normal latency, it almost never fires while things are healthy, but it cuts a stuck call off fast, and the breaker then catches the errors it produces.',
     readoutVisible: false },
 
   { title: 'Incident: Reports slows down',

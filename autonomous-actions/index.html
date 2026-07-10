@@ -135,6 +135,9 @@
       transition: background .15s, border-color .15s;
     }
     button:hover { background: #223042; border-color: #35485c; }
+    /* Tour navigation stands out in the accent color. */
+    #back, #next { background: var(--teal); color: #06231d; border-color: transparent; font-weight: 650; }
+    #back:hover, #next:hover { background: #4be3c6; border-color: transparent; }
     .progress { display: flex; gap: 6px; margin-left: auto; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #29384a; }
     .dot.on { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
