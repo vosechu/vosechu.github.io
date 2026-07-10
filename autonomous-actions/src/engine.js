@@ -1,4 +1,4 @@
-import { FAST_FAIL_MS, LATENCY_SAMPLE_SIZE, ADAPTIVE_MIN } from './config.js';
+import { FAST_FAIL_MS, LATENCY_SAMPLE_SIZE, ADAPTIVE_MIN, ADAPTIVE_HEADROOM } from './config.js';
 
 // One outbound call's outcome, ignoring queueing. r is a [0,1) roll.
 export function resolveOutcome(target, timeoutMs, r) {
@@ -119,22 +119,6 @@ export class Sim {
       for (const leg of req.legs) if (leg.target === name && leg.phase === 'service') count += 1;
     }
     return count;
-  }
-
-  // The longest an in-flight leg to this callee has been running. A leg that has
-  // been outstanding a long time signals a slow dependency before it completes,
-  // so the adaptive controller can react to an 8s dependency within one sample
-  // window instead of waiting the full 8s for the first completion.
-  _maxInflightAge(name, nowMs) {
-    let maxAge = 0;
-    for (const req of this.inflight) {
-      for (const leg of req.legs) {
-        if (leg.target === name && (leg.phase === 'service' || leg.phase === 'queued')) {
-          maxAge = Math.max(maxAge, nowMs - req.startAt);
-        }
-      }
-    }
-    return maxAge;
   }
 
   // Start one outbound leg to a callee. Applies the breaker gate, then (if
@@ -316,30 +300,33 @@ export class Sim {
     return sorted[Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))];
   }
 
-  // Proportional bulkhead sizing. The healthy pool is the full worker pool; as
-  // observed latency rises above the baseline, the target size shrinks inversely
-  // toward ADAPTIVE_MIN (size ~ baseline / p95). Each sample the pool moves halfway
-  // to its target, so the change is visible and settles at a size that reflects the
-  // current latency, rather than always collapsing to the floor.
+  // Passive minRTT gradient controller (the Netflix Gradient2 / TCP Vegas family).
+  // It reads COMPLETED latency, never in-flight leg age: age ramps from zero to the
+  // full response time for any slow call, so a floor learned from it would misread a
+  // merely-slow dependency as overloaded and shed it. Completed latency stays flat
+  // when a dependency is slow-but-fine, so only a queue climbing above the learned
+  // floor pulls the gradient below 1 and sheds the pool. It floats up to the live
+  // worker pool size. Known limit: the floor is learned from live traffic, so a
+  // dependency overloaded from the very first sample learns an inflated floor; every
+  // scenario warms up healthy first, which is how real controllers behave.
   _runAdaptive(nowMs) {
     if (!this.config.bulkheadsEnabled) return;
     for (const [name, target] of Object.entries(this.config.targets)) {
       const a = target.adaptive;
       if (!a || !a.enabled) continue;
       if (nowMs - a.lastSampleMs < a.sampleWindowMs) continue;
+      const current = this._percentileOf(this.recentByTarget[name], 95);
+      if (current <= 0) continue;            // no completed sample yet, so nothing to learn from
       a.lastSampleMs = nowMs;
-      const p95 = this._percentileOf(this.recentByTarget[name], 95);
-      const observed = Math.max(p95, this._maxInflightAge(name, nowMs));
-      const ratio = a.baselineLatencyMs / Math.max(observed, 1);
-      const ceiling = this.config.workerPoolSize;   // adaptive floats up to the live pool size
-      const desired = Math.max(ADAPTIVE_MIN, Math.min(ceiling, Math.round(ratio * ceiling)));
-      a.target = desired;         // exposed for the adaptive readout
-      a.observedMs = observed;    // the latency signal that drove this decision
-      const gap = desired - target.bulkheadSize;
-      if (gap !== 0) {
-        const step = Math.max(1, Math.round(Math.abs(gap) / 2));
-        target.bulkheadSize += gap > 0 ? Math.min(step, gap) : Math.max(-step, gap);
-      }
+      a.floorMs = a.floorMs == null ? current : Math.min(a.floorMs, current);
+      const gradient = Math.min(1, a.floorMs / Math.max(current, 1));
+      const prev = target.bulkheadSize;
+      const desired = Math.max(ADAPTIVE_MIN,
+        Math.min(this.config.workerPoolSize, Math.round(prev * gradient + ADAPTIVE_HEADROOM)));
+      target.bulkheadSize = desired;
+      a.target = desired;         // exposed for the readout
+      a.observedMs = current;     // the latency signal that drove this decision
+      a.decision = desired < prev ? 'shedding' : desired > prev ? 'opening up' : 'steady';
     }
   }
 

@@ -1,6 +1,7 @@
 export const FAST_FAIL_MS = 5;         // a clipped connection fails almost instantly
 export const LATENCY_SAMPLE_SIZE = 50; // completions kept for p95
 export const ADAPTIVE_MIN = 2;
+export const ADAPTIVE_HEADROOM = 4;    // a healthy pool grows by this many slots per sample, so it keeps probing upward
 // Adaptive sizing scales against, and is capped by, the live worker pool size
 // (config.workerPoolSize), so the pool floats up to whatever the pool is set to.
 export const DEFAULT_CAPACITY = 12;    // callee-side service slots; below the pool so a queue can form
