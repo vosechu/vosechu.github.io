@@ -373,6 +373,20 @@ test('a bulkhead rejection counts as an error and trips the breaker', () => {
   assert.equal(sim.getState().targets['Service C'].breaker.state, 'open');
 });
 
+test('at the default settings a full bulkhead rejects overflow and a downstream queue forms', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
+  const cfg = defaultConfig();
+  cfg.bulkheadsEnabled = true;
+  cfg.requestRatePerSec = 200;
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(101), config: cfg });
+  sim.tick(0);
+  run(sim, 50, 3000, 50);
+  const s = sim.getState();
+  assert.ok(s.counters.reject > 0);   // bulkheadSize below the pool, so overflow is rejected
+  const queued = Object.values(s.targets).some((t) => t.upstream.queueDepth > 0);
+  assert.ok(queued);                    // capacity below the pool, so calls queue at the dependency
+});
+
 test('a downstream serves only up to its capacity; the rest wait in its queue holding a worker', () => {
   // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
   const cfg = defaultConfig();
