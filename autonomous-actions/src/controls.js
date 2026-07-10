@@ -1,5 +1,5 @@
 import { Sim, effectiveRate } from './engine.js';
-import { defaultConfig, ADAPTIVE_MAX } from './config.js';
+import { defaultConfig, ADAPTIVE_MAX, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
 import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
@@ -9,9 +9,7 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 const handle = initRender(document.getElementById('stage'), sim.config);
 const panel = document.getElementById('panel');
 
-const ms = (v) => `${v} ms`;
 const plain = (v) => `${v}`;
-const pct = (v) => `${v}%`;
 const perSec = (v) => `${v}/s`;
 const dur = (v) => (v >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)} s` : `${v} ms`);
 const labelOf = (name) => sim.config.targets[name].label || name;
@@ -326,15 +324,23 @@ document.getElementById('next').addEventListener('click', () => goToActNumber(ac
 document.getElementById('back').addEventListener('click', () => goToActNumber(actIndex));
 showAct(actFromHash());
 
+// The sim runs on a clamped clock: each frame advances it by at most MAX_TICK_MS
+// of real time. A backgrounded tab or slept machine pauses requestAnimationFrame,
+// and without this the next frame would jump the clock by the whole gap and inject
+// rate*gap arrivals in a single tick, flooding the queue.
+let simNowMs = null, lastFrameMs = null;
 function frame() {
-  sim.tick(clock.now());
+  const real = clock.now();
+  simNowMs = simNowMs === null ? real : simNowMs + Math.min(real - lastFrameMs, MAX_TICK_MS);
+  lastFrameMs = real;
+  sim.tick(simNowMs);
   const state = sim.getState();
   render(state, handle);
   // When oscillation is on (and the slider is not being held), drive the rate
   // thumb from the current effective rate so the traffic is visibly breathing.
   const osc = sim.config.loadOscillation;
   if (rateUI && osc.enabled) {
-    const eff = Math.round(effectiveRate(sim.config.requestRatePerSec, osc, clock.now()));
+    const eff = Math.round(effectiveRate(sim.config.requestRatePerSec, osc, simNowMs));
     rateUI.input.value = String(eff);
     rateUI.val.textContent = perSec(eff);
   }

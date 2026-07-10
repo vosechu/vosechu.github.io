@@ -157,7 +157,7 @@ export function initRender(root, config) {
   const metrics = { ok: byId('m-ok'), deg: byId('m-deg'), err: byId('m-err'), rej: byId('m-rej'), p95: byId('m-p95'), q: byId('m-q'),
     avail: byId('m-avail'), slo: byId('slo-state') };
 
-  return { root, leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, metrics, names, colors, ema: {} };
+  return { leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, metrics, names, colors, ema: {} };
 }
 
 // Paint a fixed grid of slots: [0, filled) are busy (colored), [filled, available)

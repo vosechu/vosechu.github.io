@@ -3,12 +3,18 @@ export const LATENCY_SAMPLE_SIZE = 50; // completions kept for p50/p95
 export const ADAPTIVE_MIN = 2;
 export const ADAPTIVE_MAX = 24;            // healthy pool size; matches the 24 shown slots
 export const DEFAULT_CAPACITY = 24;    // callee-side service slots; matches the 24 shown boxes
+// The rAF driver advances the sim by at most this much real time per frame. A
+// backgrounded tab or slept machine pauses requestAnimationFrame; without this
+// cap the next frame would jump the clock by the whole gap and inject rate*gap
+// arrivals in one tick, flooding the queue. Tests call tick() directly and are
+// unaffected.
+export const MAX_TICK_MS = 250;
 
 export function defaultConfig() {
   // timeoutMs here is our OUTGOING timeout wrapping the call to this callee,
   // separate from the front-door config.timeoutMs below.
   const target = (latencyMs, color, abbrev, label, note) => ({
-    weight: 1, latencyMs, errorRate: 0, capacity: DEFAULT_CAPACITY,
+    latencyMs, errorRate: 0, capacity: DEFAULT_CAPACITY,
     breaker: null, bulkheadSize: 24, adaptive: null, timeoutMs: 30000, color, abbrev, label, note,
   });
   return {

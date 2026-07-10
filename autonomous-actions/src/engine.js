@@ -384,12 +384,12 @@ export class Sim {
     const rejectPerSec = this.events.filter((e) => e.scope === 'leg' && e.kind === 'reject').length;
     return {
       nowMs: this.lastMs,
-      workers: { size: this.config.workerPoolSize, busy: this.inflight.length, free: this.config.workerPoolSize - this.inflight.length, byTarget: active },
+      workers: { size: this.config.workerPoolSize, busy: this.inflight.length, byTarget: active },
       queue: { depth: this.queue.length },
       targets,
       counters: { ...this.counters },
       rates: { successPerSec, degradedPerSec, errorPerSec, rejectPerSec, clientErrorsPerSec: errorPerSec },
-      latency: { p50: this._percentile(50), p95: this._percentile(95) },
+      latency: { p95: this._percentile(95) },
       required: { workers: this.config.requestRatePerSec * avgHoldSec },
     };
   }
