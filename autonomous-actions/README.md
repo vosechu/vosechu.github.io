@@ -8,6 +8,6 @@ Serve with `npx serve` or `python3 -m http.server`, then open the served URL (e.
 
 ## Live site
 
-https://vosechu.github.io/research/
+https://chuckvose.com/autonomous-actions/
 
-Live once Pages is enabled (Settings -> Pages -> Source: GitHub Actions) and the workflow runs on main.
+Served as a static page from the vosechu.github.io Jekyll site. The directory has no front matter, so Jekyll copies it verbatim; there is no build step.
