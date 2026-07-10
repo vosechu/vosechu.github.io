@@ -211,7 +211,7 @@ function buildControls(actIndex) {
     oscillationToggle(sys);
     littleSection(true);
     for (const name of Object.keys(sim.config.targets)) {
-      const sec = section(labelOf(name), false);
+      const sec = section(labelOf(name), false, sim.config.targets[name].color);
       latencySlider(sec, name);
       outgoingTimeoutSlider(sec, name);
       errorRateSlider(sec, name);
@@ -233,20 +233,20 @@ function buildControls(actIndex) {
   littleSection(actIndex >= 4);                    // required-workers readout, opens at the saturation act
   // Service sections, focus service on top so its knobs stay at eye level.
   if (actIndex >= 4) {                             // Reports (the slow one): focus from its incident on
-    const sec = section(labelOf('Service B'), actIndex === 4);
+    const sec = section(labelOf('Service B'), actIndex === 4, sim.config.targets['Service B'].color);
     latencySlider(sec, 'Service B');
     outgoingTimeoutSlider(sec, 'Service B');
     breakerRow(sec, 'Service B');
     if (actIndex >= 5) bulkheadSlider(sec, 'Service B');
   }
   if (actIndex >= 3) {                             // Analytics (the fast one): focus of the timeout act
-    const sec = section(labelOf('Service C'), actIndex === 3);
+    const sec = section(labelOf('Service C'), actIndex === 3, sim.config.targets['Service C'].color);
     latencySlider(sec, 'Service C');
     outgoingTimeoutSlider(sec, 'Service C');
     breakerRow(sec, 'Service C');
   }
   if (actIndex >= 1) {                             // External: its errors, and (once breakers exist) its breaker
-    const sec = section(labelOf('External'), actIndex === 1);
+    const sec = section(labelOf('External'), actIndex === 1, sim.config.targets['External'].color);
     errorRateSlider(sec, 'External');
     if (actIndex >= 2) breakerRow(sec, 'External');
   }
@@ -256,10 +256,14 @@ function buildControls(actIndex) {
 // plays the slide-and-flash reveal on the act a section first appears, so a
 // newly unlocked block is obvious. Sections start open; the player can collapse
 // any of them, which matters most in free play where every section shows at once.
-function section(label, entering) {
+function section(label, entering, color) {
   const sec = document.createElement('details');
   sec.className = entering ? 'section enter' : 'section';
   sec.open = true;
+  // A color stripe ties the panel section to its service on the diagram. Kept as a
+  // border (a UI element, not text) so it does not put low-contrast colored text on
+  // the dark panel; the label stays high-contrast.
+  if (color) { sec.style.borderLeft = `3px solid ${color}`; sec.style.paddingLeft = '8px'; }
   const sum = document.createElement('summary');
   sum.textContent = label;
   sec.appendChild(sum);
@@ -283,9 +287,11 @@ function littleSection(open) {
 
 // Act progress dots
 const progress = document.getElementById('progress');
-const dots = ACTS.map(() => {
+const dots = ACTS.map((_, k) => {
   const d = document.createElement('span');
   d.className = 'dot';
+  d.title = `Go to act ${k + 1}`;
+  d.addEventListener('click', () => goToActNumber(k + 1));
   progress.appendChild(d);
   return d;
 });

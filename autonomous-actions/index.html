@@ -11,7 +11,7 @@
       --panel-solid: #141b24;
       --border: #24303d;
       --ink: #dce5f0;
-      --ink-dim: #8397ab;
+      --ink-dim: #aebccb;
       --teal: #2fd6b8;
       --red: #ff5a72;
       --amber: #ffb64d;
@@ -139,7 +139,8 @@
     #back, #next { background: var(--teal); color: #06231d; border-color: transparent; font-weight: 650; }
     #back:hover, #next:hover { background: #4be3c6; border-color: transparent; }
     .progress { display: flex; gap: 6px; margin-left: auto; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: #29384a; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #29384a; cursor: pointer; }
+    .dot:hover { background: var(--ink-dim); }
     .dot.on { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
     #readout {
       margin-top: 10px; font-size: 13.5px; color: var(--amber);
@@ -191,10 +192,10 @@
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
     /* "Fork me on GitHub" corner ribbon (pure CSS, no external asset). */
-    .forkribbon { position: fixed; top: 0; right: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
+    .forkribbon { position: fixed; bottom: 0; right: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
     .forkribbon a {
-      position: absolute; top: 34px; right: -42px; width: 200px; padding: 6px 0;
-      transform: rotate(45deg); text-align: center; pointer-events: auto; text-decoration: none;
+      position: absolute; bottom: 34px; right: -42px; width: 200px; padding: 6px 0;
+      transform: rotate(-45deg); text-align: center; pointer-events: auto; text-decoration: none;
       background: var(--teal); color: #06231d; font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       border-top: 1px solid rgba(255,255,255,0.4); border-bottom: 1px solid rgba(0,0,0,0.3);
