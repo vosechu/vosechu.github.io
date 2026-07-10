@@ -1,5 +1,5 @@
 import { Sim, effectiveRate } from './engine.js';
-import { defaultConfig, ADAPTIVE_MAX, MAX_TICK_MS } from './config.js';
+import { defaultConfig, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
 import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
@@ -58,11 +58,6 @@ function toggle(parent, label, checked, onChange) {
   parent.appendChild(wrap);
 }
 
-function heading(parent, text) {
-  const h = document.createElement('div'); h.className = 'ctlgroup'; h.textContent = text;
-  parent.appendChild(h);
-}
-
 // The rate slider doubles as the sine's center. Grabbing it freezes oscillation
 // so the drag controls the rate directly; releasing resumes the sine from that
 // value (phaseRef = now, so sin starts at 0) rather than snapping to the old phase.
@@ -105,10 +100,23 @@ function breakersToggle(parent) {
     }
   });
 }
-function adaptiveToggle(parent, name) {
-  const t = sim.config.targets[name];
-  if (!t.adaptive) t.adaptive = { enabled: false, sampleWindowMs: 400, baselineLatencyMs: 50, lastSampleMs: 0 };
-  toggle(parent, 'adaptive pool', t.adaptive.enabled, (on) => { t.adaptive.enabled = on; });
+// One service-level toggle makes every dependency's bulkhead adaptive. Each sizes
+// itself against its own healthy latency (captured when enabled), so a slow one
+// sheds while the rest stay open.
+function adaptiveToggle(parent) {
+  const targets = sim.config.targets;
+  const on = Object.values(targets).some((t) => t.adaptive && t.adaptive.enabled);
+  toggle(parent, 'Adaptive pools', on, (checked) => {
+    for (const name of Object.keys(targets)) {
+      const t = targets[name];
+      if (checked) {
+        if (!t.adaptive) t.adaptive = { enabled: true, sampleWindowMs: 400, baselineLatencyMs: t.latencyMs, lastSampleMs: 0 };
+        else { t.adaptive.enabled = true; t.adaptive.baselineLatencyMs = t.latencyMs; }
+      } else if (t.adaptive) {
+        t.adaptive.enabled = false;
+      }
+    }
+  });
 }
 function oscillationToggle(parent) {
   const osc = sim.config.loadOscillation;
@@ -162,7 +170,7 @@ function capacitySlider(parent, name) {
     (v) => { sim.config.targets[name].capacity = v; });
 }
 function bulkheadSlider(parent, name) {
-  poolUIs[name] = slider(parent, 'pool size', 1, 24, 1, sim.config.targets[name].bulkheadSize, plain,
+  poolUIs[name] = slider(parent, 'pool size', 1, 60, 1, sim.config.targets[name].bulkheadSize, plain,
     (v) => { sim.config.targets[name].bulkheadSize = v; });
 }
 // Per-callee breaker tuning on one compact line: a trip count next to the window
@@ -194,59 +202,65 @@ function buildControls(actIndex) {
   panel.appendChild(header);
   rateSlider(panel);
   if (freePlay) {
-    breakersToggle(panel);
-    bulkheadsToggle(panel);
-    workerPoolSlider(panel);
-    timeoutControl(panel);
-    oscillationToggle(panel);
+    const sys = section('System', false);
+    breakersToggle(sys);
+    bulkheadsToggle(sys);
+    adaptiveToggle(sys);
+    workerPoolSlider(sys);
+    timeoutControl(sys);
+    oscillationToggle(sys);
     for (const name of Object.keys(sim.config.targets)) {
-      heading(panel, labelOf(name));
-      latencySlider(panel, name);
-      outgoingTimeoutSlider(panel, name);
-      errorRateSlider(panel, name);
-      capacitySlider(panel, name);
-      bulkheadSlider(panel, name);
-      adaptiveToggle(panel, name);
-      breakerRow(panel, name);
+      const sec = section(labelOf(name), false);
+      latencySlider(sec, name);
+      outgoingTimeoutSlider(sec, name);
+      errorRateSlider(sec, name);
+      capacitySlider(sec, name);
+      bulkheadSlider(sec, name);
+      breakerRow(sec, name);
     }
     return;
   }
-  // Global knobs, unlocked as each act needs them.
-  if (actIndex >= 2) breakersToggle(panel);      // the circuit-breaker act
-  if (actIndex >= 5) bulkheadsToggle(panel);     // the bulkhead act
-  if (actIndex >= 3) workerPoolSlider(panel);    // saturation is in play from the Analytics act on
-  if (actIndex >= 4) timeoutControl(panel);      // front-door timeout: the load-shedding tradeoff in the Reports act
-  // Service sections, focus service on top so its knobs stay at eye level. Each
-  // gets the enter animation on the act that first reveals it.
-  if (actIndex >= 4) {                           // Reports (the slow one): focus from its incident on
-    const sec = section(actIndex === 4);
-    heading(sec, labelOf('Service B'));
+  // Global knobs live in a collapsible System section, unlocked as acts need them.
+  if (actIndex >= 2) {
+    const sys = section('System', actIndex === 2);
+    breakersToggle(sys);                           // the circuit-breaker act
+    if (actIndex >= 5) bulkheadsToggle(sys);       // the bulkhead act
+    if (actIndex >= 6) adaptiveToggle(sys);        // the adaptive-sizing act: all pools adaptive
+    if (actIndex >= 3) workerPoolSlider(sys);      // saturation is in play from the Analytics act on
+    if (actIndex >= 4) timeoutControl(sys);        // front-door timeout: the Reports load-shedding tradeoff
+  }
+  // Service sections, focus service on top so its knobs stay at eye level.
+  if (actIndex >= 4) {                             // Reports (the slow one): focus from its incident on
+    const sec = section(labelOf('Service B'), actIndex === 4);
     latencySlider(sec, 'Service B');
     outgoingTimeoutSlider(sec, 'Service B');
     breakerRow(sec, 'Service B');
     if (actIndex >= 5) bulkheadSlider(sec, 'Service B');
-    if (actIndex >= 6) adaptiveToggle(sec, 'Service B');
   }
-  if (actIndex >= 3) {                           // Analytics (the fast one): focus of the timeout act
-    const sec = section(actIndex === 3);
-    heading(sec, labelOf('Service C'));
+  if (actIndex >= 3) {                             // Analytics (the fast one): focus of the timeout act
+    const sec = section(labelOf('Service C'), actIndex === 3);
     latencySlider(sec, 'Service C');
     outgoingTimeoutSlider(sec, 'Service C');
     breakerRow(sec, 'Service C');
   }
-  if (actIndex >= 1) {                           // External: its errors, and (once breakers exist) its breaker
-    const sec = section(actIndex === 1);
-    heading(sec, labelOf('External'));
+  if (actIndex >= 1) {                             // External: its errors, and (once breakers exist) its breaker
+    const sec = section(labelOf('External'), actIndex === 1);
     errorRateSlider(sec, 'External');
     if (actIndex >= 2) breakerRow(sec, 'External');
   }
 }
 
-// A service block wrapper appended to the panel; `entering` plays the reveal
-// animation the first time that service appears.
-function section(entering) {
-  const sec = document.createElement('div');
+// A collapsible section (native <details>) appended to the panel. `entering`
+// plays the slide-and-flash reveal on the act a section first appears, so a
+// newly unlocked block is obvious. Sections start open; the player can collapse
+// any of them, which matters most in free play where every section shows at once.
+function section(label, entering) {
+  const sec = document.createElement('details');
   sec.className = entering ? 'section enter' : 'section';
+  sec.open = true;
+  const sum = document.createElement('summary');
+  sum.textContent = label;
+  sec.appendChild(sum);
   panel.appendChild(sec);
   return sec;
 }
@@ -361,13 +375,17 @@ function frame() {
   updateLittle(state);
   // The tour readout now carries only the adaptive-sizing line: the live pool and
   // the latency signal driving it.
-  const adaptiveName = Object.keys(sim.config.targets).find(
+  // With every pool adaptive, surface the most-throttled one (smallest pool), so the
+  // readout tracks whichever dependency is currently being shed.
+  const adaptiveNames = Object.keys(sim.config.targets).filter(
     (n) => sim.config.targets[n].adaptive && sim.config.targets[n].adaptive.enabled);
+  const adaptiveName = adaptiveNames.sort(
+    (a, b) => sim.config.targets[a].bulkheadSize - sim.config.targets[b].bulkheadSize)[0];
   if (readoutVisible && adaptiveName) {
     const t = sim.config.targets[adaptiveName];
     const a = t.adaptive;
     const decision = a.target < t.bulkheadSize ? 'shedding' : a.target > t.bulkheadSize ? 'opening up' : 'steady';
-    readoutElement.textContent = `${labelOf(adaptiveName)} pool ${t.bulkheadSize}/${ADAPTIVE_MAX} · observed ${dur(Math.round(a.observedMs || 0))} vs ${a.baselineLatencyMs} ms baseline · ${decision}`;
+    readoutElement.textContent = `${labelOf(adaptiveName)} pool ${t.bulkheadSize}/${sim.config.workerPoolSize} · observed ${dur(Math.round(a.observedMs || 0))} vs ${a.baselineLatencyMs} ms baseline · ${decision}`;
   } else {
     readoutElement.textContent = '';
   }

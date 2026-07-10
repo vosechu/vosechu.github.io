@@ -1,4 +1,4 @@
-import { FAST_FAIL_MS, LATENCY_SAMPLE_SIZE, ADAPTIVE_MIN, ADAPTIVE_MAX } from './config.js';
+import { FAST_FAIL_MS, LATENCY_SAMPLE_SIZE, ADAPTIVE_MIN } from './config.js';
 
 // One outbound call's outcome, ignoring queueing. r is a [0,1) roll.
 export function resolveOutcome(target, timeoutMs, r) {
@@ -316,10 +316,10 @@ export class Sim {
     return sorted[Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))];
   }
 
-  // Proportional bulkhead sizing. The healthy pool is ADAPTIVE_MAX; as observed
-  // latency rises above the baseline, the target size shrinks inversely toward
-  // ADAPTIVE_MIN (size ~ baseline / p95). Each sample the pool moves halfway to
-  // its target, so the change is visible and settles at a size that reflects the
+  // Proportional bulkhead sizing. The healthy pool is the full worker pool; as
+  // observed latency rises above the baseline, the target size shrinks inversely
+  // toward ADAPTIVE_MIN (size ~ baseline / p95). Each sample the pool moves halfway
+  // to its target, so the change is visible and settles at a size that reflects the
   // current latency, rather than always collapsing to the floor.
   _runAdaptive(nowMs) {
     if (!this.config.bulkheadsEnabled) return;
@@ -331,7 +331,8 @@ export class Sim {
       const p95 = this._percentileOf(this.recentByTarget[name], 95);
       const observed = Math.max(p95, this._maxInflightAge(name, nowMs));
       const ratio = a.baselineLatencyMs / Math.max(observed, 1);
-      const desired = Math.max(ADAPTIVE_MIN, Math.min(ADAPTIVE_MAX, Math.round(ratio * ADAPTIVE_MAX)));
+      const ceiling = this.config.workerPoolSize;   // adaptive floats up to the live pool size
+      const desired = Math.max(ADAPTIVE_MIN, Math.min(ceiling, Math.round(ratio * ceiling)));
       a.target = desired;         // exposed for the adaptive readout
       a.observedMs = observed;    // the latency signal that drove this decision
       const gap = desired - target.bulkheadSize;

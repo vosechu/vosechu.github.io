@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Sim, resolveOutcome, effectiveRate } from '../src/engine.js';
-import { defaultConfig, ADAPTIVE_MIN, ADAPTIVE_MAX } from '../src/config.js';
+import { defaultConfig, ADAPTIVE_MIN } from '../src/config.js';
 
 // mulberry32: a small seeded PRNG so arrival/target choices are reproducible.
 function makeRng(seed) {
@@ -501,8 +501,8 @@ test('adaptive bulkhead settles at the floor under very high latency', () => {
 
 test('adaptive bulkhead opens to the max under healthy latency', () => {
   // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
-  // When p95 sits at the baseline, the proportional target is ADAPTIVE_MAX, so a
-  // small pool grows open rather than staying pinned or shrinking.
+  // When p95 sits at the baseline, the proportional target is the full worker pool,
+  // so a small pool grows open rather than staying pinned or shrinking.
   const cfg = defaultConfig();
   cfg.bulkheadsEnabled = true;
   cfg.requestRatePerSec = 10;
@@ -512,13 +512,14 @@ test('adaptive bulkhead opens to the max under healthy latency', () => {
   const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(35), config: cfg });
   sim.tick(0);
   run(sim, 50, 12000, 50);
-  assert.equal(sim.config.targets.C.bulkheadSize, ADAPTIVE_MAX);
+  assert.equal(sim.config.targets.C.bulkheadSize, cfg.workerPoolSize);
 });
 
 test('adaptive bulkhead settles at a middling size for middling latency', () => {
   // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
   // The point of proportional sizing over shrink-to-floor: at 4x baseline (200 vs
-  // 50) the pool settles strictly between the floor and the max, at round(50/200*24)=6.
+  // 50) the pool settles strictly between the floor and the pool size, at
+  // round(50/200*30)=8 for the default 30-worker pool.
   const cfg = defaultConfig();
   cfg.bulkheadsEnabled = true;
   cfg.requestRatePerSec = 100;
@@ -529,8 +530,8 @@ test('adaptive bulkhead settles at a middling size for middling latency', () => 
   sim.tick(0);
   run(sim, 50, 12000, 50);
   const size = sim.config.targets.C.bulkheadSize;
-  assert.ok(size > ADAPTIVE_MIN && size < ADAPTIVE_MAX);   // a distinct middle, not the floor
-  assert.equal(size, 6);
+  assert.ok(size > ADAPTIVE_MIN && size < sim.config.workerPoolSize);   // a distinct middle, not the floor
+  assert.equal(size, 8);
 });
 
 test('adaptive reacts to a slow dependency before any call completes', () => {

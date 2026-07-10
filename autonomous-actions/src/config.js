@@ -1,8 +1,9 @@
 export const FAST_FAIL_MS = 5;         // a clipped connection fails almost instantly
-export const LATENCY_SAMPLE_SIZE = 50; // completions kept for p50/p95
+export const LATENCY_SAMPLE_SIZE = 50; // completions kept for p95
 export const ADAPTIVE_MIN = 2;
-export const ADAPTIVE_MAX = 24;            // healthy pool size; matches the 24 shown slots
-export const DEFAULT_CAPACITY = 24;    // callee-side service slots; matches the 24 shown boxes
+// Adaptive sizing scales against, and is capped by, the live worker pool size
+// (config.workerPoolSize), so the pool floats up to whatever the pool is set to.
+export const DEFAULT_CAPACITY = 30;    // callee-side service slots; matches the 30 shown boxes
 // The rAF driver advances the sim by at most this much real time per frame. A
 // backgrounded tab or slept machine pauses requestAnimationFrame; without this
 // cap the next frame would jump the clock by the whole gap and inject rate*gap
@@ -15,7 +16,7 @@ export function defaultConfig() {
   // separate from the front-door config.timeoutMs below.
   const target = (latencyMs, color, abbrev, label, note) => ({
     latencyMs, errorRate: 0, capacity: DEFAULT_CAPACITY,
-    breaker: null, bulkheadSize: 24, adaptive: null, timeoutMs: 30000, color, abbrev, label, note,
+    breaker: null, bulkheadSize: 30, adaptive: null, timeoutMs: 30000, color, abbrev, label, note,
   });
   return {
     requestRatePerSec: 20,
