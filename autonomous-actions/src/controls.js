@@ -283,9 +283,10 @@ function section(label, entering) {
 
 // Act progress dots
 const progress = document.getElementById('progress');
-const dots = ACTS.map(() => {
+const dots = ACTS.map((_, k) => {
   const d = document.createElement('span');
   d.className = 'dot';
+  d.addEventListener('click', () => goToActNumber(k + 1));   // dots are 1-based act numbers
   progress.appendChild(d);
   return d;
 });
