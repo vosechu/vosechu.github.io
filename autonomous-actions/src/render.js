@@ -1,3 +1,8 @@
+import { colorOf, shortOf, labelOf, hoverOf } from './theme.js';
+import { availabilityPercent } from './metrics.js';
+import { sparklinePath } from './sparkline.js';
+import { STRINGS } from './strings.js';
+
 const SERVICE_COLOR = '#a78bfa';   // our service's own workers (incoming)
 // Plain-language breaker states (open/closed reads as jargon to non-electricians).
 const BREAKER_LABEL = { closed: 'passing', open: 'blocking', half_open: 'testing' };
@@ -8,6 +13,8 @@ const OUT_VIEW = 30;     // outbound pool slots shown per dependency (tracks the
 const OUT_COLS = 8;      // wrapped into rows of this many
 const CAP_SLOTS = 30;    // callee-side capacity slots shown per dependency
 const CAP_COLS = 12;     // wrapped into rows of this many
+const SPARK_W = 90, SPARK_H = 32;   // latency sparkline box, per dependency row
+const SPARK_LEN = 40;               // rolling series length (frames kept)
 const GW = { x: 420, y: 96, w: 300, h: 300 };
 const HUB_Y = GW.y + GW.h / 2;   // gateway vertical center; the client and callee edges converge here
 const NODE_X = 980, NODE_W = 180, NODE_H = 64;
@@ -24,14 +31,16 @@ function el(name, attrs = {}, text) {
 }
 
 // Build the fixed scene once. render() only updates attributes and classes so
-// CSS transitions and keyframes animate every change.
-export function initRender(root, config) {
+// CSS transitions and keyframes animate every change. `onSelect(name)` fires
+// when a station card is clicked; only revealed stations are clickable (an
+// unrevealed row is hidden via `display: none`, which also blocks pointer
+// events, so no extra guard is needed here).
+export function initRender(root, config, onSelect) {
   root.textContent = '';
   const names = Object.keys(config.targets);
-  const colors = {}, abbrev = {}, labels = {}, notes = {};
+  const colors = {}, abbrev = {}, labels = {};
   for (const name of names) {
-    const t = config.targets[name];
-    colors[name] = t.color; abbrev[name] = t.abbrev; labels[name] = t.label || name; notes[name] = t.note || '';
+    colors[name] = colorOf(name); abbrev[name] = shortOf(name); labels[name] = labelOf(name);
   }
 
   const defs = el('defs');
@@ -49,13 +58,18 @@ export function initRender(root, config) {
   const clientFlow = el('line', { class: 'edge-flow', x1: 150, y1: HUB_Y, x2: GW.x, y2: HUB_Y });
   root.appendChild(clientFlow);
 
+  // Each dependency's row is spread across three separate loops below (its edge,
+  // its outbound pool, its card). A row-group per loop lets render() hide the
+  // whole row in one place when an act has not revealed that station yet.
   const deps = {};
   names.forEach((name, i) => {
     const cy = rowCY(i);
-    root.appendChild(el('line', { class: 'edge', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy }));
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
+    g.appendChild(el('line', { class: 'edge', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy }));
     const flow = el('line', { class: 'edge-flow', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy });
-    root.appendChild(flow);
-    deps[name] = { flow };
+    g.appendChild(flow);
+    deps[name] = { flow, rowGroups: [g] };
   });
 
   // Client (centered on the gateway hub line)
@@ -84,28 +98,30 @@ export function initRender(root, config) {
 
   // Right: outbound connection pools, one row per dependency, colored by callee.
   // The grid tracks the worker pool (a dependency with no bulkhead can use all of
-  // it); a bulkhead walls off the slots past its cap with a red X. A stopwatch to
-  // the right of each pool shows that dependency's outgoing timeout.
+  // it); a bulkhead walls off the slots past its cap with a red X. A latency
+  // sparkline to the right of each pool trends that dependency's completed p95;
+  // the line clips at the top of the box when it hits the outgoing timeout.
   const out = {};
   names.forEach((name, i) => {
     const y = GW.y + 74 + i * 56;
-    root.appendChild(el('text', { class: 'outlabel', x: 562, y: y + 12 }, abbrev[name]));
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
+    g.appendChild(el('text', { class: 'outlabel', x: 562, y: y + 12 }, abbrev[name]));
     const slots = [], xs = [];
     for (let k = 0; k < OUT_VIEW; k++) {
       const col = k % OUT_COLS, r = Math.floor(k / OUT_COLS);
       const sx = 586 + col * 13, sy = y + 2 + r * 13, w = 11;
-      slots.push(root.appendChild(el('rect', { class: 'slot', x: sx, y: sy, width: w, height: w, rx: 2 })));
-      xs.push(root.appendChild(el('path', { class: 'slotx', d: `M${sx} ${sy}L${sx + w} ${sy + w}M${sx + w} ${sy}L${sx} ${sy + w}` })));
+      slots.push(g.appendChild(el('rect', { class: 'slot', x: sx, y: sy, width: w, height: w, rx: 2 })));
+      xs.push(g.appendChild(el('path', { class: 'slotx', d: `M${sx} ${sy}L${sx + w} ${sy + w}M${sx + w} ${sy}L${sx} ${sy + w}` })));
     }
-    const swx = 730, swy = y + 16;
-    const sw = el('g', { class: 'stopwatch' });
-    sw.appendChild(el('circle', { cx: swx, cy: swy, r: 6 }));
-    sw.appendChild(el('line', { x1: swx, y1: swy - 9, x2: swx, y2: swy - 6 }));   // top stem
-    sw.appendChild(el('line', { x1: swx, y1: swy, x2: swx + 3, y2: swy - 3 }));    // hand
-    root.appendChild(sw);
-    const swLabel = el('text', { class: 'stopwatchlabel', x: swx + 12, y: swy + 4 }, '');
-    root.appendChild(swLabel);
-    out[name] = { slots, xs, stopwatch: sw, stopwatchLabel: swLabel };
+    const sparkX = 722, sparkY = y + 2;
+    const sparkGroup = el('g', { class: 'sparkline', transform: `translate(${sparkX},${sparkY})` });
+    sparkGroup.appendChild(el('rect', { class: 'sparklinebox', x: 0, y: 0, width: SPARK_W, height: SPARK_H, rx: 3 }));
+    const sparkPath = el('path', { class: 'sparklinepath', d: '' });
+    sparkPath.style.stroke = colors[name];
+    sparkGroup.appendChild(sparkPath);
+    g.appendChild(sparkGroup);
+    out[name] = { slots, xs, sparkPath, series: [], rowGroup: g };
   });
 
   // Worker queue: a fill bar just left of the incoming workers, inside the
@@ -116,21 +132,22 @@ export function initRender(root, config) {
   root.appendChild(queueBar);
   const queueLabel = el('text', { class: 'outlabel', x: 428, y: GW.y + 70, 'text-anchor': 'middle' }, '');
   root.appendChild(queueLabel);
-  root.appendChild(el('text', { class: 'queuecap', x: 428, y: GW.y + 288, 'text-anchor': 'middle' }, 'queue'));
 
   // Dependencies
   names.forEach((name, i) => {
     const y = rowY(i), cy = rowCY(i);
-    const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10 });
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
+    const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10, title: hoverOf(name) });
     card.style.stroke = colors[name];
-    root.appendChild(card);
-    root.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
-    if (notes[name]) root.appendChild(el('text', { class: 'glyph', x: NODE_X + 14, y: y + 44, 'text-anchor': 'start' }, notes[name]));
+    if (onSelect) card.addEventListener('click', () => onSelect(name));
+    g.appendChild(card);
+    g.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
     const fire = el('text', { class: 'fire', x: NODE_X + NODE_W - 16, y: y + 26, 'text-anchor': 'middle', opacity: 0 }, '🔥');
-    root.appendChild(fire);
+    g.appendChild(fire);
     const badge = el('circle', { class: 'badge', cx: 930, cy: cy - 6, r: 9, opacity: 0 });
     const badgeLabel = el('text', { class: 'badgelabel', x: 930, y: cy + 16, 'text-anchor': 'middle' }, '');
-    root.appendChild(badge); root.appendChild(badgeLabel);
+    g.appendChild(badge); g.appendChild(badgeLabel);
 
     // Callee-side capacity: this dependency's own service slots (filled = in
     // service, colored by the callee), with a count of anything queued at it.
@@ -139,28 +156,37 @@ export function initRender(root, config) {
     for (let k = 0; k < CAP_SLOTS; k++) {
       const col = k % CAP_COLS, r = Math.floor(k / CAP_COLS);
       const s = el('rect', { class: 'slot', x: NODE_X + col * 12, y: capY + r * 12, width: 9, height: 9, rx: 2 });
-      root.appendChild(s); capSlots.push(s);
+      g.appendChild(s); capSlots.push(s);
     }
     const capLabel = el('text', { class: 'outlabel', x: NODE_X, y: capY + 34 }, '');
-    root.appendChild(capLabel);
+    g.appendChild(capLabel);
 
     // Downstream queue: a fill bar in front of the callee, growing as requests
     // wait for one of its capacity slots.
-    root.appendChild(el('rect', { class: 'queuetrack', x: NODE_X - 16, y, width: 8, height: NODE_H, rx: 2 }));
+    g.appendChild(el('rect', { class: 'queuetrack', x: NODE_X - 16, y, width: 8, height: NODE_H, rx: 2 }));
     const depQueueBar = el('rect', { class: 'queuebar', x: NODE_X - 16, y: y + NODE_H, width: 8, height: 0, rx: 2 });
-    root.appendChild(depQueueBar);
+    g.appendChild(depQueueBar);
     const depQueueLabel = el('text', { class: 'outlabel', x: NODE_X - 12, y: y - 3, 'text-anchor': 'middle' }, '');
-    root.appendChild(depQueueLabel);
-    const qcx = NODE_X - 22, qcy = y + NODE_H / 2;   // vertical "queue" caption left of the bar
-    root.appendChild(el('text', { class: 'queuecap', x: qcx, y: qcy, 'text-anchor': 'middle', transform: `rotate(-90 ${qcx} ${qcy})` }, 'queue'));
+    g.appendChild(depQueueLabel);
+    deps[name].rowGroups.push(g, out[name].rowGroup);
     Object.assign(deps[name], { card, badge, badgeLabel, fire, capSlots, capLabel, depQueueBar, depQueueLabel, depQueueBottom: y + NODE_H });
   });
 
   const byId = (id) => document.getElementById(id);
-  const metrics = { ok: byId('m-ok'), deg: byId('m-deg'), err: byId('m-err'), rej: byId('m-rej'), p95: byId('m-p95'), q: byId('m-q'),
-    avail: byId('m-avail'), slo: byId('slo-state') };
+  // The fixed bottom status bar: one slot per STRINGS.bar key, every metric
+  // always visible (no progressive reveal). Label/hover text is static copy,
+  // set once here; only the value and pass/fail class change per frame.
+  const bar = {};
+  for (const key of Object.keys(STRINGS.bar)) {
+    const copy = STRINGS.bar[key];
+    const labelEl = byId(`bar-${key}-label`);
+    if (labelEl) labelEl.textContent = copy.label;
+    const hoverEl = byId(`bar-${key}-hover`);
+    if (hoverEl) hoverEl.textContent = copy.hover;
+    bar[key] = { slot: byId(`bar-${key}`), value: byId(`bar-${key}-value`) };
+  }
 
-  return { leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, metrics, names, colors, ema: {} };
+  return { leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, bar, names, colors, ema: {} };
 }
 
 // Paint a fixed grid of slots: [0, filled) are busy (colored), [filled, available)
@@ -193,7 +219,7 @@ function paintOutbound(slots, xs, filled, available, poolShown, color) {
   }
 }
 
-export function render(state, h) {
+export function render(state, h, selectedStation) {
   const size = state.workers.size;
 
   // Counts come from a 1s sliding window recomputed every frame, so at low rates
@@ -230,6 +256,11 @@ export function render(state, h) {
   for (const name of h.names) {
     const d = h.deps[name];
     const t = state.targets[name];
+    // Progressive topology (topology.js) narrows sim.config.targets per act, so an
+    // unrevealed station has no entry in state.targets. Hide its whole row (edge,
+    // outbound pool, dependency card) rather than reading fields off it.
+    for (const g of d.rowGroups) g.setAttribute('display', t ? 'inline' : 'none');
+    if (!t) continue;
     const inflight = state.workers.byTarget[name] || 0;
     const br = t.breaker;
     const bh = t.bulkhead;
@@ -247,12 +278,13 @@ export function render(state, h) {
     const poolShown = Math.min(size, OUT_VIEW);
     const available = bh ? Math.min(bh.size, poolShown) : poolShown;
     paintOutbound(h.out[name].slots, h.out[name].xs, smi(`fl_${name}`, inflight), available, poolShown, h.colors[name]);
-    // Stopwatch: the outgoing timeout on our call to this dependency, amber while
-    // that timeout is actively cutting calls off.
-    const cutting = (t.timeoutsPerSec || 0) > 0;
-    h.out[name].stopwatch.setAttribute('class', cutting ? 'stopwatch cut' : 'stopwatch');
-    h.out[name].stopwatchLabel.setAttribute('class', cutting ? 'stopwatchlabel cut' : 'stopwatchlabel');
-    h.out[name].stopwatchLabel.textContent = fmtDur(t.outgoingTimeoutMs);
+    // Latency sparkline: a rolling trend of this dependency's completed p95,
+    // scaled to its outgoing timeout so a hang reads as the line clipping at
+    // the top of the box.
+    const series = h.out[name].series;
+    series.push(t.latencyP95 || 0);
+    if (series.length > SPARK_LEN) series.shift();
+    h.out[name].sparkPath.setAttribute('d', sparklinePath(series, SPARK_W, SPARK_H, t.outgoingTimeoutMs));
 
     // Callee-side capacity: filled = in service now, dim = slots past this
     // dependency's own capacity. A queue at the dependency is shown as a count.
@@ -281,6 +313,7 @@ export function render(state, h) {
     let cardClass = 'card dep';
     if (failing) cardClass = 'card dep faulted';
     else if (congested) cardClass = 'card dep slow';
+    if (name === selectedStation) cardClass += ' selected';
     d.card.setAttribute('class', cardClass);
 
     d.fire.setAttribute('opacity', failing ? 1 : 0);
@@ -299,21 +332,23 @@ export function render(state, h) {
   const okS = smi('ok', state.rates.successPerSec);
   const degS = smi('deg', state.rates.degradedPerSec);
   const errS = smi('err', state.rates.errorPerSec);
-  h.metrics.ok.textContent = okS;
-  h.metrics.deg.textContent = degS;
-  h.metrics.err.textContent = errS;
-  h.metrics.rej.textContent = smi('rej', state.rates.rejectPerSec);
-  const p95 = sm('p95', state.latency.p95);   // precise value drives the SLO check
-  h.metrics.p95.textContent = Math.round(p95);   // integer ms, so the label and info icon do not jitter
-  h.metrics.q.textContent = qd;
+  const rejS = smi('rej', state.rates.rejectPerSec);
+  const p95 = sm('p95', state.latency.p95);   // precise value drives the pass/fail check
 
-  // Availability = share of requests served (fully OK or degraded) out of all
-  // requests; degraded still counts as available. No traffic reads as 100%.
-  // The SLO is met when availability holds 99% and p95 stays under 5s.
-  const total = okS + degS + errS;
-  const avail = total > 0 ? ((okS + degS) / total) * 100 : 100;
-  h.metrics.avail.textContent = Math.round(avail);
-  const met = avail >= 99 && p95 < 5000;
-  h.metrics.slo.textContent = met ? 'MET' : 'BREACHED';
-  h.metrics.slo.setAttribute('class', met ? 'met' : 'breached');
+  // Fixed bottom status bar: every slot updates every frame, no progressive
+  // reveal. Availability comes from the windowed rates via availabilityPercent;
+  // p95 and availability each carry a pass/fail state against the SLO.
+  const avail = availabilityPercent({ successPerSec: okS, degradedPerSec: degS, clientErrorsPerSec: errS });
+  const availPass = avail >= 99;
+  h.bar.availability.value.textContent = `${Math.round(avail)}%`;
+  h.bar.availability.slot.setAttribute('class', `barslot emph ${availPass ? 'pass' : 'fail'}`);
+
+  const p95Pass = p95 < 5000;
+  h.bar.p95.value.textContent = fmtDur(Math.round(p95));
+  h.bar.p95.slot.setAttribute('class', `barslot emph ${p95Pass ? 'pass' : 'fail'}`);
+
+  h.bar.throughput.value.textContent = String(okS);
+  h.bar.errors.value.textContent = String(errS);
+  h.bar.queue.value.textContent = String(qd);
+  h.bar.rejects.value.textContent = String(rejS);
 }
