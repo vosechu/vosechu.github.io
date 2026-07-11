@@ -149,6 +149,10 @@ export function buildScene(root, config, onSelect) {
   const serviceCol = div('col col-service');
   const serviceBox = div('box service');
   serviceBox.appendChild(div('label', STRINGS.telemetry.service));
+  // Service-level fault cue (mirrors the dependency .fire): lit when the
+  // client-visible error ratio crosses the threshold computed in render().
+  const serviceFire = div('fire', '🔥');
+  serviceBox.appendChild(serviceFire);
   const serviceSubEl = div('sub', '');                // "workers X, connections Y/inf" per frame
   serviceBox.appendChild(serviceSubEl);
   const svcQueueRow = div('egress');                  // reuse the flex row for queue + workers
@@ -212,7 +216,7 @@ export function buildScene(root, config, onSelect) {
     diagram: root, overlay, cols, bar, names, edges: [], ema: {},
     service: {
       sub: serviceSubEl, queueBar: svcQueueFill, workerCells: svcWorkers.cells,
-      frontTimeout, egress,
+      frontTimeout, egress, fire: serviceFire,
     },
     deps,
     edgeByName: new Map(),   // dependency name -> its egress-row->box edge, for render()'s flow classes
@@ -220,8 +224,9 @@ export function buildScene(root, config, onSelect) {
   };
 
   // Arrows: one client->service edge, then one service-egress-row->dependency
-  // edge per target (kept in stable name order so edge count always matches
-  // handle.names for the browser QA checklist).
+  // edge per target (kept in stable name order), so handle.edges.length is
+  // always handle.names.length + 1 (the +1 is the client edge) for the
+  // browser QA checklist.
   handle.clientEdge = makeEdge(overlay, clientBox, serviceBox);
   handle.edges.push(handle.clientEdge);
   for (const name of names) {
@@ -265,9 +270,21 @@ export function render(state, h, selectedStation) {
   const qd = smi('wq', state.queue.depth);
   h.service.queueBar.style.height = `${(Math.min(qd, QUEUE_MAX) / QUEUE_MAX) * 100}%`;
 
-  // Client -> service edge: active whenever the service currently holds any
-  // inflight work, the same raw (unsmoothed) signal each dependency edge uses.
-  h.clientEdge.flow.setAttribute('class', state.workers.busy > 0 ? 'edge-flow active' : 'edge-flow');
+  // Service-level fault cue: what fraction of what the client sees is failing,
+  // a ratio (rate-independent) rather than a raw count, computed from the same
+  // raw windowed rates (state.rates) used for the status bar below -- not the
+  // EMA-smoothed display values, matching the pre-rewrite gateway logic exactly.
+  const served = state.rates.successPerSec + state.rates.degradedPerSec + state.rates.clientErrorsPerSec;
+  const errRatio = served > 0 ? state.rates.clientErrorsPerSec / served : 0;
+  const serviceFailing = errRatio > 0.15;   // a sixth of client traffic failing is already an alarm
+  h.service.fire.classList.toggle('show', serviceFailing);
+
+  // Client -> service edge: danger when the service itself is failing that much
+  // of its client traffic, active whenever the service currently holds any
+  // inflight work (the same raw, unsmoothed signal each dependency edge uses),
+  // else quiet.
+  h.clientEdge.flow.setAttribute('class',
+    serviceFailing ? 'edge-flow danger' : (state.workers.busy > 0 ? 'edge-flow active' : 'edge-flow'));
 
   for (const name of h.names) {
     const d = h.deps[name];
