@@ -2,6 +2,7 @@ import { colorOf, shortOf, labelOf, hoverOf } from './theme.js';
 import { availabilityPercent } from './metrics.js';
 import { STRINGS } from './strings.js';
 import { breakerLabel, serviceSub } from './telemetry.js';
+import { edgeEndpoints, toLocalRect } from './edges.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const MAX_SLOTS = 60;    // incoming worker slots the grid can show
@@ -36,6 +37,37 @@ function cells(parent, n) {
 function queue(parent) {
   const track = div('queue'); const fill = div('fill'); track.appendChild(fill);
   parent.appendChild(track); return fill;
+}
+
+// One arrow: a base line (static color) plus a flow line (animated per frame
+// by render(), via its edge-flow class), both appended to the overlay so they
+// paint behind the boxes. `fromEl`/`toEl` are measured later by layoutEdges.
+function makeEdge(overlay, fromEl, toEl) {
+  const line = svgEl('line', { class: 'edge' });
+  const flow = svgEl('line', { class: 'edge-flow' });
+  overlay.append(line, flow);
+  return { line, flow, fromEl, toEl };
+}
+
+// Measure every edge's boxes and draw the arrows onto them. Runs on build,
+// on ResizeObserver, and on act change (handle.relayout, wired in buildScene)
+// -- never per frame; see the hot-path rule on render() below.
+function layoutEdges(h) {
+  const c = h.diagram.getBoundingClientRect();
+  h.overlay.setAttribute('viewBox', `0 0 ${c.width} ${c.height}`);
+  for (const e of h.edges) {
+    const hidden = e.fromEl.offsetParent === null || e.toEl.offsetParent === null;
+    e.line.style.display = hidden ? 'none' : '';
+    e.flow.style.display = hidden ? 'none' : '';
+    if (hidden) continue;
+    const from = toLocalRect(e.fromEl.getBoundingClientRect(), c);
+    const to = toLocalRect(e.toEl.getBoundingClientRect(), c);
+    const { x1, y1, x2, y2 } = edgeEndpoints(from, to);
+    for (const seg of [e.line, e.flow]) {
+      seg.setAttribute('x1', x1); seg.setAttribute('y1', y1);
+      seg.setAttribute('x2', x2); seg.setAttribute('y2', y2);
+    }
+  }
 }
 
 // Fill a cell grid: cells before `n` are marked busy. If `wallAt` is given,
@@ -75,9 +107,9 @@ function buildStatusBar() {
 // unrevealed one is hidden via display:none in render(), which also blocks
 // pointer events).
 //
-// No arrows yet: the overlay is built empty and `relayout` is a no-op. A later
-// dispatch measures the boxes and draws the client->service and
-// service-egress->dependency edges into it.
+// The overlay carries one client->service edge and one service-egress->dependency
+// edge per target (handle.edges), drawn once here and re-measured by
+// handle.relayout() (see layoutEdges above) on build, resize, and act change.
 export function buildScene(root, config, onSelect) {
   root.textContent = '';
   root.className = 'diagram';
@@ -146,15 +178,39 @@ export function buildScene(root, config, onSelect) {
   // Status bar: today's build logic, extracted verbatim into a helper.
   const bar = buildStatusBar();
 
-  return {
+  const handle = {
     diagram: root, overlay, cols, bar, names, edges: [], ema: {},
     service: {
       sub: serviceSubEl, queueBar: svcQueueFill, workerCells: svcWorkers.cells,
       frontTimeout, egress,
     },
     deps,
-    relayout: () => {},   // wired to real arrow layout in a later dispatch
+    edgeByName: new Map(),   // dependency name -> its egress-row->box edge, for render()'s flow classes
+    relayout: () => {},
   };
+
+  // Arrows: one client->service edge, then one service-egress-row->dependency
+  // edge per target (kept in stable name order so edge count always matches
+  // handle.names for the browser QA checklist).
+  handle.clientEdge = makeEdge(overlay, clientBox, serviceBox);
+  handle.edges.push(handle.clientEdge);
+  for (const name of names) {
+    const edge = makeEdge(overlay, egress[name].row, deps[name].box);
+    handle.edges.push(edge);
+    handle.edgeByName.set(name, edge);
+  }
+
+  // Coalesce layout work into one measure-and-draw per animation frame: build,
+  // ResizeObserver, and act change (controls.js) can all fire close together.
+  let raf = null;
+  handle.relayout = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = null; layoutEdges(handle); });
+  };
+  new ResizeObserver(handle.relayout).observe(root);
+  handle.relayout();   // initial draw
+
+  return handle;
 }
 
 export function render(state, h, selectedStation) {
