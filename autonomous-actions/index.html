@@ -191,7 +191,6 @@
     .cell { width: 0.55rem; height: 0.55rem; border-radius: 0.12rem; background: var(--slot-idle, #d8cebc); }
     .cell.busy { background: var(--teal); }
     .cell.walled { background: transparent; outline: 1px solid var(--red); opacity: 0.5; }
-    .cell.capped { opacity: 0.35; }   /* past this dependency's own live capacity, but still shown */
     /* Past the live pool size: absent, not just dim. visibility (not display)
        keeps the cell's layout slot so the grid never reflows -- hot-path rule. */
     .cell.hidden { visibility: hidden; }

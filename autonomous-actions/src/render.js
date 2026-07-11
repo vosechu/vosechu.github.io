@@ -87,24 +87,19 @@ function layoutEdges(h) {
 //     doesn't exist right now" look. Used by the worker pool (bounded by the
 //     worker-count slider) and the egress pool (bounded by the same slider,
 //     clamped to the grid size).
-//   - `cappedAt`, if given, dims (not hides) cells from that index up to
-//     `visible` -- a capacity boundary inside an otherwise fully-visible pool.
-//     Used by the dependency capacity grid, which never hides cells, only
-//     dims past its own live capacity.
 //   - `wallFrom`/`wallTo`, if given, mark a red bulkhead wall across that
 //     sub-range of the visible cells. Only the egress pool uses this, and
 //     only when a bulkhead actually exists for that dependency; with no
 //     bulkhead the caller passes wallFrom === wallTo (or omits both), so no
 //     cell ever gets `walled`.
 // The ranges are mutually exclusive by construction (busy never reaches
-// wallFrom or cappedAt), so each cell gets exactly one state.
-function fillCells(cellsArr, { busy = 0, visible = cellsArr.length, cappedAt = null, wallFrom = null, wallTo = null } = {}) {
+// wallFrom), so each cell gets exactly one state.
+function fillCells(cellsArr, { busy = 0, visible = cellsArr.length, wallFrom = null, wallTo = null } = {}) {
   for (let i = 0; i < cellsArr.length; i++) {
     let cls = 'cell';
     if (i >= visible) cls += ' hidden';
     else if (wallFrom != null && i >= wallFrom && i < wallTo) cls += ' walled';
     else if (i < busy) cls += ' busy';
-    else if (cappedAt != null && i >= cappedAt) cls += ' capped';
     cellsArr[i].className = cls;
   }
 }
@@ -388,15 +383,15 @@ export function render(state, h, selectedStation) {
     }
     eg.timeoutPill.textContent = fmtDur(t.outgoingTimeoutMs);
 
-    // Callee-side capacity: filled = in service now, dimmed (not hidden) past
-    // this dependency's own live capacity -- the grid is always CAP_SLOTS wide,
-    // but cells beyond `ds.capacity` show the capacity boundary. A queue at the
-    // dependency fills its own queue track (the numeric count stays in the
-    // status bar).
+    // Callee-side capacity: the grid shows exactly this dependency's live
+    // capacity (cells past it are hidden, same rule as the worker grid), so a
+    // worker only ever sees slots that actually exist; the capacity slider
+    // visibly resizes the grid. Overflow fills the queue track (the numeric
+    // count stays in the status bar and the readout below).
     const ds = t.upstream || { capacity: CAP_SLOTS, inService: 0, queueDepth: 0 };
     const inSvc = smi(`sv_${name}`, ds.inService);
     const dq = smi(`dq_${name}`, ds.queueDepth);
-    fillCells(d.workerCells, { busy: inSvc, cappedAt: Math.min(ds.capacity, CAP_SLOTS) });
+    fillCells(d.workerCells, { busy: inSvc, visible: Math.min(ds.capacity, CAP_SLOTS) });
     d.queueBar.style.height = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;
     d.capLabel.textContent = capacityReadout(inSvc, ds.capacity, dq);
 
