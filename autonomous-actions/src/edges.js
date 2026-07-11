@@ -15,3 +15,15 @@ export function toLocalRect(rect, containerRect) {
     height: rect.height,
   };
 }
+
+// Endpoints for an arrow from the right-center of fromRect to the left-center of
+// toRect, both already in local coords. Our service fans out to the dependencies
+// on its right, so every edge leaves a right edge and lands on a left edge.
+export function edgeEndpoints(fromRect, toRect) {
+  return {
+    x1: fromRect.left + fromRect.width,
+    y1: fromRect.top + fromRect.height / 2,
+    x2: toRect.left,
+    y2: toRect.top + toRect.height / 2,
+  };
+}
