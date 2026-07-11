@@ -233,6 +233,10 @@ export function render(state, h, selectedStation) {
   const qd = smi('wq', state.queue.depth);
   h.service.queueBar.style.height = `${(Math.min(qd, QUEUE_MAX) / QUEUE_MAX) * 100}%`;
 
+  // Client -> service edge: active whenever the service currently holds any
+  // inflight work, the same raw (unsmoothed) signal each dependency edge uses.
+  h.clientEdge.flow.setAttribute('class', state.workers.busy > 0 ? 'edge-flow active' : 'edge-flow');
+
   for (const name of h.names) {
     const d = h.deps[name];
     const eg = h.service.egress[name];
@@ -258,6 +262,16 @@ export function render(state, h, selectedStation) {
     // starved of our workers has an empty upstream queue, so it stays quiet.
     const backedUp = (t.upstream && t.upstream.queueDepth > 0);
     const congested = !failing && (backedUp || (cap > 0 && inflight >= Math.max(1, Math.ceil(cap * 0.75))));
+
+    // This dependency's edge: blocked when its breaker has tripped (no calls are
+    // even attempted), else danger/congested mirror the box's own fault state,
+    // else active while it is merely carrying traffic.
+    let flowClass = 'edge-flow';
+    if (br && br.state === 'open') flowClass = 'edge-flow blocked';
+    else if (failing) flowClass = 'edge-flow danger';
+    else if (congested) flowClass = 'edge-flow congested';
+    else if (inflight > 0) flowClass = 'edge-flow active';
+    h.edgeByName.get(name).flow.setAttribute('class', flowClass);
 
     // Outbound connection pool. The grid tracks the worker pool, so a dependency
     // with no bulkhead can use all of it; a bulkhead walls off the cells past its
