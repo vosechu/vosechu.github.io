@@ -4,11 +4,32 @@ import { makeRng } from './rng.js';
 import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
+import { rosterForAct } from './topology.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
-const handle = initRender(document.getElementById('stage'), sim.config);
+// The full default target set, kept around so a later act (or Reset to
+// defaults) can restore a station that an earlier act's roster removed.
+// sim.config.targets narrows to the current act's roster (topology.js); the
+// diagram is built once from the full set (initRender) and hides rows whose
+// id is missing from state.targets (render.js).
+const DEFAULT_TARGETS = defaultConfig().targets;
+const handle = initRender(document.getElementById('stage'), { targets: DEFAULT_TARGETS });
 const panel = document.getElementById('panel');
+
+// Narrow sim.config.targets to exactly the ids in `roster`, preserving the
+// DEFAULT_TARGETS key order (so the diagram rows stay in a stable order).
+// Ids already present in sim.config.targets keep their live (player-tuned)
+// values; ids newly revealed come back with their default values.
+function applyRoster(roster) {
+  const revealed = new Set(roster);
+  const next = {};
+  for (const name of Object.keys(DEFAULT_TARGETS)) {
+    if (!revealed.has(name)) continue;
+    next[name] = sim.config.targets[name] || DEFAULT_TARGETS[name];
+  }
+  sim.config.targets = next;
+}
 
 const plain = (v) => `${v}`;
 const perSec = (v) => `${v}/s`;
@@ -297,14 +318,17 @@ function updateLittle(state) {
   body.className = over ? 'over' : '';
 }
 
-// Acts never touch the sim: the state stays however the player left it, and the
-// instructions walk them into each scenario. Changing acts only updates the
-// guide text and the unlocked controls; the bottom bar always shows every
-// metric, so it needs no per-act update.
+// Acts never patch sim state directly (ACTS carries no `patch` field, see
+// scenarios.test.js): the knobs stay however the player left them, and the
+// instructions walk them into each scenario. The one exception is the
+// topology, which is act-driven rather than player-driven, so controls.js
+// applies rosterForAct's subset to config.targets here; the bottom bar always
+// shows every metric, so it needs no per-act update.
 function showAct(i) {
   actIndex = Math.max(0, Math.min(ACTS.length - 1, i));
   const meta = actMeta(actIndex);
   readoutVisible = meta.readoutVisible;
+  applyRoster(rosterForAct(actIndex));
   document.getElementById('act-title').textContent = `${actIndex + 1}. ${meta.title}`;
   document.getElementById('act-instruction').textContent = meta.instruction ? `Try this: ${meta.instruction}` : '';
   document.getElementById('act-caption').textContent = meta.caption;
@@ -313,9 +337,12 @@ function showAct(i) {
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,
-// staying on the current act.
+// staying on the current act. Resets to the CURRENT act's roster, not all four,
+// so reset never re-reveals a station the act has not gotten to yet.
 function resetToDefaults() {
+  const roster = rosterForAct(actIndex);
   sim.config = defaultConfig();
+  applyRoster(roster);
   sim.reset();
   buildControls(actIndex);
 }
@@ -335,6 +362,13 @@ function goToActNumber(num) {
 window.addEventListener('hashchange', () => showAct(actFromHash()));
 document.getElementById('next').addEventListener('click', () => goToActNumber(actIndex + 2));
 document.getElementById('back').addEventListener('click', () => goToActNumber(actIndex));
+// Open calm: act 0 starts at rate 0 so the first screen is quiet rather than
+// showing traffic already flowing through the one revealed station. This is a
+// one-time override of defaultConfig()'s requestRatePerSec (which stays 20;
+// the engine test 'arrivals occupy workers' depends on that default), applied
+// only before the very first render. Later act changes never touch the rate;
+// the player drives it from here on.
+sim.config.requestRatePerSec = 0;
 showAct(actFromHash());
 
 // The sim runs on a clamped clock: each frame advances it by at most MAX_TICK_MS

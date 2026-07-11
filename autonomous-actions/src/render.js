@@ -52,13 +52,18 @@ export function initRender(root, config) {
   const clientFlow = el('line', { class: 'edge-flow', x1: 150, y1: HUB_Y, x2: GW.x, y2: HUB_Y });
   root.appendChild(clientFlow);
 
+  // Each dependency's row is spread across three separate loops below (its edge,
+  // its outbound pool, its card). A row-group per loop lets render() hide the
+  // whole row in one place when an act has not revealed that station yet.
   const deps = {};
   names.forEach((name, i) => {
     const cy = rowCY(i);
-    root.appendChild(el('line', { class: 'edge', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy }));
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
+    g.appendChild(el('line', { class: 'edge', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy }));
     const flow = el('line', { class: 'edge-flow', x1: GW.x + GW.w, y1: HUB_Y, x2: NODE_X, y2: cy });
-    root.appendChild(flow);
-    deps[name] = { flow };
+    g.appendChild(flow);
+    deps[name] = { flow, rowGroups: [g] };
   });
 
   // Client (centered on the gateway hub line)
@@ -92,23 +97,25 @@ export function initRender(root, config) {
   const out = {};
   names.forEach((name, i) => {
     const y = GW.y + 74 + i * 56;
-    root.appendChild(el('text', { class: 'outlabel', x: 562, y: y + 12 }, abbrev[name]));
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
+    g.appendChild(el('text', { class: 'outlabel', x: 562, y: y + 12 }, abbrev[name]));
     const slots = [], xs = [];
     for (let k = 0; k < OUT_VIEW; k++) {
       const col = k % OUT_COLS, r = Math.floor(k / OUT_COLS);
       const sx = 586 + col * 13, sy = y + 2 + r * 13, w = 11;
-      slots.push(root.appendChild(el('rect', { class: 'slot', x: sx, y: sy, width: w, height: w, rx: 2 })));
-      xs.push(root.appendChild(el('path', { class: 'slotx', d: `M${sx} ${sy}L${sx + w} ${sy + w}M${sx + w} ${sy}L${sx} ${sy + w}` })));
+      slots.push(g.appendChild(el('rect', { class: 'slot', x: sx, y: sy, width: w, height: w, rx: 2 })));
+      xs.push(g.appendChild(el('path', { class: 'slotx', d: `M${sx} ${sy}L${sx + w} ${sy + w}M${sx + w} ${sy}L${sx} ${sy + w}` })));
     }
     const swx = 730, swy = y + 16;
     const sw = el('g', { class: 'stopwatch' });
     sw.appendChild(el('circle', { cx: swx, cy: swy, r: 6 }));
     sw.appendChild(el('line', { x1: swx, y1: swy - 9, x2: swx, y2: swy - 6 }));   // top stem
     sw.appendChild(el('line', { x1: swx, y1: swy, x2: swx + 3, y2: swy - 3 }));    // hand
-    root.appendChild(sw);
+    g.appendChild(sw);
     const swLabel = el('text', { class: 'stopwatchlabel', x: swx + 12, y: swy + 4 }, '');
-    root.appendChild(swLabel);
-    out[name] = { slots, xs, stopwatch: sw, stopwatchLabel: swLabel };
+    g.appendChild(swLabel);
+    out[name] = { slots, xs, stopwatch: sw, stopwatchLabel: swLabel, rowGroup: g };
   });
 
   // Worker queue: a fill bar just left of the incoming workers, inside the
@@ -123,15 +130,17 @@ export function initRender(root, config) {
   // Dependencies
   names.forEach((name, i) => {
     const y = rowY(i), cy = rowCY(i);
+    const g = el('g', { class: 'deprow' });
+    root.appendChild(g);
     const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10 });
     card.style.stroke = colors[name];
-    root.appendChild(card);
-    root.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
+    g.appendChild(card);
+    g.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
     const fire = el('text', { class: 'fire', x: NODE_X + NODE_W - 16, y: y + 26, 'text-anchor': 'middle', opacity: 0 }, '🔥');
-    root.appendChild(fire);
+    g.appendChild(fire);
     const badge = el('circle', { class: 'badge', cx: 930, cy: cy - 6, r: 9, opacity: 0 });
     const badgeLabel = el('text', { class: 'badgelabel', x: 930, y: cy + 16, 'text-anchor': 'middle' }, '');
-    root.appendChild(badge); root.appendChild(badgeLabel);
+    g.appendChild(badge); g.appendChild(badgeLabel);
 
     // Callee-side capacity: this dependency's own service slots (filled = in
     // service, colored by the callee), with a count of anything queued at it.
@@ -140,18 +149,19 @@ export function initRender(root, config) {
     for (let k = 0; k < CAP_SLOTS; k++) {
       const col = k % CAP_COLS, r = Math.floor(k / CAP_COLS);
       const s = el('rect', { class: 'slot', x: NODE_X + col * 12, y: capY + r * 12, width: 9, height: 9, rx: 2 });
-      root.appendChild(s); capSlots.push(s);
+      g.appendChild(s); capSlots.push(s);
     }
     const capLabel = el('text', { class: 'outlabel', x: NODE_X, y: capY + 34 }, '');
-    root.appendChild(capLabel);
+    g.appendChild(capLabel);
 
     // Downstream queue: a fill bar in front of the callee, growing as requests
     // wait for one of its capacity slots.
-    root.appendChild(el('rect', { class: 'queuetrack', x: NODE_X - 16, y, width: 8, height: NODE_H, rx: 2 }));
+    g.appendChild(el('rect', { class: 'queuetrack', x: NODE_X - 16, y, width: 8, height: NODE_H, rx: 2 }));
     const depQueueBar = el('rect', { class: 'queuebar', x: NODE_X - 16, y: y + NODE_H, width: 8, height: 0, rx: 2 });
-    root.appendChild(depQueueBar);
+    g.appendChild(depQueueBar);
     const depQueueLabel = el('text', { class: 'outlabel', x: NODE_X - 12, y: y - 3, 'text-anchor': 'middle' }, '');
-    root.appendChild(depQueueLabel);
+    g.appendChild(depQueueLabel);
+    deps[name].rowGroups.push(g, out[name].rowGroup);
     Object.assign(deps[name], { card, badge, badgeLabel, fire, capSlots, capLabel, depQueueBar, depQueueLabel, depQueueBottom: y + NODE_H });
   });
 
@@ -239,6 +249,11 @@ export function render(state, h) {
   for (const name of h.names) {
     const d = h.deps[name];
     const t = state.targets[name];
+    // Progressive topology (topology.js) narrows sim.config.targets per act, so an
+    // unrevealed station has no entry in state.targets. Hide its whole row (edge,
+    // outbound pool, dependency card) rather than reading fields off it.
+    for (const g of d.rowGroups) g.setAttribute('display', t ? 'inline' : 'none');
+    if (!t) continue;
     const inflight = state.workers.byTarget[name] || 0;
     const br = t.breaker;
     const bh = t.bulkhead;
