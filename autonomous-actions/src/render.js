@@ -171,6 +171,12 @@ export function buildScene(root, config, onSelect) {
     box.style.setProperty('--depcolor', colorOf(name));
     const label = div('label', labelOf(name));
     box.appendChild(label);
+    // Non-color redundant cue for a failing dependency: absolutely positioned
+    // (box is position:relative) so it never affects the box's outer size,
+    // hidden by default via the .fire CSS rule, toggled by render() (hot path:
+    // a class toggle only, no layout work).
+    const fire = div('fire', '🔥');
+    box.appendChild(fire);
     const drow = div('egress');
     const dqueue = queue(drow);
     const dworkers = cells(drow, CAP_SLOTS);
@@ -178,7 +184,7 @@ export function buildScene(root, config, onSelect) {
     if (onSelect) box.addEventListener('click', () => onSelect(name));
     box.title = hoverOf(name);
     depsCol.appendChild(box);
-    deps[name] = { box, label, workerCells: dworkers.cells, queueBar: dqueue };
+    deps[name] = { box, label, workerCells: dworkers.cells, queueBar: dqueue, fire };
   }
   cols.appendChild(depsCol);
 
@@ -306,6 +312,7 @@ export function render(state, h, selectedStation) {
     d.queueBar.style.height = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;
 
     d.box.className = 'box dep' + (failing ? ' faulted' : congested ? ' slow' : '') + (name === selectedStation ? ' selected' : '');
+    d.fire.classList.toggle('show', failing);
   }
 
   const okS = smi('ok', state.rates.successPerSec);

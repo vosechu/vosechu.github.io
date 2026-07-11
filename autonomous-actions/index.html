@@ -164,6 +164,7 @@
     }
     .diagram .col-deps { display: flex; flex-direction: column; gap: 1rem; margin-left: auto; }
     .box {
+      position: relative;   /* anchors the absolutely positioned .fire glyph */
       background: var(--panel-solid); border: 1px solid var(--border);
       border-radius: 0.6rem; padding: 0.6rem 0.7rem; min-width: 9rem;
     }
@@ -171,6 +172,13 @@
     .box.dep.selected { box-shadow: 0 0 0 2px var(--teal); }
     .box.dep.slow { border-color: var(--amber); }
     .box.dep.faulted { border-color: var(--red); }
+    /* Non-color redundant cue for a failing box: absolutely positioned so it
+       never affects the box's outer size (hot-path rule), hidden by default. */
+    .box .fire {
+      position: absolute; top: 0.2rem; right: 0.3rem;
+      font-size: 0.65rem; line-height: 1; opacity: 0; pointer-events: none;
+    }
+    .box .fire.show { opacity: 1; }
     .box .label { font-size: 0.85rem; font-weight: 650; color: var(--ink); }
     .box .sub { font-size: 0.7rem; color: var(--ink-dim); }
     /* Worker / connection cells: a wrapping grid of small squares. */
