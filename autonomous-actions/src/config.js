@@ -27,9 +27,9 @@ export function defaultConfig() {
     // internal ids; label/note are what the player sees.
     targets: {
       'Database A': target(30, '#5aa2ff', 'DB', 'Database', ''),
-      'Service B': target(50, '#2fd6b8', 'Rep', 'Reports Service', 'Slow, higher timeout'),
-      'Service C': target(50, '#ff5a72', 'An', 'Analytics Service', 'Fast, lower timeout'),
-      'External': target(120, '#ffb64d', 'Ext', 'External Service', 'Random outages'),
+      'Service B': target(50, '#2fd6b8', 'Rep', 'Reports Service', ''),
+      'Service C': target(50, '#ff5a72', 'An', 'Analytics Service', ''),
+      'External': target(120, '#ffb64d', 'Ext', 'External Service', ''),
     },
     // phaseRef shifts the sine's zero crossing so it can resume from wherever the
     // player releases the rate slider instead of snapping back to the old phase.
