@@ -1,3 +1,5 @@
+import { colorOf, shortOf, labelOf } from './theme.js';
+
 const SERVICE_COLOR = '#a78bfa';   // our service's own workers (incoming)
 // Plain-language breaker states (open/closed reads as jargon to non-electricians).
 const BREAKER_LABEL = { closed: 'passing', open: 'blocking', half_open: 'testing' };
@@ -28,10 +30,9 @@ function el(name, attrs = {}, text) {
 export function initRender(root, config) {
   root.textContent = '';
   const names = Object.keys(config.targets);
-  const colors = {}, abbrev = {}, labels = {}, notes = {};
+  const colors = {}, abbrev = {}, labels = {};
   for (const name of names) {
-    const t = config.targets[name];
-    colors[name] = t.color; abbrev[name] = t.abbrev; labels[name] = t.label || name; notes[name] = t.note || '';
+    colors[name] = colorOf(name); abbrev[name] = shortOf(name); labels[name] = labelOf(name);
   }
 
   const defs = el('defs');
@@ -124,7 +125,6 @@ export function initRender(root, config) {
     card.style.stroke = colors[name];
     root.appendChild(card);
     root.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
-    if (notes[name]) root.appendChild(el('text', { class: 'glyph', x: NODE_X + 14, y: y + 44, 'text-anchor': 'start' }, notes[name]));
     const fire = el('text', { class: 'fire', x: NODE_X + NODE_W - 16, y: y + 26, 'text-anchor': 'middle', opacity: 0 }, '🔥');
     root.appendChild(fire);
     const badge = el('circle', { class: 'badge', cx: 930, cy: cy - 6, r: 9, opacity: 0 });

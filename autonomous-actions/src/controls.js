@@ -3,6 +3,7 @@ import { defaultConfig, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
 import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
+import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -12,7 +13,6 @@ const panel = document.getElementById('panel');
 const plain = (v) => `${v}`;
 const perSec = (v) => `${v}/s`;
 const dur = (v) => (v >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)} s` : `${v} ms`);
-const labelOf = (name) => sim.config.targets[name].label || name;
 
 // Append a labelled row (label + live value + the given input) to a parent.
 function control(parent, label, input, fmt, value) {
