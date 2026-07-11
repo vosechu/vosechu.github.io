@@ -5,6 +5,8 @@ import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
+import { STRINGS } from './strings.js';
+import { TOUR_STEPS, initialTourState, tourReducer } from './tour.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -337,6 +339,96 @@ function updateLittle(state) {
     + `<div class="have">You have <b>${pool}</b>. ${over ? 'Short by ' + (req - pool).toFixed(1) + ': requests are queueing.' : 'Enough, with room to spare.'}</div>`;
   body.className = over ? 'over' : '';
 }
+
+// Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
+// three bubbles (steps 1-3), anchored at the bar, a station, and the panel.
+// localStorage persists whether the tour has been seen; guarded so a
+// non-browser environment (no localStorage) degrades to "not seen" rather
+// than throwing.
+const TOUR_SEEN_KEY = 'aa_tour_seen';
+function readTourSeen() {
+  try { return typeof localStorage !== 'undefined' && localStorage.getItem(TOUR_SEEN_KEY) === '1'; }
+  catch { return false; }
+}
+function writeTourSeen() {
+  try { if (typeof localStorage !== 'undefined') localStorage.setItem(TOUR_SEEN_KEY, '1'); }
+  catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
+}
+
+let tourState = initialTourState(readTourSeen());
+
+const tourOverlay = document.getElementById('tour-overlay');
+const tourWelcome = document.getElementById('tour-welcome');
+const tourBubbles = {
+  1: document.getElementById('tourbubble-bar'),
+  2: document.getElementById('tourbubble-station'),
+  3: document.getElementById('tourbubble-panel'),
+};
+const TOUR_BUBBLE_TEXT = {
+  1: STRINGS.tour.bubbleBar,
+  2: STRINGS.tour.bubbleStation,
+  3: STRINGS.tour.bubblePanel,
+};
+
+function tourStepLabel(step) {
+  return STRINGS.tour.step.replace('{n}', String(step + 1)).replace('{m}', String(TOUR_STEPS));
+}
+
+function dispatchTour(action) {
+  tourState = tourReducer(tourState, action);
+  if (tourState.seen) writeTourSeen();
+  renderTour();
+}
+
+function renderTour() {
+  tourOverlay.classList.toggle('hidden', !tourState.open);
+  if (!tourState.open) return;
+  const isWelcome = tourState.step === 0;
+  tourWelcome.style.display = isWelcome ? '' : 'none';
+  for (const [step, el] of Object.entries(tourBubbles)) {
+    el.style.display = !isWelcome && Number(step) === tourState.step ? '' : 'none';
+  }
+  if (isWelcome) {
+    document.getElementById('tour-welcome-text').textContent = STRINGS.tour.welcome;
+    document.getElementById('tour-welcome-step').textContent = tourStepLabel(tourState.step);
+  } else {
+    const el = tourBubbles[tourState.step];
+    el.querySelector('p').textContent = TOUR_BUBBLE_TEXT[tourState.step];
+    el.querySelector('.tourstep').textContent = tourStepLabel(tourState.step);
+    // The last step's advance button reads "Done" instead of "Next".
+    const nextBtn = el.querySelector('.tour-next-btn');
+    nextBtn.textContent = tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
+  }
+}
+
+document.getElementById('tour-skip').textContent = STRINGS.tour.buttons.skip;
+document.getElementById('tour-next').textContent = STRINGS.tour.buttons.next;
+document.getElementById('tour-skip').addEventListener('click', () => dispatchTour({ type: 'skip' }));
+document.getElementById('tour-next').addEventListener('click', () => dispatchTour({ type: 'next' }));
+for (const btn of document.querySelectorAll('.tour-skip-btn')) {
+  btn.textContent = STRINGS.tour.buttons.skip;
+  btn.addEventListener('click', () => dispatchTour({ type: 'skip' }));
+}
+for (const btn of document.querySelectorAll('.tour-prev-btn')) {
+  btn.textContent = STRINGS.tour.buttons.prev;
+  // The reducer has no dedicated "prev" action; back one step by re-dispatching
+  // from a state that is one step earlier. Bounded at step 0 by tourReducer's
+  // own [0, TOUR_STEPS-1] invariant (next never goes below 0 to begin with, so
+  // this mirrors that by clamping here).
+  btn.addEventListener('click', () => {
+    const target = Math.max(0, tourState.step - 1);
+    tourState = { ...tourState, step: target };
+    renderTour();
+  });
+}
+for (const btn of document.querySelectorAll('.tour-rerun-btn')) {
+  btn.textContent = STRINGS.tour.buttons.rerun;
+  btn.addEventListener('click', () => dispatchTour({ type: 'open' }));
+}
+for (const btn of document.querySelectorAll('.tour-next-btn')) {
+  btn.addEventListener('click', () => dispatchTour({ type: 'next' }));
+}
+renderTour();
 
 // Acts never patch sim state directly (ACTS carries no `patch` field, see
 // scenarios.test.js): the knobs stay however the player left them, and the
