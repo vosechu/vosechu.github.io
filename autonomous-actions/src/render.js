@@ -1,4 +1,4 @@
-import { colorOf, shortOf, labelOf } from './theme.js';
+import { colorOf, shortOf, labelOf, hoverOf } from './theme.js';
 import { availabilityPercent } from './metrics.js';
 import { sparklinePath } from './sparkline.js';
 import { STRINGS } from './strings.js';
@@ -138,7 +138,7 @@ export function initRender(root, config, onSelect) {
     const y = rowY(i), cy = rowCY(i);
     const g = el('g', { class: 'deprow' });
     root.appendChild(g);
-    const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10 });
+    const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10, title: hoverOf(name) });
     card.style.stroke = colors[name];
     if (onSelect) card.addEventListener('click', () => onSelect(name));
     g.appendChild(card);

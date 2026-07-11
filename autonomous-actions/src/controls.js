@@ -236,7 +236,6 @@ function buildControls(actIndex) {
     workerPoolSlider(sys);
     timeoutControl(sys);
     oscillationToggle(sys);
-    littleSection(true);
     for (const name of Object.keys(sim.config.targets)) {
       const sec = section(labelOf(name), false);
       latencySlider(sec, name);
@@ -258,7 +257,6 @@ function buildControls(actIndex) {
     if (actIndex >= 3) workerPoolSlider(sys);      // saturation is in play from the Analytics act on
     if (actIndex >= 4) timeoutControl(sys);        // front-door timeout: the Reports load-shedding tradeoff
   }
-  littleSection(actIndex >= 4);                    // required-workers readout, opens at the saturation act
   // Single station block: only the selected station's controls, gated by
   // whatever this act has unlocked for it. Only a revealed station can be
   // selected (see selectStation), so the section always has a real match.
@@ -281,20 +279,6 @@ function section(label, entering) {
   sec.appendChild(sum);
   panel.appendChild(sec);
   return sec;
-}
-
-// Little's Law as its own collapsible section: the required-workers readout,
-// updated live by updateLittle. Opens at the saturation act; collapsible anytime.
-function littleSection(open) {
-  const sec = section("Little's Law", false);
-  sec.open = open;
-  const law = document.createElement('p');
-  law.className = 'little-law';
-  law.textContent = 'Workers you need = request rate × how long each request is held. The pool size is not part of the math; it is what you have to compare against.';
-  const body = document.createElement('div');
-  body.id = 'little-body';
-  sec.appendChild(law);
-  sec.appendChild(body);
 }
 
 // Act progress dots
@@ -322,22 +306,6 @@ function selectStation(name) {
   selectedStation = name;
   buildControls(actIndex);
   render(sim.getState(), handle, selectedStation);
-}
-
-// Little's Law is a collapsible section in the controls panel (rebuilt per act by
-// buildControls), so query its body fresh each frame rather than caching a stale ref.
-function updateLittle(state) {
-  const body = document.getElementById('little-body');
-  if (!body) return;
-  const rate = sim.config.requestRatePerSec;
-  const req = state.required.workers;
-  const holdMs = rate > 0 ? Math.round((req / rate) * 1000) : 0;
-  const pool = state.workers.size;
-  const over = req > pool;
-  body.innerHTML =
-    `<div class="eq">${rate}/s × ${holdMs} ms held = <b>at least ${req.toFixed(1)} workers</b> to serve this traffic</div>`
-    + `<div class="have">You have <b>${pool}</b>. ${over ? 'Short by ' + (req - pool).toFixed(1) + ': requests are queueing.' : 'Enough, with room to spare.'}</div>`;
-  body.className = over ? 'over' : '';
 }
 
 // Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
@@ -518,7 +486,6 @@ function frame() {
       ui.val.textContent = plain(size);
     }
   }
-  updateLittle(state);
   // The tour readout now carries only the adaptive-sizing line: the live pool and
   // the latency signal driving it.
   // With every pool adaptive, surface the most-throttled one (smallest pool), so the
