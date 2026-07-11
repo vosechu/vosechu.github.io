@@ -70,16 +70,33 @@ function layoutEdges(h) {
   }
 }
 
-// Fill a cell grid: cells before `n` are marked busy. If `wallAt` is given,
-// cells from `wallAt` onward are marked walled (a bulkhead reserves them for
-// other dependencies); everything between `n` and `wallAt` stays a plain idle
-// cell. `n` is always <= wallAt (a bulkhead never lets more legs through than
-// its own cap), so busy and walled never land on the same cell.
-function fillCells(cellsArr, n, wallAt) {
+// Fill a cell grid to reflect the live boundaries of a pool, not just how much
+// of it is busy right now:
+//   - `busy` cells (from 0) are marked busy.
+//   - `visible` bounds how many cells this pool currently has; cells at or
+//     past it are `hidden` (visibility:hidden, so the grid keeps its layout
+//     slot -- hot-path rule, no reflow), matching the old grid's "this slot
+//     doesn't exist right now" look. Used by the worker pool (bounded by the
+//     worker-count slider) and the egress pool (bounded by the same slider,
+//     clamped to the grid size).
+//   - `cappedAt`, if given, dims (not hides) cells from that index up to
+//     `visible` -- a capacity boundary inside an otherwise fully-visible pool.
+//     Used by the dependency capacity grid, which never hides cells, only
+//     dims past its own live capacity.
+//   - `wallFrom`/`wallTo`, if given, mark a red bulkhead wall across that
+//     sub-range of the visible cells. Only the egress pool uses this, and
+//     only when a bulkhead actually exists for that dependency; with no
+//     bulkhead the caller passes wallFrom === wallTo (or omits both), so no
+//     cell ever gets `walled`.
+// The ranges are mutually exclusive by construction (busy never reaches
+// wallFrom or cappedAt), so each cell gets exactly one state.
+function fillCells(cellsArr, { busy = 0, visible = cellsArr.length, cappedAt = null, wallFrom = null, wallTo = null } = {}) {
   for (let i = 0; i < cellsArr.length; i++) {
     let cls = 'cell';
-    if (i < n) cls += ' busy';
-    else if (wallAt != null && i >= wallAt) cls += ' walled';
+    if (i >= visible) cls += ' hidden';
+    else if (wallFrom != null && i >= wallFrom && i < wallTo) cls += ' walled';
+    else if (i < busy) cls += ' busy';
+    else if (cappedAt != null && i >= cappedAt) cls += ' capped';
     cellsArr[i].className = cls;
   }
 }
@@ -236,9 +253,11 @@ export function render(state, h, selectedStation) {
   const sm = (key, v, a = 0.12) => { e[key] = e[key] == null ? v : e[key] + (v - e[key]) * a; return e[key]; };
   const smi = (key, v) => Math.round(sm(key, v));
 
-  // Incoming worker pool: filled by total busy workers.
+  // Incoming worker pool: filled by total busy workers; cells past the live
+  // worker-pool size are hidden, so the worker pool slider visibly resizes the
+  // grid (not just how much of it looks busy).
   const busyN = smi('wbusy', state.workers.busy);
-  fillCells(h.service.workerCells, busyN);
+  fillCells(h.service.workerCells, { busy: busyN, visible: size });
   // The worker pool is finite, but the service accepts connections without a hard
   // cap (the overflow queues), so connections are shown against infinity.
   h.service.sub.textContent = serviceSub(size, busyN);
@@ -286,13 +305,21 @@ export function render(state, h, selectedStation) {
     else if (inflight > 0) flowClass = 'edge-flow active';
     h.edgeByName.get(name).flow.setAttribute('class', flowClass);
 
-    // Outbound connection pool. The grid tracks the worker pool, so a dependency
-    // with no bulkhead can use all of it; a bulkhead walls off the cells past its
-    // cap, showing those workers are reserved for the other dependencies.
+    // Outbound connection pool. The grid tracks the live worker pool, so cells
+    // past poolShown are hidden (the worker pool slider visibly resizes this
+    // grid too). A dependency with no bulkhead can use the whole visible pool;
+    // a bulkhead walls off the cells between its own cap and poolShown (red,
+    // reserved for the other dependencies). With bulkheads off, bulkheadCap
+    // === poolShown, so the wall range is empty and no cell is ever walled.
     const poolShown = Math.min(size, OUT_VIEW);
-    const available = bh ? Math.min(bh.size, poolShown) : poolShown;
+    const bulkheadCap = bh ? Math.min(bh.size, poolShown) : poolShown;
     const flN = smi(`fl_${name}`, inflight);
-    fillCells(eg.poolCells, flN, available);
+    fillCells(eg.poolCells, {
+      busy: Math.min(flN, bulkheadCap),
+      visible: poolShown,
+      wallFrom: bh ? bulkheadCap : null,
+      wallTo: poolShown,
+    });
     eg.wall.textContent = String(cap);
     if (br) {
       eg.breakerPill.className = `pill breaker ${br.state}`;
@@ -303,12 +330,15 @@ export function render(state, h, selectedStation) {
     }
     eg.timeoutPill.textContent = fmtDur(t.outgoingTimeoutMs);
 
-    // Callee-side capacity: filled = in service now. A queue at the dependency
-    // fills its own queue track (the numeric count stays in the status bar).
+    // Callee-side capacity: filled = in service now, dimmed (not hidden) past
+    // this dependency's own live capacity -- the grid is always CAP_SLOTS wide,
+    // but cells beyond `ds.capacity` show the capacity boundary. A queue at the
+    // dependency fills its own queue track (the numeric count stays in the
+    // status bar).
     const ds = t.upstream || { capacity: CAP_SLOTS, inService: 0, queueDepth: 0 };
     const inSvc = smi(`sv_${name}`, ds.inService);
     const dq = smi(`dq_${name}`, ds.queueDepth);
-    fillCells(d.workerCells, inSvc);
+    fillCells(d.workerCells, { busy: inSvc, cappedAt: Math.min(ds.capacity, CAP_SLOTS) });
     d.queueBar.style.height = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;
 
     d.box.className = 'box dep' + (failing ? ' faulted' : congested ? ' slow' : '') + (name === selectedStation ? ' selected' : '');
