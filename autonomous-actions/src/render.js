@@ -138,8 +138,9 @@ export function buildScene(root, config, onSelect) {
   const svcQueueFill = queue(svcQueueRow);
   const svcWorkers = cells(svcQueueRow, MAX_SLOTS);
   serviceBox.appendChild(svcQueueRow);
-  // Front-door timeout pill: built here, but state has no config.timeoutMs field
-  // to read per frame (see render()'s comment), so it stays blank for now.
+  // Front-door timeout pill: its text is sim.config.timeoutMs, which is config,
+  // not per-frame state, so controls.js sets it (on build and on the front-door
+  // timeout slider's input), not render().
   const frontTimeout = div('pill');
   serviceBox.appendChild(frontTimeout);
   const egress = {};

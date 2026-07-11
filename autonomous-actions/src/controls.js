@@ -100,7 +100,8 @@ function workerPoolSlider(parent) {
   slider(parent, 'Worker pool', 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
 }
 function timeoutControl(parent) {
-  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur, (v) => { sim.config.timeoutMs = v; });
+  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur,
+    (v) => { sim.config.timeoutMs = v; handle.service.frontTimeout.textContent = dur(v); });
 }
 function bulkheadsToggle(parent) {
   toggle(parent, 'Bulkheads', sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
@@ -219,6 +220,10 @@ function stationControlsFor(sec, name, actIndex) {
 // dependency. Reveal thresholds are 0-indexed act numbers.
 function buildControls(actIndex) {
   const freePlay = actIndex >= ACTS.length - 1;
+  // The pill is a config readout, not gated by which act has unlocked the
+  // slider itself, so it stays in sync on every rebuild (act change, station
+  // select, reset), independent of timeoutControl below.
+  handle.service.frontTimeout.textContent = dur(sim.config.timeoutMs);
   panel.textContent = '';
   poolUIs = {};
   const header = document.createElement('div'); header.className = 'panelhead';
@@ -416,6 +421,13 @@ function showAct(i) {
   document.getElementById('act-caption').textContent = meta.caption;
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);
+  // Reflect the new roster's box visibility before measuring arrows: render()
+  // sets display:none on rows/boxes outside the new act, and layoutEdges
+  // (driven by relayout) skips edges whose endpoint is hidden. Without this
+  // render() first, a relayout racing ahead of the next animation frame's
+  // render() would still see last act's visibility and draw stale arrows.
+  render(sim.getState(), handle, selectedStation);
+  handle.relayout();
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,
