@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rosterForAct } from '../src/topology.js';
+import { rosterForAct, defaultStationForAct } from '../src/topology.js';
 
 test('act 0 shows only the core datastore', () => {
   assert.deepEqual(rosterForAct(0), ['Database A']);
@@ -23,4 +23,11 @@ test('rosters are cumulative: each act is a superset of the previous', () => {
     const prev = new Set(rosterForAct(i - 1));
     for (const id of prev) assert.ok(rosterForAct(i).includes(id));
   }
+});
+test('the default selected station is the newest one the act revealed', () => {
+  assert.equal(defaultStationForAct(0), 'Database A');
+  assert.equal(defaultStationForAct(1), 'External');
+  assert.equal(defaultStationForAct(3), 'Service C');
+  assert.equal(defaultStationForAct(4), 'Service B');
+  assert.equal(defaultStationForAct(7), 'Service B');
 });

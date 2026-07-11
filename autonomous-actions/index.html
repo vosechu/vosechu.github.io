@@ -158,9 +158,10 @@
     .card { fill: var(--panel-solid); stroke: var(--border); stroke-width: 1.5; }
     .card.gateway { fill: #fff3dc; stroke: #d9c093; transition: stroke .3s ease, filter .3s ease; }
     .card.gateway.faulted { stroke: var(--red); stroke-width: 2.5; filter: drop-shadow(0 0 12px var(--red)); }
-    .card.dep { stroke-width: 2; }
+    .card.dep { stroke-width: 2; cursor: pointer; }
     .card.dep.faulted { stroke: var(--red) !important; stroke-width: 3.5; filter: drop-shadow(0 0 10px var(--red)); }
     .card.dep.slow { stroke: var(--amber) !important; stroke-width: 3; filter: drop-shadow(0 0 9px var(--amber)); }
+    .card.dep.selected { stroke: var(--ink); stroke-width: 3; filter: drop-shadow(0 0 6px var(--ink)); }
     .nodelabel { fill: var(--ink); font-size: 14px; font-weight: 600; }
     .nodesub { fill: var(--ink-dim); font-size: 11px; }
     .glyph { fill: var(--ink-dim); font-size: 11px; }

@@ -4,7 +4,7 @@ import { makeRng } from './rng.js';
 import { initRender, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
-import { rosterForAct } from './topology.js';
+import { rosterForAct, defaultStationForAct } from './topology.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -14,7 +14,7 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 // diagram is built once from the full set (initRender) and hides rows whose
 // id is missing from state.targets (render.js).
 const DEFAULT_TARGETS = defaultConfig().targets;
-const handle = initRender(document.getElementById('stage'), { targets: DEFAULT_TARGETS });
+const handle = initRender(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
 const panel = document.getElementById('panel');
 
 // Narrow sim.config.targets to exactly the ids in `roster`, preserving the
@@ -195,6 +195,23 @@ function breakerRow(parent, name) {
 }
 
 
+// Which per-station controls this act has unlocked for `name`, so the station
+// block (buildControls) and the free-play per-station sections show the same
+// matrix a given act would have revealed. Mirrors the act-gating that used to
+// live inline in buildControls, generalized to any revealed station (including
+// the core datastore, which no single act singles out).
+function stationControlsFor(sec, name, actIndex) {
+  latencySlider(sec, name);
+  outgoingTimeoutSlider(sec, name);
+  if (name === 'External') {
+    errorRateSlider(sec, name);
+    if (actIndex >= 2) breakerRow(sec, name);
+    return;
+  }
+  breakerRow(sec, name);
+  if (name === 'Service B' && actIndex >= 5) bulkheadSlider(sec, name);
+}
+
 // Progressive disclosure: each act keeps every knob unlocked by earlier acts and
 // adds its own. Free play (the last act) unlocks the full matrix for every
 // dependency. Reveal thresholds are 0-indexed act numbers.
@@ -230,6 +247,7 @@ function buildControls(actIndex) {
     return;
   }
   // Global knobs live in a collapsible System section, unlocked as acts need them.
+  // This block is persistent: it shows regardless of which station is selected.
   if (actIndex >= 2) {
     const sys = section('System', actIndex === 2);
     breakersToggle(sys);                           // the circuit-breaker act
@@ -239,24 +257,12 @@ function buildControls(actIndex) {
     if (actIndex >= 4) timeoutControl(sys);        // front-door timeout: the Reports load-shedding tradeoff
   }
   littleSection(actIndex >= 4);                    // required-workers readout, opens at the saturation act
-  // Service sections, focus service on top so its knobs stay at eye level.
-  if (actIndex >= 4) {                             // Reports (the slow one): focus from its incident on
-    const sec = section(labelOf('Service B'), actIndex === 4);
-    latencySlider(sec, 'Service B');
-    outgoingTimeoutSlider(sec, 'Service B');
-    breakerRow(sec, 'Service B');
-    if (actIndex >= 5) bulkheadSlider(sec, 'Service B');
-  }
-  if (actIndex >= 3) {                             // Analytics (the fast one): focus of the timeout act
-    const sec = section(labelOf('Service C'), actIndex === 3);
-    latencySlider(sec, 'Service C');
-    outgoingTimeoutSlider(sec, 'Service C');
-    breakerRow(sec, 'Service C');
-  }
-  if (actIndex >= 1) {                             // External: its errors, and (once breakers exist) its breaker
-    const sec = section(labelOf('External'), actIndex === 1);
-    errorRateSlider(sec, 'External');
-    if (actIndex >= 2) breakerRow(sec, 'External');
+  // Single station block: only the selected station's controls, gated by
+  // whatever this act has unlocked for it. Only a revealed station can be
+  // selected (see selectStation), so the section always has a real match.
+  if (sim.config.targets[selectedStation]) {
+    const sec = section(labelOf(selectedStation), true);
+    stationControlsFor(sec, selectedStation, actIndex);
   }
 }
 
@@ -301,6 +307,20 @@ const dots = ACTS.map(() => {
 const readoutElement = document.getElementById('readout');
 let actIndex = 0;
 let readoutVisible = false;
+// The station whose block the panel shows. Defaults to the newest station the
+// current act revealed; clicking a revealed node (render.js, via selectStation)
+// overrides it until the next act change.
+let selectedStation = defaultStationForAct(0);
+
+// Select a station for the panel: only a revealed station may be selected (an
+// unrevealed one has no entry in sim.config.targets, so buildControls would
+// have nothing to show), rebuild the panel, and refresh the diagram's highlight.
+function selectStation(name) {
+  if (!sim.config.targets[name]) return;
+  selectedStation = name;
+  buildControls(actIndex);
+  render(sim.getState(), handle, selectedStation);
+}
 
 // Little's Law is a collapsible section in the controls panel (rebuilt per act by
 // buildControls), so query its body fresh each frame rather than caching a stale ref.
@@ -329,6 +349,7 @@ function showAct(i) {
   const meta = actMeta(actIndex);
   readoutVisible = meta.readoutVisible;
   applyRoster(rosterForAct(actIndex));
+  selectedStation = defaultStationForAct(actIndex);
   document.getElementById('act-title').textContent = `${actIndex + 1}. ${meta.title}`;
   document.getElementById('act-instruction').textContent = meta.instruction ? `Try this: ${meta.instruction}` : '';
   document.getElementById('act-caption').textContent = meta.caption;
@@ -382,7 +403,7 @@ function frame() {
   lastFrameMs = real;
   sim.tick(simNowMs);
   const state = sim.getState();
-  render(state, handle);
+  render(state, handle, selectedStation);
   // When oscillation is on (and the slider is not being held), drive the rate
   // thumb from the current effective rate so the traffic is visibly breathing.
   const osc = sim.config.loadOscillation;

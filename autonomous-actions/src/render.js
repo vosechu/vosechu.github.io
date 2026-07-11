@@ -28,8 +28,11 @@ function el(name, attrs = {}, text) {
 }
 
 // Build the fixed scene once. render() only updates attributes and classes so
-// CSS transitions and keyframes animate every change.
-export function initRender(root, config) {
+// CSS transitions and keyframes animate every change. `onSelect(name)` fires
+// when a station card is clicked; only revealed stations are clickable (an
+// unrevealed row is hidden via `display: none`, which also blocks pointer
+// events, so no extra guard is needed here).
+export function initRender(root, config, onSelect) {
   root.textContent = '';
   const names = Object.keys(config.targets);
   const colors = {}, abbrev = {}, labels = {};
@@ -134,6 +137,7 @@ export function initRender(root, config) {
     root.appendChild(g);
     const card = el('rect', { class: 'card dep', x: NODE_X, y, width: NODE_W, height: NODE_H, rx: 10 });
     card.style.stroke = colors[name];
+    if (onSelect) card.addEventListener('click', () => onSelect(name));
     g.appendChild(card);
     g.appendChild(el('text', { class: 'nodelabel', x: NODE_X + 14, y: y + 26 }, labels[name]));
     const fire = el('text', { class: 'fire', x: NODE_X + NODE_W - 16, y: y + 26, 'text-anchor': 'middle', opacity: 0 }, '🔥');
@@ -212,7 +216,7 @@ function paintOutbound(slots, xs, filled, available, poolShown, color) {
   }
 }
 
-export function render(state, h) {
+export function render(state, h, selectedStation) {
   const size = state.workers.size;
 
   // Counts come from a 1s sliding window recomputed every frame, so at low rates
@@ -305,6 +309,7 @@ export function render(state, h) {
     let cardClass = 'card dep';
     if (failing) cardClass = 'card dep faulted';
     else if (congested) cardClass = 'card dep slow';
+    if (name === selectedStation) cardClass += ' selected';
     d.card.setAttribute('class', cardClass);
 
     d.fire.setAttribute('opacity', failing ? 1 : 0);

@@ -9,3 +9,11 @@ export function rosterForAct(actIndex) {
   for (let i = 0; i <= actIndex; i++) if (REVEAL_AT[i]) roster.push(REVEAL_AT[i]);
   return roster;
 }
+
+// The newest station on stage for this act (the one the act is about), used as
+// the default panel selection. Acts that reveal nothing inherit the prior newest.
+export function defaultStationForAct(actIndex) {
+  let newest = CORE;
+  for (let i = 0; i <= actIndex; i++) if (REVEAL_AT[i]) newest = REVEAL_AT[i];
+  return newest;
+}
