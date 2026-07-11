@@ -343,8 +343,8 @@ export class Sim {
     }
     const legErrors = (name) => this.events.filter(
       (e) => e.scope === 'leg' && e.target === name && (e.kind === 'error' || e.kind === 'timeout' || e.kind === 'reject')).length;
-    // Just the outgoing-timeout cuts for this callee, so the diagram's stopwatch can
-    // flash only while our wrapper is actually abandoning calls to it.
+    // Just the outgoing-timeout cuts for this callee, so the diagram can flag
+    // only while our wrapper is actually abandoning calls to it.
     const legTimeouts = (name) => this.events.filter(
       (e) => e.scope === 'leg' && e.target === name && e.kind === 'timeout').length;
     const targets = {};
@@ -360,7 +360,8 @@ export class Sim {
         : null;
       const upstream = { capacity: cfg.capacity, inService: this._inService(name), queueDepth: queuedByTarget[name] || 0 };
       targets[name] = { inFlight: active[name] || 0, upstream, bulkhead, breaker: breakerState,
-        errorsPerSec: legErrors(name), timeoutsPerSec: legTimeouts(name), outgoingTimeoutMs: this._legTimeout(cfg) };
+        errorsPerSec: legErrors(name), timeoutsPerSec: legTimeouts(name), outgoingTimeoutMs: this._legTimeout(cfg),
+        latencyP95: this._percentileOf(this.recentByTarget[name], 95) };
     }
     const avgHoldSec = this.recent.length ? (this.recent.reduce((a, b) => a + b, 0) / this.recent.length) / 1000 : 0;
     const reqPerSec = (kind) => this.events.filter((e) => e.scope === 'req' && e.kind === kind).length;

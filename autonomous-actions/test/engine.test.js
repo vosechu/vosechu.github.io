@@ -559,3 +559,17 @@ test('adaptive leaves the pool untouched when adaptive is disabled', () => {
   run(sim, 50, 5000, 50);
   assert.equal(sim.config.targets.C.bulkheadSize, 15);                 // unchanged: the controller is off
 });
+
+test('getState exposes per-target completed p95 latency', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
+  const cfg = defaultConfig();
+  cfg.requestRatePerSec = 40;
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(111), config: cfg });
+  sim.tick(0);
+  run(sim, 50, 3000, 50);
+  const s = sim.getState();
+  for (const name of Object.keys(cfg.targets)) {
+    assert.equal(typeof s.targets[name].latencyP95, 'number');
+    assert.ok(s.targets[name].latencyP95 >= 0);
+  }
+});

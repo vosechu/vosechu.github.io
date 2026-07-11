@@ -1,5 +1,6 @@
 import { colorOf, shortOf, labelOf } from './theme.js';
 import { availabilityPercent } from './metrics.js';
+import { sparklinePath } from './sparkline.js';
 import { STRINGS } from './strings.js';
 
 const SERVICE_COLOR = '#a78bfa';   // our service's own workers (incoming)
@@ -12,6 +13,8 @@ const OUT_VIEW = 30;     // outbound pool slots shown per dependency (tracks the
 const OUT_COLS = 8;      // wrapped into rows of this many
 const CAP_SLOTS = 30;    // callee-side capacity slots shown per dependency
 const CAP_COLS = 12;     // wrapped into rows of this many
+const SPARK_W = 90, SPARK_H = 32;   // latency sparkline box, per dependency row
+const SPARK_LEN = 40;               // rolling series length (frames kept)
 const GW = { x: 420, y: 96, w: 300, h: 300 };
 const HUB_Y = GW.y + GW.h / 2;   // gateway vertical center; the client and callee edges converge here
 const NODE_X = 980, NODE_W = 180, NODE_H = 64;
@@ -95,8 +98,9 @@ export function initRender(root, config, onSelect) {
 
   // Right: outbound connection pools, one row per dependency, colored by callee.
   // The grid tracks the worker pool (a dependency with no bulkhead can use all of
-  // it); a bulkhead walls off the slots past its cap with a red X. A stopwatch to
-  // the right of each pool shows that dependency's outgoing timeout.
+  // it); a bulkhead walls off the slots past its cap with a red X. A latency
+  // sparkline to the right of each pool trends that dependency's completed p95;
+  // the line clips at the top of the box when it hits the outgoing timeout.
   const out = {};
   names.forEach((name, i) => {
     const y = GW.y + 74 + i * 56;
@@ -110,15 +114,14 @@ export function initRender(root, config, onSelect) {
       slots.push(g.appendChild(el('rect', { class: 'slot', x: sx, y: sy, width: w, height: w, rx: 2 })));
       xs.push(g.appendChild(el('path', { class: 'slotx', d: `M${sx} ${sy}L${sx + w} ${sy + w}M${sx + w} ${sy}L${sx} ${sy + w}` })));
     }
-    const swx = 730, swy = y + 16;
-    const sw = el('g', { class: 'stopwatch' });
-    sw.appendChild(el('circle', { cx: swx, cy: swy, r: 6 }));
-    sw.appendChild(el('line', { x1: swx, y1: swy - 9, x2: swx, y2: swy - 6 }));   // top stem
-    sw.appendChild(el('line', { x1: swx, y1: swy, x2: swx + 3, y2: swy - 3 }));    // hand
-    g.appendChild(sw);
-    const swLabel = el('text', { class: 'stopwatchlabel', x: swx + 12, y: swy + 4 }, '');
-    g.appendChild(swLabel);
-    out[name] = { slots, xs, stopwatch: sw, stopwatchLabel: swLabel, rowGroup: g };
+    const sparkX = 722, sparkY = y + 2;
+    const sparkGroup = el('g', { class: 'sparkline', transform: `translate(${sparkX},${sparkY})` });
+    sparkGroup.appendChild(el('rect', { class: 'sparklinebox', x: 0, y: 0, width: SPARK_W, height: SPARK_H, rx: 3 }));
+    const sparkPath = el('path', { class: 'sparklinepath', d: '' });
+    sparkPath.style.stroke = colors[name];
+    sparkGroup.appendChild(sparkPath);
+    g.appendChild(sparkGroup);
+    out[name] = { slots, xs, sparkPath, series: [], rowGroup: g };
   });
 
   // Worker queue: a fill bar just left of the incoming workers, inside the
@@ -275,12 +278,13 @@ export function render(state, h, selectedStation) {
     const poolShown = Math.min(size, OUT_VIEW);
     const available = bh ? Math.min(bh.size, poolShown) : poolShown;
     paintOutbound(h.out[name].slots, h.out[name].xs, smi(`fl_${name}`, inflight), available, poolShown, h.colors[name]);
-    // Stopwatch: the outgoing timeout on our call to this dependency, amber while
-    // that timeout is actively cutting calls off.
-    const cutting = (t.timeoutsPerSec || 0) > 0;
-    h.out[name].stopwatch.setAttribute('class', cutting ? 'stopwatch cut' : 'stopwatch');
-    h.out[name].stopwatchLabel.setAttribute('class', cutting ? 'stopwatchlabel cut' : 'stopwatchlabel');
-    h.out[name].stopwatchLabel.textContent = fmtDur(t.outgoingTimeoutMs);
+    // Latency sparkline: a rolling trend of this dependency's completed p95,
+    // scaled to its outgoing timeout so a hang reads as the line clipping at
+    // the top of the box.
+    const series = h.out[name].series;
+    series.push(t.latencyP95 || 0);
+    if (series.length > SPARK_LEN) series.shift();
+    h.out[name].sparkPath.setAttribute('d', sparklinePath(series, SPARK_W, SPARK_H, t.outgoingTimeoutMs));
 
     // Callee-side capacity: filled = in service now, dim = slots past this
     // dependency's own capacity. A queue at the dependency is shown as a count.

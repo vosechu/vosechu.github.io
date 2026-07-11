@@ -189,12 +189,10 @@
     .slotx { stroke: var(--red); stroke-width: 1.1; opacity: 0; transition: opacity .2s ease; }
     .slotx.on { opacity: 0.7; }
 
-    /* Outgoing-timeout stopwatch on each dependency: dim normally, amber while our
-       wrapper is actively cutting calls to that dependency. */
-    .stopwatch circle, .stopwatch line { stroke: var(--ink-dim); fill: none; transition: stroke .2s ease; }
-    .stopwatch.cut circle, .stopwatch.cut line { stroke: var(--amber); }
-    .stopwatchlabel { fill: var(--ink-dim); font-size: 9.5px; font-variant-numeric: tabular-nums; transition: fill .2s ease; }
-    .stopwatchlabel.cut { fill: var(--amber); }
+    /* Per-dependency latency sparkline: a small boxed trend line, stroked in the
+       station's own color, that clips at the top when latency hits the timeout. */
+    .sparklinebox { fill: rgba(43,29,16,0.04); stroke: var(--ink-dim); stroke-width: 0.75; opacity: 0.5; }
+    .sparklinepath { fill: none; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
 
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
