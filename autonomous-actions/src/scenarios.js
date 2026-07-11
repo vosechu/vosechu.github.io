@@ -35,8 +35,8 @@ export const ACTS = [
     readoutVisible: false },
 
   { title: 'Response: adaptive sizing',
-    instruction: 'Stop guessing the pool size. Turn on adaptive sizing and watch the Reports pool find its own size as its latency changes.',
-    caption: 'A fixed pool is a guess that goes stale as traffic and latency shift. Adaptive sizing watches the latency it is already measuring and finds the size on its own, shrinking when Reports slows and reopening when it recovers. It is not magic: it reacts to measured latency, so it lags a sudden shift by a sample or two, and you still tell it what healthy looks like. But that is one forgiving knob instead of a brittle per-dependency guess, and anything already measuring per-call latency, like an APM agent, can hold this SLO on every connection with almost nothing to tune.',
+    instruction: 'Reset to defaults, then turn on adaptive sizing while traffic is healthy so it can learn each dependency\'s normal response time. Now push the request rate up until Reports has more calls than it can serve and its queue grows, and watch its pool shed toward the number it can actually handle. Drop the rate back down and watch it reopen.',
+    caption: 'A fixed pool is a guess that goes stale as traffic shifts. Adaptive sizing learns the floor, the response time it sees when nothing is queued, then sizes on how far latency has climbed above that floor rather than on the raw number. So a dependency that is simply slow, like a database with naturally high and variable response times, is left alone, while one whose queue is growing gets shed until the queue clears. It lags a real shift by a sample or two and it has to see healthy traffic first to learn the floor, but that is one forgiving knob instead of a brittle per-dependency guess, and anything already measuring per-call latency, like an APM agent, can hold this SLO on every connection with almost nothing to tune.',
     readoutVisible: true },
 
   { title: 'Free play',

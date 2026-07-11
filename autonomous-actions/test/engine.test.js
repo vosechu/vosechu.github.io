@@ -373,6 +373,20 @@ test('a bulkhead rejection counts as an error and trips the breaker', () => {
   assert.equal(sim.getState().targets['Service C'].breaker.state, 'open');
 });
 
+test('at the default settings a full bulkhead rejects overflow and a downstream queue forms', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
+  const cfg = defaultConfig();
+  cfg.bulkheadsEnabled = true;
+  cfg.requestRatePerSec = 200;
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(101), config: cfg });
+  sim.tick(0);
+  run(sim, 50, 3000, 50);
+  const s = sim.getState();
+  assert.ok(s.counters.reject > 0);   // bulkheadSize below the pool, so overflow is rejected
+  const queued = Object.values(s.targets).some((t) => t.upstream.queueDepth > 0);
+  assert.ok(queued);                    // capacity below the pool, so calls queue at the dependency
+});
+
 test('a downstream serves only up to its capacity; the rest wait in its queue holding a worker', () => {
   // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
   const cfg = defaultConfig();
@@ -483,70 +497,65 @@ test('success rate is windowed, not cumulative', () => {
   assert.equal(sim.getState().rates.successPerSec, 0);  // window emptied; a cumulative counter would stay > 0
 });
 
-test('adaptive bulkhead settles at the floor under very high latency', () => {
-  // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
-  // Proportional sizing: baseline 50 over p95 8000 gives a target far below the
-  // floor, so the pool clamps down to ADAPTIVE_MIN and stays there.
-  const cfg = defaultConfig();
-  cfg.bulkheadsEnabled = true;
-  cfg.requestRatePerSec = 100;
-  cfg.timeoutMs = 30000;
-  cfg.targets = oneTarget({ latencyMs: 8000, bulkheadSize: 20,
-    adaptive: { enabled: true, sampleWindowMs: 1000, baselineLatencyMs: 50, lastSampleMs: 0 } });
-  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(33), config: cfg });
-  sim.tick(0);
-  run(sim, 50, 20000, 50);
-  assert.equal(sim.config.targets.C.bulkheadSize, ADAPTIVE_MIN);
-});
-
-test('adaptive bulkhead opens to the max under healthy latency', () => {
-  // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
-  // When p95 sits at the baseline, the proportional target is the full worker pool,
-  // so a small pool grows open rather than staying pinned or shrinking.
+test('adaptive learns the dependency floor and opens toward the pool under healthy latency', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
   const cfg = defaultConfig();
   cfg.bulkheadsEnabled = true;
   cfg.requestRatePerSec = 10;
   cfg.timeoutMs = 30000;
-  cfg.targets = oneTarget({ latencyMs: 50, bulkheadSize: 8,
-    adaptive: { enabled: true, sampleWindowMs: 1000, baselineLatencyMs: 50, lastSampleMs: 0 } });
-  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(35), config: cfg });
+  cfg.targets = oneTarget({ latencyMs: 50, capacity: 50, bulkheadSize: 8,
+    adaptive: { enabled: true, sampleWindowMs: 500, lastSampleMs: 0, floorMs: null } });
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(201), config: cfg });
   sim.tick(0);
   run(sim, 50, 12000, 50);
-  assert.equal(sim.config.targets.C.bulkheadSize, cfg.workerPoolSize);
+  assert.equal(sim.config.targets.C.adaptive.floorMs, 50);              // learned the unloaded latency
+  assert.equal(sim.config.targets.C.bulkheadSize, cfg.workerPoolSize);  // opened to the pool
 });
 
-test('adaptive bulkhead settles at a middling size for middling latency', () => {
-  // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
-  // The point of proportional sizing over shrink-to-floor: at 4x baseline (200 vs
-  // 50) the pool settles strictly between the floor and the pool size, at
-  // round(50/200*30)=8 for the default 30-worker pool.
+test('adaptive sheds a queuing dependency and settles between the floor and the pool', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
   const cfg = defaultConfig();
   cfg.bulkheadsEnabled = true;
-  cfg.requestRatePerSec = 100;
+  cfg.requestRatePerSec = 2;                  // healthy warm-up: demand below capacity, no queue
   cfg.timeoutMs = 30000;
-  cfg.targets = oneTarget({ latencyMs: 200, bulkheadSize: 20,
-    adaptive: { enabled: true, sampleWindowMs: 1000, baselineLatencyMs: 50, lastSampleMs: 0 } });
-  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(34), config: cfg });
+  cfg.targets = oneTarget({ latencyMs: 50, capacity: 4, bulkheadSize: 20,
+    adaptive: { enabled: true, sampleWindowMs: 500, lastSampleMs: 0, floorMs: null } });
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(202), config: cfg });
   sim.tick(0);
-  run(sim, 50, 12000, 50);
+  run(sim, 50, 3000, 50);                     // learns the floor while healthy
+  assert.equal(sim.config.targets.C.adaptive.floorMs, 50);
+  sim.config.requestRatePerSec = 200;          // overload: demand far above capacity, queue climbs
+  run(sim, 3050, 9000, 50);
   const size = sim.config.targets.C.bulkheadSize;
-  assert.ok(size > ADAPTIVE_MIN && size < sim.config.workerPoolSize);   // a distinct middle, not the floor
-  assert.equal(size, 8);
+  assert.ok(size < 20);                                              // shed from where it started
+  assert.ok(size > ADAPTIVE_MIN && size < cfg.workerPoolSize);       // a middle, not collapsed, not open
 });
 
-test('adaptive reacts to a slow dependency before any call completes', () => {
-  // AI-DEV: AI **MUST NOT** touch this test. If the test is failing, it is because you removed or broke code.
-  // A leg to an 8s dependency does not complete for 8s. A controller watching
-  // only completed latency would sit blind and keep the pool at its start size;
-  // watching outstanding leg age lets it shrink within the first seconds.
+test('adaptive does not shed a dependency that is slow but not queuing', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
   const cfg = defaultConfig();
   cfg.bulkheadsEnabled = true;
-  cfg.requestRatePerSec = 100;
+  cfg.requestRatePerSec = 10;
   cfg.timeoutMs = 30000;
-  cfg.targets = oneTarget({ latencyMs: 8000, bulkheadSize: 24,
-    adaptive: { enabled: true, sampleWindowMs: 400, baselineLatencyMs: 50, lastSampleMs: 0 } });
-  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(36), config: cfg });
+  cfg.targets = oneTarget({ latencyMs: 8000, capacity: 50, bulkheadSize: 8,
+    adaptive: { enabled: true, sampleWindowMs: 1000, lastSampleMs: 0, floorMs: null } });
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(203), config: cfg });
   sim.tick(0);
-  run(sim, 50, 2000, 50);   // well before the first 8s completion
-  assert.ok(sim.config.targets.C.bulkheadSize < 8);   // already shrinking, not stuck at the start
+  run(sim, 50, 20000, 50);
+  assert.equal(sim.config.targets.C.adaptive.floorMs, 8000);           // floor is the flat slow latency
+  assert.equal(sim.config.targets.C.bulkheadSize, cfg.workerPoolSize); // stayed open, not shed
+});
+
+test('adaptive leaves the pool untouched when adaptive is disabled', () => {
+  // AI-DEV: AI **MUST NOT** touch this test. If it fails, fix the engine, not the test.
+  const cfg = defaultConfig();
+  cfg.bulkheadsEnabled = true;
+  cfg.requestRatePerSec = 200;
+  cfg.timeoutMs = 30000;
+  cfg.targets = oneTarget({ latencyMs: 50, capacity: 4, bulkheadSize: 15,
+    adaptive: { enabled: false, sampleWindowMs: 500, lastSampleMs: 0, floorMs: null } });
+  const sim = new Sim({ clock: { now: () => 0 }, rng: makeRng(204), config: cfg });
+  sim.tick(0);
+  run(sim, 50, 5000, 50);
+  assert.equal(sim.config.targets.C.bulkheadSize, 15);                 // unchanged: the controller is off
 });

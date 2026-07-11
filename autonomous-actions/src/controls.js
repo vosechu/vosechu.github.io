@@ -100,9 +100,9 @@ function breakersToggle(parent) {
     }
   });
 }
-// One service-level toggle makes every dependency's bulkhead adaptive. Each sizes
-// itself against its own healthy latency (captured when enabled), so a slow one
-// sheds while the rest stay open.
+// One service-level toggle makes every dependency's bulkhead adaptive. Each learns
+// its own floor from live traffic (the response time it sees with nothing queued),
+// so a dependency whose queue grows sheds while the rest stay open.
 function adaptiveToggle(parent) {
   const targets = sim.config.targets;
   const on = Object.values(targets).some((t) => t.adaptive && t.adaptive.enabled);
@@ -110,8 +110,8 @@ function adaptiveToggle(parent) {
     for (const name of Object.keys(targets)) {
       const t = targets[name];
       if (checked) {
-        if (!t.adaptive) t.adaptive = { enabled: true, sampleWindowMs: 400, baselineLatencyMs: t.latencyMs, lastSampleMs: 0 };
-        else { t.adaptive.enabled = true; t.adaptive.baselineLatencyMs = t.latencyMs; }
+        if (!t.adaptive) t.adaptive = { enabled: true, sampleWindowMs: 400, lastSampleMs: 0, floorMs: null };
+        else { t.adaptive.enabled = true; t.adaptive.floorMs = null; }   // re-learn the floor on re-enable
       } else if (t.adaptive) {
         t.adaptive.enabled = false;
       }
@@ -403,8 +403,8 @@ function frame() {
   if (readoutVisible && adaptiveName) {
     const t = sim.config.targets[adaptiveName];
     const a = t.adaptive;
-    const decision = a.target < t.bulkheadSize ? 'shedding' : a.target > t.bulkheadSize ? 'opening up' : 'steady';
-    readoutElement.textContent = `${labelOf(adaptiveName)} pool ${t.bulkheadSize}/${sim.config.workerPoolSize} · observed ${dur(Math.round(a.observedMs || 0))} vs ${a.baselineLatencyMs} ms baseline · ${decision}`;
+    const decision = a.decision || 'steady';
+    readoutElement.textContent = `${labelOf(adaptiveName)} pool ${t.bulkheadSize}/${sim.config.workerPoolSize} · latency ${dur(Math.round(a.observedMs || 0))} vs floor ${dur(Math.round(a.floorMs || 0))} · ${decision}`;
   } else {
     readoutElement.textContent = '';
   }
