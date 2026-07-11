@@ -162,7 +162,13 @@ export function buildScene(root, config, onSelect) {
   const deps = {};
   for (const name of names) {
     const box = div('box dep'); box.dataset.name = name;
-    box.style.borderColor = colorOf(name);
+    // A custom property, not an inline border-color: an inline style would beat
+    // the .box.dep.slow/.faulted class rules (equal-specificity classes lose to
+    // higher-specificity ones, but nothing beats an inline style), so the fault
+    // colors could never show through. --depcolor lets .box.dep's own border-color
+    // rule read it, and the two-class .slow/.faulted rules (higher specificity)
+    // override that rule normally, no !important needed.
+    box.style.setProperty('--depcolor', colorOf(name));
     const label = div('label', labelOf(name));
     box.appendChild(label);
     const drow = div('egress');
