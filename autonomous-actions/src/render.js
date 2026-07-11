@@ -1,7 +1,7 @@
 import { colorOf, shortOf, labelOf, hoverOf } from './theme.js';
 import { availabilityPercent } from './metrics.js';
 import { STRINGS } from './strings.js';
-import { breakerLabel, serviceSub } from './telemetry.js';
+import { breakerLabel, serviceSub, capacityReadout } from './telemetry.js';
 import { edgeEndpoints, toLocalRect } from './edges.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -37,6 +37,14 @@ function cells(parent, n) {
 function queue(parent) {
   const track = div('queue'); const fill = div('fill'); track.appendChild(fill);
   parent.appendChild(track); return fill;
+}
+// A widget with a micro label stacked under it, so every grid and track on the
+// diagram says what it is. `wide` left-aligns and stretches (for cell grids).
+function labeled(parent, labelText, wide) {
+  const stack = div(wide ? 'stack wide' : 'stack');
+  parent.appendChild(stack);
+  const setLabel = () => stack.appendChild(div('micro', labelText));
+  return { stack, setLabel };
 }
 
 // One arrow: a base line (static color) plus a flow line (animated per frame
@@ -155,18 +163,33 @@ export function buildScene(root, config, onSelect) {
   serviceBox.appendChild(serviceFire);
   const serviceSubEl = div('sub', '');                // "workers X, connections Y/inf" per frame
   serviceBox.appendChild(serviceSubEl);
-  const svcQueueRow = div('egress');                  // reuse the flex row for queue + workers
-  const svcQueueFill = queue(svcQueueRow);
-  const svcWorkers = cells(svcQueueRow, MAX_SLOTS);
+  // Incoming side: queue track + worker grid, each with a micro label so the
+  // widgets say what they are.
+  serviceBox.appendChild(div('micro heading', STRINGS.telemetry.incoming));
+  const svcQueueRow = div('egress');
+  const sq = labeled(svcQueueRow, STRINGS.telemetry.queue);
+  const svcQueueFill = queue(sq.stack); sq.setLabel();
+  const sw = labeled(svcQueueRow, STRINGS.telemetry.workers, true);
+  const svcWorkers = cells(sw.stack, MAX_SLOTS); sw.setLabel();
   serviceBox.appendChild(svcQueueRow);
-  // Front-door timeout pill: its text is sim.config.timeoutMs, which is config,
-  // not per-frame state, so controls.js sets it (on build and on the front-door
-  // timeout slider's input), not render().
+  // Front-door timeout pill, labeled. Its text is sim.config.timeoutMs, which is
+  // config, not per-frame state, so controls.js sets it (on build and on the
+  // front-door timeout slider's input), not render().
+  const ftRow = div('egress');
+  ftRow.appendChild(div('tag', STRINGS.telemetry.frontTimeout));
   const frontTimeout = div('pill');
-  serviceBox.appendChild(frontTimeout);
+  ftRow.appendChild(frontTimeout);
+  serviceBox.appendChild(ftRow);
+  // Outbound side: one labeled call row per dependency, under a shared header
+  // row that names the columns (the rows and header share the .egress.call grid).
+  serviceBox.appendChild(div('micro heading', STRINGS.telemetry.outbound));
+  const hd = STRINGS.telemetry.callHead;
+  const head = div('egress call head');
+  head.append(div('micro', ''), div('micro', hd.pool), div('micro', hd.cap), div('micro', hd.breaker), div('micro', hd.timeout));
+  serviceBox.appendChild(head);
   const egress = {};
   for (const name of names) {
-    const row = div('egress');
+    const row = div('egress call');
     row.appendChild(div('tag', shortOf(name)));
     const pool = cells(row, OUT_VIEW);
     const wall = div('pill', '');                     // bulkhead cap; text per frame
@@ -198,14 +221,21 @@ export function buildScene(root, config, onSelect) {
     // a class toggle only, no layout work).
     const fire = div('fire', '🔥');
     box.appendChild(fire);
+    // Live capacity readout ("3/12 serving"), so the grid's bright-vs-dim cell
+    // boundary has a number next to it. Text set per frame; the box width is
+    // fixed in CSS so the changing text can never resize it (hot-path rule).
+    const capLabel = div('sub', '');
+    box.appendChild(capLabel);
     const drow = div('egress');
-    const dqueue = queue(drow);
-    const dworkers = cells(drow, CAP_SLOTS);
+    const dql = labeled(drow, STRINGS.telemetry.queue);
+    const dqueue = queue(dql.stack); dql.setLabel();
+    const dwl = labeled(drow, STRINGS.telemetry.workers, true);
+    const dworkers = cells(dwl.stack, CAP_SLOTS); dwl.setLabel();
     box.appendChild(drow);
     if (onSelect) box.addEventListener('click', () => onSelect(name));
     box.title = hoverOf(name);
     depsCol.appendChild(box);
-    deps[name] = { box, label, workerCells: dworkers.cells, queueBar: dqueue, fire };
+    deps[name] = { box, label, workerCells: dworkers.cells, queueBar: dqueue, fire, capLabel };
   }
   cols.appendChild(depsCol);
 
@@ -337,13 +367,24 @@ export function render(state, h, selectedStation) {
       wallFrom: bh ? bulkheadCap : null,
       wallTo: poolShown,
     });
-    eg.wall.textContent = String(cap);
+    // The cap pill only shows a number when a bulkhead actually exists; with
+    // none configured it reads "-" (dimmed) rather than sitting blank or
+    // echoing the whole worker pool as if it were a cap.
+    if (bh) {
+      eg.wall.className = 'pill';
+      eg.wall.textContent = String(bh.size);
+    } else {
+      eg.wall.className = 'pill off';
+      eg.wall.textContent = STRINGS.telemetry.noCap;
+    }
+    // Same for the breaker pill: "none" (dimmed) when this call has no breaker,
+    // so a blank pill never asks the reader to guess what blank means.
     if (br) {
       eg.breakerPill.className = `pill breaker ${br.state}`;
       eg.breakerPill.textContent = breakerLabel(br.state);
     } else {
-      eg.breakerPill.className = 'pill breaker';
-      eg.breakerPill.textContent = '';
+      eg.breakerPill.className = 'pill breaker off';
+      eg.breakerPill.textContent = STRINGS.telemetry.none;
     }
     eg.timeoutPill.textContent = fmtDur(t.outgoingTimeoutMs);
 
@@ -357,6 +398,7 @@ export function render(state, h, selectedStation) {
     const dq = smi(`dq_${name}`, ds.queueDepth);
     fillCells(d.workerCells, { busy: inSvc, cappedAt: Math.min(ds.capacity, CAP_SLOTS) });
     d.queueBar.style.height = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;
+    d.capLabel.textContent = capacityReadout(inSvc, ds.capacity, dq);
 
     d.box.className = 'box dep' + (failing ? ' faulted' : congested ? ' slow' : '') + (name === selectedStation ? ' selected' : '');
     d.fire.classList.toggle('show', failing);

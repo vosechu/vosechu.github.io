@@ -87,14 +87,31 @@ function toggle(parent, label, checked, onChange) {
 let oscWasOn = false;
 let rateUI = null;   // the request-rate slider input + value label, so the frame loop can animate it
 let poolUIs = {};    // per-service bulkhead pool sliders, so adaptive can drive and lock them
+// Log-scaled so the interesting low end (tens of rps, where the later acts
+// live) keeps fine resolution while the top reaches past the act-1 knee: 30
+// workers x 30ms datastore calls saturate near 1000 rps, so the max must sit
+// beyond that or the first act's "find the highest rate the SLO survives"
+// has no answer. The frame loop drives the thumb through toPos when
+// oscillation is on, so rateUI exposes the mapping alongside input/val.
 function rateSlider(parent) {
   const osc = sim.config.loadOscillation;
-  rateUI = slider(parent, 'Request rate', 1, 200, 1, sim.config.requestRatePerSec, perSec,
-    (v) => { sim.config.requestRatePerSec = v; },
-    {
-      onGrab: () => { oscWasOn = osc.enabled; osc.enabled = false; },
-      onRelease: () => { if (oscWasOn) { osc.phaseRef = clock.now(); osc.enabled = true; } oscWasOn = false; },
-    });
+  const STEPS = 1000, MIN = 1, MAX = 1500;
+  const lmin = Math.log(MIN), lspan = Math.log(MAX) - lmin;
+  const toVal = (pos) => Math.round(Math.exp(lmin + lspan * (pos / STEPS)));
+  const toPos = (v) => Math.round(((Math.log(Math.max(MIN, v)) - lmin) / lspan) * STEPS);
+  const input = document.createElement('input');
+  Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(sim.config.requestRatePerSec) });
+  const val = control(parent, 'Request rate', input, perSec, sim.config.requestRatePerSec);
+  input.addEventListener('input', () => {
+    const v = toVal(Number(input.value));
+    val.textContent = perSec(v);
+    sim.config.requestRatePerSec = v;
+  });
+  input.addEventListener('pointerdown', () => { oscWasOn = osc.enabled; osc.enabled = false; });
+  const release = () => { if (oscWasOn) { osc.phaseRef = clock.now(); osc.enabled = true; } oscWasOn = false; };
+  input.addEventListener('pointerup', release);
+  input.addEventListener('pointercancel', release);
+  rateUI = { input, val, toPos };
 }
 function workerPoolSlider(parent) {
   slider(parent, 'Worker pool', 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
@@ -146,7 +163,7 @@ function oscillationToggle(parent) {
   const osc = sim.config.loadOscillation;
   toggle(parent, 'Load oscillation', osc.enabled, (on) => {
     if (on) { osc.phaseRef = clock.now(); }
-    else if (rateUI) { rateUI.input.value = String(sim.config.requestRatePerSec); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
+    else if (rateUI) { rateUI.input.value = String(rateUI.toPos(sim.config.requestRatePerSec)); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
     osc.enabled = on;
   });
 }
@@ -482,7 +499,7 @@ function frame() {
   const osc = sim.config.loadOscillation;
   if (rateUI && osc.enabled) {
     const eff = Math.round(effectiveRate(sim.config.requestRatePerSec, osc, simNowMs));
-    rateUI.input.value = String(eff);
+    rateUI.input.value = String(rateUI.toPos(eff));   // the slider is log-scaled; drive it by position
     rateUI.val.textContent = perSec(eff);
   }
   // Adaptive services drive and lock their own pool slider, so control is visibly

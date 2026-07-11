@@ -19,10 +19,10 @@ export const STRINGS = {
   // tests; do NOT rename the keys, only the values. label is the node title,
   // short is the terse diagram tag, hover states what it is and how it fails.
   stations: {
-    'Database A': { label: 'Core datastore',        short: 'core',     hover: 'The core datastore. Every request reads from it. Fast, always on, and the one dependency I never worry about.' },
-    'Service B':  { label: 'Recommendations',       short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; it just gets slow, in no hurry to catch up.' },
-    'Service C':  { label: 'Search',                short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. A tight timeout gives the worker back.' },
-    'External':   { label: 'Payments (third-party)', short: 'payments', hover: 'A third-party we do not control. Usually it answers; sometimes it is simply gone and refuses the connection at once. A breaker skips it so one missing feature does not sink the rest.' },
+    'Database A': { label: 'Core datastore',                 short: 'core',     hover: 'The core datastore. Every request reads from it. Fast, always on, and the one dependency I never worry about.' },
+    'Service B':  { label: 'Recommendations Service',        short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; it just gets slow, in no hurry to catch up.' },
+    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. A tight timeout gives the worker back.' },
+    'External':   { label: 'Payments Service (third-party)', short: 'payments', hover: 'A third-party we do not control. Usually it answers; sometimes it is simply gone and refuses the connection at once. A breaker skips it so one missing feature does not sink the rest.' },
   },
 
   // One entry per act, index 0..7. title carries a little of the arm's gentle
@@ -74,6 +74,13 @@ export const STRINGS = {
     incoming: 'incoming',
     outbound: 'outbound',
     queue: 'queue',
+    workers: 'workers',
+    frontTimeout: 'front-door timeout',
+    // A call with no breaker or no bulkhead says so instead of sitting blank.
+    none: 'none',
+    noCap: '-',
+    // Column headers over the outbound call rows.
+    callHead: { pool: 'connections', cap: 'cap', breaker: 'breaker', timeout: 'timeout' },
     // open/closed reads as jargon to non-electricians; keep these plain-language.
     breaker: { closed: 'passing', open: 'blocking', half_open: 'testing' },
     serviceSub: 'workers {workers}, connections {connections}/∞',
