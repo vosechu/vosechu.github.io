@@ -1,4 +1,6 @@
 import { colorOf, shortOf, labelOf } from './theme.js';
+import { availabilityPercent } from './metrics.js';
+import { STRINGS } from './strings.js';
 
 const SERVICE_COLOR = '#a78bfa';   // our service's own workers (incoming)
 // Plain-language breaker states (open/closed reads as jargon to non-electricians).
@@ -154,10 +156,20 @@ export function initRender(root, config) {
   });
 
   const byId = (id) => document.getElementById(id);
-  const metrics = { ok: byId('m-ok'), deg: byId('m-deg'), err: byId('m-err'), rej: byId('m-rej'), p95: byId('m-p95'), q: byId('m-q'),
-    avail: byId('m-avail'), slo: byId('slo-state') };
+  // The fixed bottom status bar: one slot per STRINGS.bar key, every metric
+  // always visible (no progressive reveal). Label/hover text is static copy,
+  // set once here; only the value and pass/fail class change per frame.
+  const bar = {};
+  for (const key of Object.keys(STRINGS.bar)) {
+    const copy = STRINGS.bar[key];
+    const labelEl = byId(`bar-${key}-label`);
+    if (labelEl) labelEl.textContent = copy.label;
+    const hoverEl = byId(`bar-${key}-hover`);
+    if (hoverEl) hoverEl.textContent = copy.hover;
+    bar[key] = { slot: byId(`bar-${key}`), value: byId(`bar-${key}-value`) };
+  }
 
-  return { leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, metrics, names, colors, ema: {} };
+  return { leftSlots, out, deps, clientFlow, gwCard, gwFire, gwSub, queueBar, queueLabel, bar, names, colors, ema: {} };
 }
 
 // Paint a fixed grid of slots: [0, filled) are busy (colored), [filled, available)
@@ -296,21 +308,23 @@ export function render(state, h) {
   const okS = smi('ok', state.rates.successPerSec);
   const degS = smi('deg', state.rates.degradedPerSec);
   const errS = smi('err', state.rates.errorPerSec);
-  h.metrics.ok.textContent = okS;
-  h.metrics.deg.textContent = degS;
-  h.metrics.err.textContent = errS;
-  h.metrics.rej.textContent = smi('rej', state.rates.rejectPerSec);
-  const p95 = sm('p95', state.latency.p95);   // precise value drives the SLO check
-  h.metrics.p95.textContent = Math.round(p95);   // integer ms, so the label and info icon do not jitter
-  h.metrics.q.textContent = qd;
+  const rejS = smi('rej', state.rates.rejectPerSec);
+  const p95 = sm('p95', state.latency.p95);   // precise value drives the pass/fail check
 
-  // Availability = share of requests served (fully OK or degraded) out of all
-  // requests; degraded still counts as available. No traffic reads as 100%.
-  // The SLO is met when availability holds 99% and p95 stays under 5s.
-  const total = okS + degS + errS;
-  const avail = total > 0 ? ((okS + degS) / total) * 100 : 100;
-  h.metrics.avail.textContent = Math.round(avail);
-  const met = avail >= 99 && p95 < 5000;
-  h.metrics.slo.textContent = met ? 'MET' : 'BREACHED';
-  h.metrics.slo.setAttribute('class', met ? 'met' : 'breached');
+  // Fixed bottom status bar: every slot updates every frame, no progressive
+  // reveal. Availability comes from the windowed rates via availabilityPercent;
+  // p95 and availability each carry a pass/fail state against the SLO.
+  const avail = availabilityPercent({ successPerSec: okS, degradedPerSec: degS, clientErrorsPerSec: errS });
+  const availPass = avail >= 99;
+  h.bar.availability.value.textContent = `${Math.round(avail)}%`;
+  h.bar.availability.slot.setAttribute('class', `barslot emph ${availPass ? 'pass' : 'fail'}`);
+
+  const p95Pass = p95 < 5000;
+  h.bar.p95.value.textContent = fmtDur(Math.round(p95));
+  h.bar.p95.slot.setAttribute('class', `barslot emph ${p95Pass ? 'pass' : 'fail'}`);
+
+  h.bar.throughput.value.textContent = String(okS);
+  h.bar.errors.value.textContent = String(errS);
+  h.bar.queue.value.textContent = String(qd);
+  h.bar.rejects.value.textContent = String(rejS);
 }

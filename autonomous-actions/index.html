@@ -63,10 +63,6 @@
     #little-body .eq b { color: var(--ink); font-weight: 700; }
     #little-body .have { margin-top: 3px; color: var(--ink-dim); }
     #little-body.over .have, #little-body.over .have b { color: var(--amber); }
-    #slo { display: flex; align-items: center; gap: 8px; padding: 2px 4px 6px; font-size: 12px; color: var(--ink-dim); }
-    #slo b { padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; }
-    #slo b.met { background: rgba(20,83,45,0.16); color: var(--teal); }
-    #slo b.breached { background: rgba(143,44,34,0.16); color: var(--red); }
     .info { position: relative; cursor: help; color: var(--ink-dim); }
     .info .tip {
       display: none; position: absolute; bottom: 150%; left: 50%; transform: translateX(-50%);
@@ -74,21 +70,31 @@
       padding: 8px 10px; font-size: 11px; font-weight: 400; color: var(--ink); line-height: 1.45; z-index: 20;
     }
     .info:hover .tip, .info:focus .tip { display: block; }
-    #metrics { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 4px 10px; }
-    .chip {
-      background: var(--panel-solid);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 4px 11px;
-      font-size: 12px;
-      color: var(--ink-dim);
-    }
-    .chip b { color: var(--ink); font-weight: 650; font-variant-numeric: tabular-nums; }
-    .chip.ok b { color: var(--teal); }
-    .chip.err b { color: var(--red); }
-    .chip.degraded b { color: var(--amber); }
-    .chip.rej b { color: var(--amber); }
     svg#stage { width: 100%; height: auto; display: block; }
+
+    /* Fixed bottom status bar: every metric, always visible, no progressive
+       reveal. The first two slots (availability, p95) are the SLO metrics and
+       carry a pass/fail state; the rest are plain counters. */
+    body { padding-bottom: 64px; }   /* keep content clear of the fixed bar */
+    #statusbar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      display: flex; align-items: stretch; gap: 0;
+      background: var(--panel-solid); border-top: 1px solid var(--border);
+      box-shadow: 0 -2px 10px rgba(43,29,16,0.08);
+      overflow-x: auto;
+    }
+    .barslot {
+      flex: 1; min-width: 96px; padding: 8px 14px;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; justify-content: center; gap: 2px;
+    }
+    .barslot:last-child { border-right: none; }
+    .barslot.emph { flex: 1.6; }
+    .barslot .baglabel { font-size: 11px; color: var(--ink-dim); display: flex; align-items: center; gap: 5px; }
+    .barslot .bagvalue { font-size: 19px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .barslot.emph .bagvalue { font-size: 23px; }
+    .barslot.pass .bagvalue { color: var(--teal); }
+    .barslot.fail .bagvalue { color: var(--red); }
 
     /* Panels */
     #panel, #tour {
@@ -223,16 +229,6 @@
   <div class="layout">
     <div class="leftcol">
       <div class="stagewrap">
-        <div id="slo">SLO target: 99% availability, p95 &lt; 5s <b id="slo-state">MET</b></div>
-        <div id="metrics">
-          <span class="chip" id="chip-avail"><b id="m-avail">100</b>% avail<span class="info" tabindex="0"> &#9432;<span class="tip">Availability is the share of requests that came back OK in the last second. A request counts as failed if any uncontained upstream failure reaches the client, or if it times out waiting for a free worker.</span></span></span>
-          <span class="chip" id="chip-p95"><b id="m-p95">0</b> ms p95 resp<span class="info" tabindex="0"> &#9432;<span class="tip">The 95th-percentile response time: 95% of requests finish faster than this. It includes requests still in flight, so a growing backlog raises it right away. Our SLO target is under 5000 ms.</span></span></span>
-          <span class="chip ok" id="chip-ok"><b id="m-ok">0</b> ok/s</span>
-          <span class="chip degraded" id="chip-deg"><b id="m-deg">0</b> degraded/s<span class="info" tabindex="0"> &#9432;<span class="tip">Served, but without a dependency the breaker or bulkhead contained. A partial response, not an error, so it still counts as available.</span></span></span>
-          <span class="chip err" id="chip-err"><b id="m-err">0</b> err/s</span>
-          <span class="chip rej" id="chip-rej"><b id="m-rej">0</b> rej/s</span>
-          <span class="chip" id="chip-q"><b id="m-q">0</b> queued</span>
-        </div>
         <svg id="stage" viewBox="0 0 1200 508" role="img" aria-label="system topology"></svg>
       </div>
 
@@ -250,6 +246,33 @@
     </div>
 
     <div id="panel"><h2>Controls</h2></div>
+  </div>
+
+  <div id="statusbar">
+    <div class="barslot emph" id="bar-availability">
+      <span class="baglabel"><span id="bar-availability-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-availability-hover"></span></span></span>
+      <span class="bagvalue" id="bar-availability-value">100%</span>
+    </div>
+    <div class="barslot emph" id="bar-p95">
+      <span class="baglabel"><span id="bar-p95-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-p95-hover"></span></span></span>
+      <span class="bagvalue" id="bar-p95-value">0 ms</span>
+    </div>
+    <div class="barslot" id="bar-throughput">
+      <span class="baglabel"><span id="bar-throughput-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-throughput-hover"></span></span></span>
+      <span class="bagvalue" id="bar-throughput-value">0</span>
+    </div>
+    <div class="barslot" id="bar-errors">
+      <span class="baglabel"><span id="bar-errors-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-errors-hover"></span></span></span>
+      <span class="bagvalue" id="bar-errors-value">0</span>
+    </div>
+    <div class="barslot" id="bar-queue">
+      <span class="baglabel"><span id="bar-queue-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-queue-hover"></span></span></span>
+      <span class="bagvalue" id="bar-queue-value">0</span>
+    </div>
+    <div class="barslot" id="bar-rejects">
+      <span class="baglabel"><span id="bar-rejects-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-rejects-hover"></span></span></span>
+      <span class="bagvalue" id="bar-rejects-value">0</span>
+    </div>
   </div>
 
   <script type="module" src="./src/controls.js"></script>

@@ -127,19 +127,6 @@ function oscillationToggle(parent) {
   });
 }
 
-// Progressive disclosure: reveal a metric chip only once the act it belongs to
-// makes it meaningful. ok/s and err/s are always up; latency and the worker
-// queue appear with the slow-failure act; rejects appear with bulkheads.
-function revealMetrics(actIndex) {
-  const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
-  show('chip-ok', true);
-  show('chip-err', true);
-  show('chip-p95', true);            // an SLO metric, shown alongside availability from the start
-  show('chip-deg', actIndex >= 2);   // degraded responses appear once a breaker can contain a failure
-  show('chip-q', actIndex >= 3);
-  show('chip-rej', actIndex >= 5);
-}
-
 // Per-service sliders sit under the service's heading, so the labels drop the
 // service name.
 function latencySlider(parent, name) {
@@ -312,7 +299,8 @@ function updateLittle(state) {
 
 // Acts never touch the sim: the state stays however the player left it, and the
 // instructions walk them into each scenario. Changing acts only updates the
-// guide text, the unlocked controls, and the visible metrics.
+// guide text and the unlocked controls; the bottom bar always shows every
+// metric, so it needs no per-act update.
 function showAct(i) {
   actIndex = Math.max(0, Math.min(ACTS.length - 1, i));
   const meta = actMeta(actIndex);
@@ -322,7 +310,6 @@ function showAct(i) {
   document.getElementById('act-caption').textContent = meta.caption;
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);
-  revealMetrics(actIndex);
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,
@@ -331,7 +318,6 @@ function resetToDefaults() {
   sim.config = defaultConfig();
   sim.reset();
   buildControls(actIndex);
-  revealMetrics(actIndex);
 }
 
 // Reflect the current act in the URL hash (#1..#8) so the browser Back and
