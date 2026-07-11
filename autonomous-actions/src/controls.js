@@ -1,7 +1,7 @@
 import { Sim, effectiveRate } from './engine.js';
 import { defaultConfig, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
-import { initRender, render } from './render.js';
+import { buildScene, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
@@ -13,10 +13,10 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 // The full default target set, kept around so a later act (or Reset to
 // defaults) can restore a station that an earlier act's roster removed.
 // sim.config.targets narrows to the current act's roster (topology.js); the
-// diagram is built once from the full set (initRender) and hides rows whose
+// diagram is built once from the full set (buildScene) and hides rows whose
 // id is missing from state.targets (render.js).
 const DEFAULT_TARGETS = defaultConfig().targets;
-const handle = initRender(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
+const handle = buildScene(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
 const panel = document.getElementById('panel');
 
 // Narrow sim.config.targets to exactly the ids in `roster`, preserving the
