@@ -199,6 +199,11 @@
       background: var(--slot-idle, #d8cebc); }
     .queue .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0;
       background: var(--amber); border-radius: 0.25rem; transition: height .2s ease; }
+    /* Horizontal variant: lies in the 4rem name column of the incoming row
+       (filling left to right), so the worker grid beside it starts exactly
+       where the outbound connections column starts. */
+    .queue.h { width: 100%; height: 0.55rem; }
+    .queue.h .fill { top: 0; bottom: 0; left: 0; right: auto; width: 0; height: auto; transition: width .2s ease; }
     /* Pills: fixed min-width so a value change never reflows. */
     .pill { display: inline-block; min-width: 3.2rem; text-align: center;
       font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 0.8rem;

@@ -158,14 +158,20 @@ export function buildScene(root, config, onSelect) {
   serviceBox.appendChild(serviceFire);
   const serviceSubEl = div('sub', '');                // "workers X, connections Y/inf" per frame
   serviceBox.appendChild(serviceSubEl);
-  // Incoming side: queue track + worker grid, each with a micro label so the
-  // widgets say what they are.
+  // Incoming side: shares the outbound rows' grid, so the worker cells start
+  // exactly where the connections column does. The queue lies horizontal in
+  // the 4rem name column, and the labels sit in a header row above the
+  // widgets, matching the outbound section.
   serviceBox.appendChild(div('micro heading', STRINGS.telemetry.incoming));
-  const svcQueueRow = div('egress');
-  const sq = labeled(svcQueueRow, STRINGS.telemetry.queue);
-  const svcQueueFill = queue(sq.stack); sq.setLabel();
-  const sw = labeled(svcQueueRow, STRINGS.telemetry.workers, true);
-  const svcWorkers = cells(sw.stack, MAX_SLOTS); sw.setLabel();
+  const inHead = div('egress call head');
+  inHead.append(div('micro', STRINGS.telemetry.queue), div('micro', STRINGS.telemetry.workers));
+  serviceBox.appendChild(inHead);
+  const svcQueueRow = div('egress call');
+  const svcQueueTrack = div('queue h');
+  const svcQueueFill = div('fill');
+  svcQueueTrack.appendChild(svcQueueFill);
+  svcQueueRow.appendChild(svcQueueTrack);
+  const svcWorkers = cells(svcQueueRow, MAX_SLOTS);
   serviceBox.appendChild(svcQueueRow);
   // Front-door timeout pill, labeled. Its text is sim.config.timeoutMs, which is
   // config, not per-frame state, so controls.js sets it (on build and on the
@@ -292,8 +298,9 @@ export function render(state, h, selectedStation) {
   // cap (the overflow queues), so connections are shown against infinity.
   h.service.sub.textContent = serviceSub(size, busyN);
 
+  // The service queue is the horizontal variant, so its fill grows in width.
   const qd = smi('wq', state.queue.depth);
-  h.service.queueBar.style.height = `${(Math.min(qd, QUEUE_MAX) / QUEUE_MAX) * 100}%`;
+  h.service.queueBar.style.width = `${(Math.min(qd, QUEUE_MAX) / QUEUE_MAX) * 100}%`;
 
   // Service-level fault cue: what fraction of what the client sees is failing,
   // a ratio (rate-independent) rather than a raw count, computed from the same
