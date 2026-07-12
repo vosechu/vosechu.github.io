@@ -7,6 +7,7 @@ import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
 import { STRINGS } from './strings.js';
 import { TOUR_STEPS, initialTourState, tourReducer } from './tour.js';
+import { parseCopy, glossaryDef } from './copy.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -18,6 +19,27 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 const DEFAULT_TARGETS = defaultConfig().targets;
 const handle = buildScene(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
 const panel = document.getElementById('panel');
+
+// Render tokenized copy into an element: plain text nodes, {{chips}} as .ctl
+// spans, [[terms]] as focusable .term spans carrying their glossary tip.
+function renderCopyInto(el, str) {
+  el.textContent = '';
+  for (const seg of parseCopy(str)) {
+    if (seg.type === 'text') { el.appendChild(document.createTextNode(seg.value)); continue; }
+    const span = document.createElement('span');
+    span.textContent = seg.value;
+    if (seg.type === 'ctl') { span.className = 'ctl'; }
+    else {
+      span.className = 'term';
+      span.tabIndex = 0;
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = glossaryDef(seg.value) ?? '';
+      span.appendChild(tip);
+    }
+    el.appendChild(span);
+  }
+}
 
 // Narrow sim.config.targets to exactly the ids in `roster`, preserving the
 // DEFAULT_TARGETS key order (so the diagram rows stay in a stable order).
@@ -434,8 +456,9 @@ function showAct(i) {
   applyRoster(rosterForAct(actIndex));
   selectedStation = defaultStationForAct(actIndex);
   document.getElementById('act-title').textContent = `${actIndex + 1}. ${meta.title}`;
-  document.getElementById('act-instruction').textContent = meta.instruction ? `${STRINGS.ui.tryThis} ${meta.instruction}` : '';
-  document.getElementById('act-caption').textContent = meta.caption;
+  renderCopyInto(document.getElementById('act-instruction'),
+    meta.instruction ? `${STRINGS.ui.tryThis} ${meta.instruction}` : '');
+  renderCopyInto(document.getElementById('act-caption'), meta.caption);
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);
   // Reflect the new roster's box visibility before measuring arrows: render()
