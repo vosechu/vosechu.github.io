@@ -354,8 +354,6 @@ function selectStation(name) {
 }
 
 // Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
-// three bubbles (steps 1-3), anchored at the bar, a station, and the panel.
-// Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
 // one reusable bubble (steps 1-4) that is measured against its anchor when the
 // step opens (and on window resize while open), never per frame. localStorage
 // persists seen and skipped; both degrade to defaults when storage is missing.
@@ -473,6 +471,9 @@ const whatsNewShown = new Set();
 document.getElementById('whatsnew-done').textContent = STRINGS.tour.buttons.done;
 document.getElementById('whatsnew-done').addEventListener('click', () => whatsnewEl.classList.add('hidden'));
 function maybeShowWhatsNew(i) {
+  // A prior act's bubble is stale the moment the act changes; clear it first,
+  // then re-show only on forward entry into an act that unlocks controls.
+  whatsnewEl.classList.add('hidden');
   if (i <= prevActIndex || whatsNewShown.has(i) || !NEW_CONTROLS_BY_ACT[i]) return;
   if (tourState.skipped) { setTourDot(true); return; }
   whatsNewShown.add(i);
