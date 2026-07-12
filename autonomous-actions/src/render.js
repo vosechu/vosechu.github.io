@@ -33,18 +33,10 @@ function cells(parent, n) {
   parent.appendChild(wrap);
   return { wrap, cells: out };
 }
-// A fixed-height queue track with a bottom-anchored fill; returns the fill.
-function queue(parent) {
-  const track = div('queue'); const fill = div('fill'); track.appendChild(fill);
+// A horizontal queue track (fills left to right); returns the fill element.
+function queueTrack(parent) {
+  const track = div('queue h'); const fill = div('fill'); track.appendChild(fill);
   parent.appendChild(track); return fill;
-}
-// A widget with a micro label stacked under it, so every grid and track on the
-// diagram says what it is. `wide` left-aligns and stretches (for cell grids).
-function labeled(parent, labelText, wide) {
-  const stack = div(wide ? 'stack wide' : 'stack');
-  parent.appendChild(stack);
-  const setLabel = () => stack.appendChild(div('micro', labelText));
-  return { stack, setLabel };
 }
 
 // One arrow: a base line (static color) plus a flow line (animated per frame
@@ -167,10 +159,7 @@ export function buildScene(root, config, onSelect) {
   inHead.append(div('micro', STRINGS.telemetry.queue), div('micro', STRINGS.telemetry.workers));
   serviceBox.appendChild(inHead);
   const svcQueueRow = div('egress call');
-  const svcQueueTrack = div('queue h');
-  const svcQueueFill = div('fill');
-  svcQueueTrack.appendChild(svcQueueFill);
-  svcQueueRow.appendChild(svcQueueTrack);
+  const svcQueueFill = queueTrack(svcQueueRow);
   const svcWorkers = cells(svcQueueRow, MAX_SLOTS);
   serviceBox.appendChild(svcQueueRow);
   // Front-door timeout pill, labeled. Its text is sim.config.timeoutMs, which is
@@ -227,11 +216,14 @@ export function buildScene(root, config, onSelect) {
     // fixed in CSS so the changing text can never resize it (hot-path rule).
     const capLabel = div('sub', '');
     box.appendChild(capLabel);
-    const drow = div('egress');
-    const dql = labeled(drow, STRINGS.telemetry.queue);
-    const dqueue = queue(dql.stack); dql.setLabel();
-    const dwl = labeled(drow, STRINGS.telemetry.workers, true);
-    const dworkers = cells(dwl.stack, CAP_SLOTS); dwl.setLabel();
+    // Same queue-then-workers language as the incoming section: labels in a
+    // header row above, horizontal queue on the left, cells beside it.
+    const dHead = div('egress deprow head');
+    dHead.append(div('micro', STRINGS.telemetry.queue), div('micro', STRINGS.telemetry.workers));
+    box.appendChild(dHead);
+    const drow = div('egress deprow');
+    const dqueue = queueTrack(drow);
+    const dworkers = cells(drow, CAP_SLOTS);
     box.appendChild(drow);
     if (onSelect) box.addEventListener('click', () => onSelect(name));
     box.title = hoverOf(name);
@@ -399,7 +391,7 @@ export function render(state, h, selectedStation) {
     const inSvc = smi(`sv_${name}`, ds.inService);
     const dq = smi(`dq_${name}`, ds.queueDepth);
     fillCells(d.workerCells, { busy: inSvc, visible: Math.min(ds.capacity, CAP_SLOTS) });
-    d.queueBar.style.height = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;
+    d.queueBar.style.width = `${(Math.min(dq, DEP_QUEUE_MAX) / DEP_QUEUE_MAX) * 100}%`;   // horizontal track
     d.capLabel.textContent = capacityReadout(inSvc, ds.capacity, dq);
 
     d.box.className = 'box dep' + (failing ? ' faulted' : congested ? ' slow' : '') + (name === selectedStation ? ' selected' : '');
