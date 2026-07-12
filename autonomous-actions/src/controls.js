@@ -21,15 +21,25 @@ const handle = buildScene(document.getElementById('stage'), { targets: DEFAULT_T
 const panel = document.getElementById('panel');
 
 // Render tokenized copy into an element: plain text nodes, {{chips}} as .ctl
-// spans, [[terms]] as focusable .term spans carrying their glossary tip.
+// spans that pulse their matching panel control on hover/focus, [[terms]] as
+// focusable .term spans carrying their glossary tip.
 function renderCopyInto(el, str) {
   el.textContent = '';
   for (const seg of parseCopy(str)) {
     if (seg.type === 'text') { el.appendChild(document.createTextNode(seg.value)); continue; }
     const span = document.createElement('span');
     span.textContent = seg.value;
-    if (seg.type === 'ctl') { span.className = 'ctl'; }
-    else {
+    if (seg.type === 'ctl') {
+      span.className = 'ctl';
+      span.tabIndex = 0;                         // keyboard users get the same pulse via focus
+      const label = seg.value;
+      const on = () => pulsePanelFor(label, true);
+      const off = () => pulsePanelFor(label, false);
+      span.addEventListener('mouseenter', on);
+      span.addEventListener('mouseleave', off);
+      span.addEventListener('focus', on);
+      span.addEventListener('blur', off);
+    } else {
       span.className = 'term';
       span.tabIndex = 0;
       const tip = document.createElement('span');
@@ -38,6 +48,23 @@ function renderCopyInto(el, str) {
       span.appendChild(tip);
     }
     el.appendChild(span);
+  }
+}
+
+// A chip names a control label exactly (test/strings.test.js enforces it).
+// Hovering or focusing the chip draws the eye to that control: pulse it, and
+// since the panel tucks controls into collapsible sections and reveals them per
+// act, open any collapsed section it sits in and scroll it into view so the
+// pulse never points at something hidden. Live lookup each time, because
+// buildControls rebuilds the panel on every act change.
+function pulsePanelFor(label, on) {
+  for (const ctl of panel.querySelectorAll('[data-control]')) {
+    if (ctl.dataset.control !== label) continue;
+    ctl.classList.toggle('pulse', on);
+    if (!on) continue;
+    const collapsed = ctl.closest('details');
+    if (collapsed && !collapsed.open) collapsed.open = true;
+    ctl.scrollIntoView({ block: 'nearest' });
   }
 }
 
@@ -62,6 +89,7 @@ const dur = (v) => (v >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)} s
 // Append a labelled row (label + live value + the given input) to a parent.
 function control(parent, label, input, fmt, value) {
   const wrap = document.createElement('label'); wrap.className = 'control';
+  wrap.dataset.control = label;                 // so a {{chip}} naming this label can find and pulse it
   const lab = document.createElement('span'); lab.className = 'lab';
   const nm = document.createElement('span'); nm.textContent = label;
   const val = document.createElement('b'); val.textContent = fmt(value);
@@ -96,6 +124,7 @@ function logSlider(parent, label, min, max, value, fmt, onInput) {
 
 function toggle(parent, label, checked, onChange) {
   const wrap = document.createElement('label'); wrap.className = 'control toggle';
+  wrap.dataset.control = label;                 // so a {{chip}} naming this toggle can find and pulse it
   const nm = document.createElement('span'); nm.textContent = label;
   const input = document.createElement('input'); Object.assign(input, { type: 'checkbox', checked });
   input.addEventListener('change', () => onChange(input.checked));

@@ -122,6 +122,14 @@
     .control.toggle input { accent-color: var(--teal); width: auto; cursor: pointer; }
     .ctlrow { display: flex; gap: 10px; }
     .ctlrow .control { flex: 1; min-width: 0; }
+    /* Hovering or focusing a {{chip}} in the copy pulses the control it names,
+       so a lost player's eye lands on the exact knob. Its collapsed section is
+       auto-opened in JS; this is just the soft teal "look here" ring. */
+    .control.pulse { border-radius: 7px; animation: controlPulse 0.85s ease-in-out infinite; }
+    @keyframes controlPulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(20, 83, 45, 0); }
+      50%      { box-shadow: 0 0 0 2px rgba(20, 83, 45, 0.55); }
+    }
     /* Collapsible control sections (native <details>), separated by a divider, no box. */
     details.section { margin: 6px 0 0; padding-top: 6px; border-top: 1px solid var(--border); }
     details.section > summary {
