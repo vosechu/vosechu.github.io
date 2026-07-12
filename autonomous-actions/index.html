@@ -169,11 +169,10 @@
       background: var(--panel-solid); border: 1px solid var(--border);
       border-radius: 0.6rem; padding: 0.6rem 0.7rem; min-width: 9rem;
     }
-    /* Fixed widths so per-frame text can never resize a box (hot-path rule:
-       render() must not move layout, or the arrows go stale), and so a wide
-       window can't inflate the connections column: the 1fr inside resolves
-       against this width, and extra window space lands between the columns. */
-    .box.service { width: 30rem; }
+    /* Fixed dep width so per-frame text can never resize the box (hot-path
+       rule: render() must not move layout, or the arrows go stale). The
+       service box needs no width: every column in its grid is fixed (see
+       .egress.call), so it sizes to exactly fit its content. */
     .box.dep { cursor: pointer; border-color: var(--depcolor); width: 13rem; }
     /* Selection is a neutral ink ring: teal would read as a health state. */
     .box.dep.selected { box-shadow: 0 0 0 2px var(--ink); }
@@ -225,8 +224,12 @@
     /* Tiny widget labels ("queue", "workers", column headers). */
     .micro { font-size: 0.6rem; color: var(--ink-dim); letter-spacing: 0.4px; }
     .micro.heading { margin-top: 0.6rem; text-transform: uppercase; letter-spacing: 1px; }
-    /* Outbound call rows align into labeled columns (header row shares the grid). */
-    .egress.call { display: grid; grid-template-columns: 4rem 1fr 3.6rem 4.2rem 3.6rem; gap: 0.4rem; align-items: center; }
+    /* Outbound call rows align into labeled columns (header row shares the grid).
+       The connections column is sized to exactly one row of 30 cells (cell
+       0.55rem, gap 0.15rem, plus a hair of rounding slack), so the box is
+       always just big enough: no window width can open a gap before the
+       pills, and the 60 worker cells above wrap into two aligned rows of 30. */
+    .egress.call { display: grid; grid-template-columns: 4rem calc(30 * 0.55rem + 29 * 0.15rem + 0.1rem) 3.6rem 4.2rem 3.6rem; gap: 0.4rem; align-items: center; }
     .egress.call .cells { margin-top: 0; }
     /* Center the pill columns (cap, breaker, timeout) and their headers over
        each other; the connections grid stays left-aligned. */
