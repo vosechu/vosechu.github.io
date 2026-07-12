@@ -101,7 +101,7 @@ function rateSlider(parent) {
   const toPos = (v) => Math.round(((Math.log(Math.max(MIN, v)) - lmin) / lspan) * STEPS);
   const input = document.createElement('input');
   Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(sim.config.requestRatePerSec) });
-  const val = control(parent, 'Request rate', input, perSec, sim.config.requestRatePerSec);
+  const val = control(parent, STRINGS.controls.requestRate, input, perSec, sim.config.requestRatePerSec);
   input.addEventListener('input', () => {
     const v = toVal(Number(input.value));
     val.textContent = perSec(v);
@@ -114,21 +114,21 @@ function rateSlider(parent) {
   rateUI = { input, val, toPos };
 }
 function workerPoolSlider(parent) {
-  slider(parent, 'Worker pool', 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
+  slider(parent, STRINGS.controls.workerPool, 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
 }
 function timeoutControl(parent) {
-  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur,
+  logSlider(parent, STRINGS.controls.frontDoorTimeout, 100, 90000, sim.config.timeoutMs, dur,
     (v) => { sim.config.timeoutMs = v; handle.service.frontTimeout.textContent = dur(v); });
 }
 function bulkheadsToggle(parent) {
-  toggle(parent, 'Bulkheads', sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
+  toggle(parent, STRINGS.controls.bulkheads, sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
 }
 // One service-level toggle enables an independent breaker on every callee. Each
 // still trips on its own error count, so only a failing dependency opens.
 function breakersToggle(parent) {
   const targets = sim.config.targets;
   const on = Object.values(targets).some((t) => t.breaker && t.breaker.enabled);
-  toggle(parent, 'Breakers', on, (checked) => {
+  toggle(parent, STRINGS.controls.breakers, on, (checked) => {
     for (const name of Object.keys(targets)) {
       const t = targets[name];
       if (checked) {
@@ -147,7 +147,7 @@ function breakersToggle(parent) {
 function adaptiveToggle(parent) {
   const targets = sim.config.targets;
   const on = Object.values(targets).some((t) => t.adaptive && t.adaptive.enabled);
-  toggle(parent, 'Adaptive pools', on, (checked) => {
+  toggle(parent, STRINGS.controls.adaptivePools, on, (checked) => {
     for (const name of Object.keys(targets)) {
       const t = targets[name];
       if (checked) {
@@ -161,7 +161,7 @@ function adaptiveToggle(parent) {
 }
 function oscillationToggle(parent) {
   const osc = sim.config.loadOscillation;
-  toggle(parent, 'Load oscillation', osc.enabled, (on) => {
+  toggle(parent, STRINGS.controls.oscillation, osc.enabled, (on) => {
     if (on) { osc.phaseRef = clock.now(); }
     else if (rateUI) { rateUI.input.value = String(rateUI.toPos(sim.config.requestRatePerSec)); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
     osc.enabled = on;
@@ -171,11 +171,11 @@ function oscillationToggle(parent) {
 // Per-service sliders sit under the service's heading, so the labels drop the
 // service name.
 function latencySlider(parent, name) {
-  logSlider(parent, 'latency', 10, 10000, sim.config.targets[name].latencyMs, dur,
+  logSlider(parent, STRINGS.controls.latency, 10, 10000, sim.config.targets[name].latencyMs, dur,
     (v) => { sim.config.targets[name].latencyMs = v; });
 }
 function outgoingTimeoutSlider(parent, name) {
-  logSlider(parent, 'outgoing timeout', 100, 90000, sim.config.targets[name].timeoutMs, dur,
+  logSlider(parent, STRINGS.controls.outgoingTimeout, 100, 90000, sim.config.targets[name].timeoutMs, dur,
     (v) => { sim.config.targets[name].timeoutMs = v; });
 }
 // Error rate is log-scaled so 0.1% and 100% are both reachable, with position 0
@@ -190,15 +190,15 @@ function errorRateSlider(parent, name) {
   const fmt = (pct) => (pct === 0 ? 'off' : pct < 1 ? `${pct.toFixed(2)}%` : `${Math.round(pct)}%`);
   const input = document.createElement('input');
   Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(t.errorRate * 100) });
-  const val = control(parent, 'error rate', input, fmt, t.errorRate * 100);
+  const val = control(parent, STRINGS.controls.errorRate, input, fmt, t.errorRate * 100);
   input.addEventListener('input', () => { const p = toPct(Number(input.value)); val.textContent = fmt(p); t.errorRate = p / 100; });
 }
 function capacitySlider(parent, name) {
-  slider(parent, 'capacity', 1, 60, 1, sim.config.targets[name].capacity, plain,
+  slider(parent, STRINGS.controls.capacity, 1, 60, 1, sim.config.targets[name].capacity, plain,
     (v) => { sim.config.targets[name].capacity = v; });
 }
 function bulkheadSlider(parent, name) {
-  poolUIs[name] = slider(parent, 'pool size', 1, 60, 1, sim.config.targets[name].bulkheadSize, plain,
+  poolUIs[name] = slider(parent, STRINGS.controls.poolSize, 1, 60, 1, sim.config.targets[name].bulkheadSize, plain,
     (v) => { sim.config.targets[name].bulkheadSize = v; });
 }
 // Per-callee breaker tuning on one compact line: a trip count next to the window
@@ -209,8 +209,8 @@ function breakerRow(parent, name) {
     state: 'closed', openedAtMs: null, errorTimestamps: [], probeInFlight: false };
   const br = t.breaker;
   const row = document.createElement('div'); row.className = 'ctlrow';
-  slider(row, 'num errors', 1, 200, 1, br.errorThreshold, plain, (v) => { br.errorThreshold = v; });
-  logSlider(row, 'per time', 1000, 60000, br.windowMs, dur, (v) => { br.windowMs = v; });
+  slider(row, STRINGS.controls.numErrors, 1, 200, 1, br.errorThreshold, plain, (v) => { br.errorThreshold = v; });
+  logSlider(row, STRINGS.controls.perTime, 1000, 60000, br.windowMs, dur, (v) => { br.windowMs = v; });
   parent.appendChild(row);
 }
 

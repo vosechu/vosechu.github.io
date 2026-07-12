@@ -96,4 +96,44 @@ export const STRINGS = {
     controlsFreePlay: 'Controls (free play)',
     tryThis: 'Try this:',
   },
+
+  // Exact labels of every player-facing control in the right panel. controls.js
+  // reads these, and copy references them as {{chips}}; test/strings.test.js
+  // enforces that every chip matches one of these values exactly, so the
+  // instructions can never drift from the panel again.
+  controls: {
+    requestRate: 'Request rate',
+    workerPool: 'Worker pool',
+    frontDoorTimeout: 'Front-door timeout',
+    breakers: 'Breakers',
+    bulkheads: 'Bulkheads',
+    adaptivePools: 'Adaptive pools',
+    oscillation: 'Load oscillation',
+    latency: 'latency',
+    outgoingTimeout: 'outgoing timeout',
+    errorRate: 'error rate',
+    capacity: 'capacity',
+    poolSize: 'pool size',
+    numErrors: 'num errors',
+    perTime: 'per time',
+  },
+
+  // Definitions behind [[term]] tokens in copy: hover (or focus) a dotted
+  // underline anywhere in instructions, captions, or the tour and one of
+  // these appears. Keys are lowercase; lookup is case-insensitive. Telemetry
+  // voice: plain, literal, one or two sentences.
+  glossary: {
+    'slo': 'The service level objective: the promise this service is graded on. Here: 99 of every 100 requests succeed, and the slowest 5% finish in under 5 seconds.',
+    'worker': 'One unit of concurrency in our service. Each request holds a worker until every dependency answers or times out; when all workers are busy, new requests wait in the queue.',
+    'dependency': 'A service ours must call to answer a request. Every request here fans out to all of them at once.',
+    'queue': 'Requests waiting for a free worker. A growing queue means work is arriving faster than it is finishing.',
+    'breaker': 'A circuit breaker watches a dependency for errors and, after enough failures, stops calling it for a while: fail fast now, retest later.',
+    'bulkhead': 'A cap on how many of our workers one dependency may hold at once, so a slow dependency cannot drag every worker down with it.',
+    'connection pool': 'The outbound connections our service may hold to one dependency. Each in-flight call occupies one.',
+    'timeout': 'The longest we will wait on a call before giving up and taking the worker back.',
+    'adaptive pool': 'A bulkhead that sizes itself: it learns a dependency\'s normal response time and sheds load only when its queue grows.',
+    'wait': 'How long a request takes start to finish. The scoreboard tracks the slowest 5% of requests (the p95).',
+    'throughput': 'Requests served per second.',
+    'rejects': 'Requests a bulkhead turned away immediately instead of letting them wait for a slow dependency.',
+  },
 };
