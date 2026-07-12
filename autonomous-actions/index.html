@@ -202,7 +202,11 @@
     /* Horizontal variant: lies in the 4rem name column of the incoming row
        (filling left to right), so the worker grid beside it starts exactly
        where the outbound connections column starts. */
-    .queue.h { width: 100%; height: 0.55rem; }
+    /* Top-aligned so the bar sits level with the first row of worker cells,
+       and 0.25rem narrower than its column for breathing room before the
+       cells; the column widths stay untouched so the grids keep their exact
+       alignment with the outbound rows. */
+    .queue.h { width: calc(100% - 0.25rem); height: 0.55rem; align-self: start; }
     .queue.h .fill { top: 0; bottom: 0; left: 0; right: auto; width: 0; height: auto; transition: width .2s ease; }
     /* Pills: fixed min-width so a value change never reflows. */
     .pill { display: inline-block; min-width: 3.2rem; text-align: center;
