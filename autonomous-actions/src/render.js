@@ -203,8 +203,7 @@ export function buildScene(root, config, onSelect) {
     // rule read it, and the two-class .slow/.faulted rules (higher specificity)
     // override that rule normally, no !important needed.
     box.style.setProperty('--depcolor', colorOf(name));
-    const label = div('label', labelOf(name));
-    box.appendChild(label);
+    box.appendChild(div('label', labelOf(name)));
     // Non-color redundant cue for a failing dependency: absolutely positioned
     // (box is position:relative) so it never affects the box's outer size,
     // hidden by default via the .fire CSS rule, toggled by render() (hot path:
@@ -228,7 +227,7 @@ export function buildScene(root, config, onSelect) {
     if (onSelect) box.addEventListener('click', () => onSelect(name));
     box.title = hoverOf(name);
     depsCol.appendChild(box);
-    deps[name] = { box, label, workerCells: dworkers.cells, queueBar: dqueue, fire, capLabel };
+    deps[name] = { box, workerCells: dworkers.cells, queueBar: dqueue, fire, capLabel };
   }
   cols.appendChild(depsCol);
 
@@ -236,7 +235,7 @@ export function buildScene(root, config, onSelect) {
   const bar = buildStatusBar();
 
   const handle = {
-    diagram: root, overlay, cols, bar, names, edges: [], ema: {},
+    diagram: root, overlay, bar, names, edges: [], ema: {},
     service: {
       sub: serviceSubEl, queueBar: svcQueueFill, workerCells: svcWorkers.cells,
       frontTimeout, egress, fire: serviceFire,

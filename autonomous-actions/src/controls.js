@@ -244,14 +244,14 @@ function buildControls(actIndex) {
   panel.textContent = '';
   poolUIs = {};
   const header = document.createElement('div'); header.className = 'panelhead';
-  const h2 = document.createElement('h2'); h2.textContent = freePlay ? 'Controls (free play)' : 'Controls';
-  const reset = document.createElement('button'); reset.className = 'reset'; reset.textContent = 'Reset to defaults';
+  const h2 = document.createElement('h2'); h2.textContent = freePlay ? STRINGS.ui.controlsFreePlay : STRINGS.ui.controls;
+  const reset = document.createElement('button'); reset.className = 'reset'; reset.textContent = STRINGS.ui.reset;
   reset.addEventListener('click', resetToDefaults);
   header.appendChild(h2); header.appendChild(reset);
   panel.appendChild(header);
   rateSlider(panel);
   if (freePlay) {
-    const sys = section('System', false);
+    const sys = section(STRINGS.ui.system, false);
     breakersToggle(sys);
     bulkheadsToggle(sys);
     adaptiveToggle(sys);
@@ -272,7 +272,7 @@ function buildControls(actIndex) {
   // Global knobs live in a collapsible System section, unlocked as acts need them.
   // This block is persistent: it shows regardless of which station is selected.
   if (actIndex >= 2) {
-    const sys = section('System', actIndex === 2);
+    const sys = section(STRINGS.ui.system, actIndex === 2);
     breakersToggle(sys);                           // the circuit-breaker act
     if (actIndex >= 5) bulkheadsToggle(sys);       // the bulkhead act
     if (actIndex >= 6) adaptiveToggle(sys);        // the adaptive-sizing act: all pools adaptive
@@ -434,7 +434,7 @@ function showAct(i) {
   applyRoster(rosterForAct(actIndex));
   selectedStation = defaultStationForAct(actIndex);
   document.getElementById('act-title').textContent = `${actIndex + 1}. ${meta.title}`;
-  document.getElementById('act-instruction').textContent = meta.instruction ? `Try this: ${meta.instruction}` : '';
+  document.getElementById('act-instruction').textContent = meta.instruction ? `${STRINGS.ui.tryThis} ${meta.instruction}` : '';
   document.getElementById('act-caption').textContent = meta.caption;
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);

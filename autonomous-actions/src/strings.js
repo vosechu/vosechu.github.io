@@ -92,5 +92,8 @@ export const STRINGS = {
   ui: {
     reset: 'Reset to defaults',
     system: 'System',
+    controls: 'Controls',
+    controlsFreePlay: 'Controls (free play)',
+    tryThis: 'Try this:',
   },
 };
