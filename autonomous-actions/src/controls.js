@@ -6,7 +6,7 @@ import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
 import { STRINGS } from './strings.js';
-import { TOUR_STEPS, initialTourState, tourReducer } from './tour.js';
+import { TOUR_STEPS, NEW_CONTROLS_BY_ACT, initialTourState, tourReducer } from './tour.js';
 import { parseCopy, glossaryDef } from './copy.js';
 
 const clock = { now: () => performance.now() };
@@ -355,33 +355,59 @@ function selectStation(name) {
 
 // Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
 // three bubbles (steps 1-3), anchored at the bar, a station, and the panel.
-// localStorage persists whether the tour has been seen; guarded so a
-// non-browser environment (no localStorage) degrades to "not seen" rather
-// than throwing.
+// Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
+// one reusable bubble (steps 1-4) that is measured against its anchor when the
+// step opens (and on window resize while open), never per frame. localStorage
+// persists seen and skipped; both degrade to defaults when storage is missing.
 const TOUR_SEEN_KEY = 'aa_tour_seen';
-function readTourSeen() {
-  try { return typeof localStorage !== 'undefined' && localStorage.getItem(TOUR_SEEN_KEY) === '1'; }
+const TOUR_SKIP_KEY = 'aa_tour_skipped';
+function readFlag(key) {
+  try { return typeof localStorage !== 'undefined' && localStorage.getItem(key) === '1'; }
   catch { return false; }
 }
-function writeTourSeen() {
-  try { if (typeof localStorage !== 'undefined') localStorage.setItem(TOUR_SEEN_KEY, '1'); }
-  catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
+function writeFlag(key, on) {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    if (on) localStorage.setItem(key, '1'); else localStorage.removeItem(key);
+  } catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
 }
 
-let tourState = initialTourState(readTourSeen());
+let tourState = initialTourState(readFlag(TOUR_SEEN_KEY), readFlag(TOUR_SKIP_KEY));
 
 const tourOverlay = document.getElementById('tour-overlay');
 const tourWelcome = document.getElementById('tour-welcome');
-const tourBubbles = {
-  1: document.getElementById('tourbubble-bar'),
-  2: document.getElementById('tourbubble-station'),
-  3: document.getElementById('tourbubble-panel'),
-};
-const TOUR_BUBBLE_TEXT = {
-  1: STRINGS.tour.bubbleBar,
-  2: STRINGS.tour.bubbleStation,
-  3: STRINGS.tour.bubblePanel,
-};
+const tourBubble = document.getElementById('tourbubble');
+const whatsnewEl = document.getElementById('whatsnew');
+
+// Step 1..4 anchors: what the bubble points at and which side it prefers.
+// Copy keys index STRINGS.tour.
+const TOUR_STEP_DEFS = [
+  null,                                                        // 0: welcome dialog
+  { anchor: '#statusbar', prefer: 'above', key: 'bubbleBar' },
+  { anchor: '.col-deps',  prefer: 'left',  key: 'bubbleDeps' },
+  { anchor: '#panel',     prefer: 'left',  key: 'bubblePanel' },
+  { anchor: '#tour',      prefer: 'above', key: 'bubbleInstructions' },
+];
+
+// Place a fixed-position bubble adjacent to its anchor, clamped to the
+// viewport. Measures once per call (step open, whats-new open, window resize
+// while open): never on the per-frame path.
+function positionBubble(bubble, anchorEl, prefer) {
+  const a = anchorEl.getBoundingClientRect();
+  const b = bubble.getBoundingClientRect();
+  let left, top;
+  if (prefer === 'above') { left = a.left + a.width / 2 - b.width / 2; top = a.top - b.height - 12; }
+  else if (prefer === 'left') { left = a.left - b.width - 16; top = a.top + 16; }
+  else { left = a.left + a.width / 2 - b.width / 2; top = a.bottom + 12; }
+  left = Math.max(8, Math.min(left, window.innerWidth - b.width - 8));
+  top = Math.max(8, Math.min(top, window.innerHeight - b.height - 8));
+  bubble.style.left = `${left}px`;
+  bubble.style.top = `${top}px`;
+}
+
+function setTourDot(on) {
+  for (const btn of document.querySelectorAll('.tour-rerun-btn')) btn.classList.toggle('dot', on);
+}
 
 function tourStepLabel(step) {
   return STRINGS.tour.step.replace('{n}', String(step + 1)).replace('{m}', String(TOUR_STEPS));
@@ -389,7 +415,9 @@ function tourStepLabel(step) {
 
 function dispatchTour(action) {
   tourState = tourReducer(tourState, action);
-  if (tourState.seen) writeTourSeen();
+  if (tourState.seen) writeFlag(TOUR_SEEN_KEY, true);
+  writeFlag(TOUR_SKIP_KEY, tourState.skipped);
+  if (action.type === 'open') setTourDot(false);   // opening the tour answers the dot
   renderTour();
 }
 
@@ -398,21 +426,20 @@ function renderTour() {
   if (!tourState.open) return;
   const isWelcome = tourState.step === 0;
   tourWelcome.style.display = isWelcome ? '' : 'none';
-  for (const [step, el] of Object.entries(tourBubbles)) {
-    el.style.display = !isWelcome && Number(step) === tourState.step ? '' : 'none';
-  }
+  tourBubble.style.display = isWelcome ? 'none' : '';
   if (isWelcome) {
-    document.getElementById('tour-welcome-text').textContent = STRINGS.tour.welcome;
-    document.getElementById('tour-welcome-step').textContent = tourStepLabel(tourState.step);
-  } else {
-    const el = tourBubbles[tourState.step];
-    el.querySelector('p').textContent = TOUR_BUBBLE_TEXT[tourState.step];
-    el.querySelector('.tourstep').textContent = tourStepLabel(tourState.step);
-    // The last step's advance button reads "Done" instead of "Next".
-    const nextBtn = el.querySelector('.tour-next-btn');
-    nextBtn.textContent = tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
+    renderCopyInto(document.getElementById('tour-welcome-text'), STRINGS.tour.welcome);
+    document.getElementById('tour-welcome-step').textContent = tourStepLabel(0);
+    return;
   }
+  const def = TOUR_STEP_DEFS[tourState.step];
+  renderCopyInto(document.getElementById('tourbubble-text'), STRINGS.tour[def.key]);
+  document.getElementById('tourbubble-step').textContent = tourStepLabel(tourState.step);
+  tourBubble.querySelector('.tour-next-btn').textContent =
+    tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
+  positionBubble(tourBubble, document.querySelector(def.anchor), def.prefer);
 }
+window.addEventListener('resize', () => { if (tourState.open && tourState.step > 0) renderTour(); });
 
 document.getElementById('tour-skip').textContent = STRINGS.tour.buttons.skip;
 document.getElementById('tour-next').textContent = STRINGS.tour.buttons.next;
@@ -424,13 +451,9 @@ for (const btn of document.querySelectorAll('.tour-skip-btn')) {
 }
 for (const btn of document.querySelectorAll('.tour-prev-btn')) {
   btn.textContent = STRINGS.tour.buttons.prev;
-  // The reducer has no dedicated "prev" action; back one step by re-dispatching
-  // from a state that is one step earlier. Bounded at step 0 by tourReducer's
-  // own [0, TOUR_STEPS-1] invariant (next never goes below 0 to begin with, so
-  // this mirrors that by clamping here).
+  // Back one step by rendering from one step earlier; bounded at 0.
   btn.addEventListener('click', () => {
-    const target = Math.max(0, tourState.step - 1);
-    tourState = { ...tourState, step: target };
+    tourState = { ...tourState, step: Math.max(0, tourState.step - 1) };
     renderTour();
   });
 }
@@ -441,7 +464,25 @@ for (const btn of document.querySelectorAll('.tour-rerun-btn')) {
 for (const btn of document.querySelectorAll('.tour-next-btn')) {
   btn.addEventListener('click', () => dispatchTour({ type: 'next' }));
 }
+
+// Whats-new: on forward entry into an act that unlocks controls, either show
+// the one-line bubble (tour not skipped) or light the Tour button's dot.
+// Once per act per session; Back never re-triggers it.
+let prevActIndex = -1;
+const whatsNewShown = new Set();
+document.getElementById('whatsnew-done').textContent = STRINGS.tour.buttons.done;
+document.getElementById('whatsnew-done').addEventListener('click', () => whatsnewEl.classList.add('hidden'));
+function maybeShowWhatsNew(i) {
+  if (i <= prevActIndex || whatsNewShown.has(i) || !NEW_CONTROLS_BY_ACT[i]) return;
+  if (tourState.skipped) { setTourDot(true); return; }
+  whatsNewShown.add(i);
+  renderCopyInto(document.getElementById('whatsnew-text'), STRINGS.tour.whatsNew[i]);
+  whatsnewEl.classList.remove('hidden');
+  positionBubble(whatsnewEl, panel, 'left');
+}
+
 renderTour();
+setTourDot(false);
 
 // Acts never patch sim state directly (ACTS carries no `patch` field, see
 // scenarios.test.js): the knobs stay however the player left them, and the
@@ -468,6 +509,10 @@ function showAct(i) {
   // render() would still see last act's visibility and draw stale arrows.
   render(sim.getState(), handle, selectedStation);
   handle.relayout();
+  // Whats-new bubble (or the skip dot) for an act that unlocks new controls.
+  // Measured against the freshly built panel; forward-entry only (see the guard).
+  maybeShowWhatsNew(actIndex);
+  prevActIndex = actIndex;
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,

@@ -45,9 +45,22 @@ export const STRINGS = {
     buttons: { skip: 'Skip', prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
     step: 'Step {n} of {m}',
     welcome: 'This is my service. Each request fans out to every [[dependency]] at once, and I hold a [[worker]] until the slowest one answers. Keep 99 of every 100 succeeding and the slow ones under 5 seconds; that promise is the [[SLO]]. Poke something and see what breaks.',
-    bubbleBar: 'Down here is the scoreboard: availability and wait time against the goal, with the rest of the counters beside them.',
-    bubbleStation: 'Each node is one dependency. Every request needs all of them at once, so the slowest one sets the pace.',
-    bubblePanel: 'Use the knobs on the right to break things, then add protections and watch the system recover.',
+    bubbleBar: 'Down here is the scoreboard: availability and [[wait]] time against the goal, with the rest of the counters beside them. Hover any label for what it means.',
+    bubbleDeps: 'These boxes are the upstream dependencies. Every request needs all of them at once, so the slowest one sets the pace. Click a box to select it and its controls appear on the right.',
+    bubblePanel: 'These knobs break things and add protections. When an act names a control, like {{Request rate}}, the name matches a label here exactly.',
+    bubbleInstructions: 'Your instructions live here. Each act sets one goal ("Try this"), and Back, Next, and the dots move between acts. New controls get introduced as acts unlock them.',
+    // One line per act that unlocks or reveals controls (keys match
+    // NEW_CONTROLS_BY_ACT in tour.js). Shown in the whats-new bubble on
+    // forward entry, or represented by the Tour button's red dot after a skip.
+    whatsNew: {
+      1: 'New: Payments Service and its {{error rate}} slider. Push it up to make the third party fail.',
+      2: 'New: {{Breakers}}. One toggle arms an independent [[breaker]] on every outbound call.',
+      3: 'New: Search Service with its {{outgoing timeout}}, and the {{Worker pool}} slider.',
+      4: 'New: Recommendations Service, and the {{Front-door timeout}} for shedding load at the door.',
+      5: 'New: {{Bulkheads}} and the Recommendations {{pool size}} cap.',
+      6: 'New: {{Adaptive pools}}. Each [[bulkhead]] learns its own size.',
+      7: 'Free play: every control is unlocked for every dependency.',
+    },
   },
 
   // Fixed bottom status bar. label is the slot heading; hover is the one-line
