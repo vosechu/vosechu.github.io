@@ -5,51 +5,87 @@
 // edit the values. Colors live separately, as CSS custom properties in
 // index.html.
 //
-// Current theme: a cat cafe. Reflavor freely without touching component code.
+// Frame: a working datacenter that cats have moved into, described by the arm's
+// telemetry voice: literal, honest, glanceable. There are no cat graphics on the
+// diagram; cats survive only as the occasional analogy the arm reaches for to
+// explain what a dependency is doing. Use them sparingly, and only where the
+// image genuinely clarifies the real system fact (never as decoration). Gentle,
+// fond personality, but clarity always wins.
+// Reflavor values freely; keep the KEYS and {tokens} stable.
 // -----------------------------------------------------------------------------
 
 export const STRINGS = {
   // Per-dependency copy. Keys are the stable internal ids used by the engine and
-  // tests; do NOT rename the keys, only the values.
+  // tests; do NOT rename the keys, only the values. label is the node title,
+  // short is the terse diagram tag, hover states what it is and how it fails.
   stations: {
-    'Database A': { label: 'The Kibble Bin',    short: 'Kibble',  hover: 'Your data store. Fast and always stocked; every cat needs a scoop.' },
-    'Service B':  { label: 'The Groomer',       short: 'Groomer', hover: 'Grooming takes time, and the line backs up when it is busy. This is the one that gets slow under load.' },
-    'Service C':  { label: 'The Napping Cat',   short: 'Nap',     hover: 'Usually quick, but sometimes a cat just sits and stares into the void. That is a hang.' },
-    'External':   { label: 'The Mouse Supplier', short: 'Mice',   hover: 'An outside supplier. Sometimes the mice just do not show up.' },
+    'Database A': { label: 'Core datastore',                 short: 'core',     hover: 'The core datastore. Every request reads from it. Fast, always on, and the one dependency I never worry about.' },
+    'Service B':  { label: 'Recommendations Service',        short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; it just gets slow, in no hurry to catch up.' },
+    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. A tight timeout gives the worker back.' },
+    'External':   { label: 'Payments Service (third-party)', short: 'payments', hover: 'A third-party we do not control. Usually it answers; sometimes it is simply gone and refuses the connection at once. A breaker skips it so one missing feature does not sink the rest.' },
   },
 
-  // One entry per act, index 0..7. title carries the cat-cafe framing; the
-  // instruction and caption stay plain so the lesson reads clearly.
+  // One entry per act, index 0..7. title carries a little of the arm's gentle
+  // personality; instruction and caption stay plain so the lesson reads clearly.
   acts: [
-    { title: 'A quiet morning',                instruction: 'Find the highest customer rate the cafe still serves within the SLO.',                          caption: 'Each cat needs every station at once and keeps a staff member until the slowest station is done.' },
-    { title: 'The mice do not show up',        instruction: 'Make the Mouse Supplier fail and watch happy cats fall.',                                        caption: 'A fast failure with nothing to catch it goes straight to the cat.' },
-    { title: 'Stop waiting on the mice',       instruction: 'Turn on a breaker and watch it trip so the cafe stops waiting on the mice.',                     caption: 'A breaker skips a station you know is down, trading that feature for the SLO.' },
-    { title: 'A cat zones out',                instruction: 'Make the Napping Cat hang, then add a tight timeout.',                                           caption: 'A timeout caps how long one staring cat can tie up a staff member.' },
-    { title: 'The grooming line backs up',     instruction: 'Push the customer rate until the Groomer backs up and wait time crosses the SLO.',              caption: 'A breaker cannot help a station that is slow but not failing.' },
-    { title: 'Give the Groomer its own line',  instruction: 'Turn on bulkheads and cap the Groomer so its overflow is turned away fast.',                    caption: 'A bulkhead turns a slow station into fast rejections the breaker can catch.' },
-    { title: 'Stop guessing the line',         instruction: 'Turn on adaptive sizing while calm, then push load and watch the Groomer size its own line.',   caption: 'It learns the normal wait and sheds only when the line grows. One knob instead of a guess.' },
-    { title: 'Run the cafe',                   instruction: 'Everything is unlocked. Break the SLO however you like.',                                        caption: 'No single tool wins. Which one holds depends on whether the station is slow or failing.' },
+    { title: 'A quiet morning',                 instruction: 'Find the highest request rate the system still serves within the SLO.',                              caption: 'Each request hits every dependency at once and holds a worker until the slowest one returns.' },
+    { title: 'Payments drops out',              instruction: 'Make Payments fail and watch availability fall.',                                                     caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
+    { title: 'Stop waiting on Payments',        instruction: 'Turn on a breaker and watch it trip so the system stops waiting on Payments.',                        caption: 'A breaker skips a dependency you know is down, trading that one feature for the SLO.' },
+    { title: 'Search freezes',                  instruction: 'Make Search hang, then add a tight timeout.',                                                         caption: 'A timeout caps how long one hung call can tie up a worker.' },
+    { title: 'Recommendations backs up',        instruction: 'Push the request rate until Recommendations backs up and wait time crosses the SLO.',                caption: 'A breaker cannot help a dependency that is slow but not failing.' },
+    { title: 'Give Recommendations its own lane', instruction: 'Turn on bulkheads and cap Recommendations so its overflow is turned away fast.',                   caption: 'A bulkhead turns a slow dependency into fast rejections the breaker can catch.' },
+    { title: 'Stop guessing the size',          instruction: 'Turn on adaptive sizing while calm, then push load and watch Recommendations size its own lane.',    caption: 'It learns the normal response time and sheds only when the queue grows. One knob instead of a guess.' },
+    { title: 'The place is yours',              instruction: 'Everything is unlocked. Break the SLO however you like.',                                             caption: 'No single tool wins. Which one holds depends on whether the dependency is slow or failing.' },
   ],
 
   // Guided tour: button labels, the step counter, the welcome dialog, and one
   // line per bubble. {n} and {m} are filled in with the step number and total.
+  // welcome is the one place the arm's voice gets a little room to breathe.
   tour: {
     buttons: { skip: 'Skip', prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
     step: 'Step {n} of {m}',
-    welcome: 'Welcome to the cat cafe. Every cat that pads in needs all four stations at once, and a staff member stays with them until the slowest station is done. Your job: keep 99% of cats happy and served in under 5 seconds. Poke things and see what breaks.',
-    bubbleBar: 'Down here: are the cats happy? Availability and wait time against your goal, plus the details.',
-    bubbleStation: 'Each station does one job. A cat needs all of them, so the slowest one sets the pace.',
-    bubblePanel: 'Poke the knobs on the right to break things, then add protections and watch the cafe recover.',
+    welcome: 'This is my service. Each request fans out to every dependency at once, and I hold a worker until the slowest one answers. Keep 99 of every 100 succeeding and the slow ones under 5 seconds. Poke something and see what breaks.',
+    bubbleBar: 'Down here is the scoreboard: availability and wait time against the goal, with the rest of the counters beside them.',
+    bubbleStation: 'Each node is one dependency. Every request needs all of them at once, so the slowest one sets the pace.',
+    bubblePanel: 'Use the knobs on the right to break things, then add protections and watch the system recover.',
   },
 
-  // Fixed bottom status bar. label is the slot heading; hover is the one-line info.
+  // Fixed bottom status bar. label is the slot heading; hover is the one-line
+  // info. Friendly-but-literal: this is the arm's scoreboard, so the labels name
+  // the real metric and the hovers stay unambiguous (percentiles never get cute).
   bar: {
-    availability: { label: 'Happy cats',        hover: 'Cats served, even if one station was skipped. Goal 99%.' },
-    p95:          { label: 'Wait',              hover: 'How long the slowest 5% of cats waited. Goal under 5s.' },
-    throughput:   { label: 'Cats/s',            hover: 'Cats served per second.' },
-    errors:       { label: 'Grumpy cats/s',     hover: 'Cats that left unhappy: a station failed, or they never got served.' },
-    queue:        { label: 'Waiting for a seat', hover: 'Cats waiting for any staff member to free up.' },
-    rejects:      { label: 'Turned away/s',     hover: 'Calls a bulkhead rejected fast to protect a station.' },
+    availability: { label: 'Availability', hover: 'Share of requests that succeeded, even if a dependency was skipped. Goal 99%.' },
+    p95:          { label: 'Wait',         hover: 'How long the slowest 5% of requests took, start to finish. Goal under 5s.' },
+    throughput:   { label: 'Throughput',   hover: 'Requests served per second.' },
+    errors:       { label: 'Errors',       hover: 'Requests that failed: a dependency errored, or the request never completed. Per second.' },
+    queue:        { label: 'Queue',        hover: 'Requests waiting for a free worker.' },
+    rejects:      { label: 'Rejects',      hover: 'Requests a bulkhead turned away fast to protect a dependency. Per second.' },
+  },
+
+  // The service diagram's telemetry chrome (the arm's own readouts): node labels,
+  // region headings, breaker states, and the two numeric readouts. Templated
+  // strings use {token} placeholders filled by src/telemetry.js (same convention
+  // as tour.step). Keys are stable; only values change. Already in the arm's
+  // telemetry voice and load-bearing for glanceability, so kept literal.
+  telemetry: {
+    client: 'Client',
+    clientGlyph: 'retries',
+    service: 'Our service',
+    incoming: 'incoming',
+    outbound: 'outbound',
+    queue: 'queue',
+    workers: 'workers',
+    frontTimeout: 'front-door timeout',
+    // A call with no breaker or no bulkhead says so instead of sitting blank.
+    none: 'none',
+    noCap: '-',
+    // Column headers over the outbound call rows.
+    callHead: { pool: 'connections', cap: 'cap', breaker: 'breaker', timeout: 'timeout' },
+    // open/closed reads as jargon to non-electricians; keep these plain-language.
+    breaker: { closed: 'passing', open: 'blocking', half_open: 'testing' },
+    serviceSub: 'workers {workers}, connections {connections}/∞',
+    capacityServing: '{inService}/{capacity} serving',
+    capacityHeld: '{held} held: {inService}/{capacity} serving, {queued} queued',
   },
 
   // Miscellaneous UI labels.

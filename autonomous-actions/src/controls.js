@@ -1,7 +1,7 @@
 import { Sim, effectiveRate } from './engine.js';
 import { defaultConfig, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
-import { initRender, render } from './render.js';
+import { buildScene, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
@@ -13,10 +13,10 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 // The full default target set, kept around so a later act (or Reset to
 // defaults) can restore a station that an earlier act's roster removed.
 // sim.config.targets narrows to the current act's roster (topology.js); the
-// diagram is built once from the full set (initRender) and hides rows whose
+// diagram is built once from the full set (buildScene) and hides rows whose
 // id is missing from state.targets (render.js).
 const DEFAULT_TARGETS = defaultConfig().targets;
-const handle = initRender(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
+const handle = buildScene(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
 const panel = document.getElementById('panel');
 
 // Narrow sim.config.targets to exactly the ids in `roster`, preserving the
@@ -87,20 +87,38 @@ function toggle(parent, label, checked, onChange) {
 let oscWasOn = false;
 let rateUI = null;   // the request-rate slider input + value label, so the frame loop can animate it
 let poolUIs = {};    // per-service bulkhead pool sliders, so adaptive can drive and lock them
+// Log-scaled so the interesting low end (tens of rps, where the later acts
+// live) keeps fine resolution while the top reaches past the act-1 knee: 30
+// workers x 30ms datastore calls saturate near 1000 rps, so the max must sit
+// beyond that or the first act's "find the highest rate the SLO survives"
+// has no answer. The frame loop drives the thumb through toPos when
+// oscillation is on, so rateUI exposes the mapping alongside input/val.
 function rateSlider(parent) {
   const osc = sim.config.loadOscillation;
-  rateUI = slider(parent, 'Request rate', 1, 200, 1, sim.config.requestRatePerSec, perSec,
-    (v) => { sim.config.requestRatePerSec = v; },
-    {
-      onGrab: () => { oscWasOn = osc.enabled; osc.enabled = false; },
-      onRelease: () => { if (oscWasOn) { osc.phaseRef = clock.now(); osc.enabled = true; } oscWasOn = false; },
-    });
+  const STEPS = 1000, MIN = 1, MAX = 1500;
+  const lmin = Math.log(MIN), lspan = Math.log(MAX) - lmin;
+  const toVal = (pos) => Math.round(Math.exp(lmin + lspan * (pos / STEPS)));
+  const toPos = (v) => Math.round(((Math.log(Math.max(MIN, v)) - lmin) / lspan) * STEPS);
+  const input = document.createElement('input');
+  Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(sim.config.requestRatePerSec) });
+  const val = control(parent, 'Request rate', input, perSec, sim.config.requestRatePerSec);
+  input.addEventListener('input', () => {
+    const v = toVal(Number(input.value));
+    val.textContent = perSec(v);
+    sim.config.requestRatePerSec = v;
+  });
+  input.addEventListener('pointerdown', () => { oscWasOn = osc.enabled; osc.enabled = false; });
+  const release = () => { if (oscWasOn) { osc.phaseRef = clock.now(); osc.enabled = true; } oscWasOn = false; };
+  input.addEventListener('pointerup', release);
+  input.addEventListener('pointercancel', release);
+  rateUI = { input, val, toPos };
 }
 function workerPoolSlider(parent) {
   slider(parent, 'Worker pool', 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
 }
 function timeoutControl(parent) {
-  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur, (v) => { sim.config.timeoutMs = v; });
+  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur,
+    (v) => { sim.config.timeoutMs = v; handle.service.frontTimeout.textContent = dur(v); });
 }
 function bulkheadsToggle(parent) {
   toggle(parent, 'Bulkheads', sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
@@ -145,7 +163,7 @@ function oscillationToggle(parent) {
   const osc = sim.config.loadOscillation;
   toggle(parent, 'Load oscillation', osc.enabled, (on) => {
     if (on) { osc.phaseRef = clock.now(); }
-    else if (rateUI) { rateUI.input.value = String(sim.config.requestRatePerSec); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
+    else if (rateUI) { rateUI.input.value = String(rateUI.toPos(sim.config.requestRatePerSec)); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
     osc.enabled = on;
   });
 }
@@ -219,6 +237,10 @@ function stationControlsFor(sec, name, actIndex) {
 // dependency. Reveal thresholds are 0-indexed act numbers.
 function buildControls(actIndex) {
   const freePlay = actIndex >= ACTS.length - 1;
+  // The pill is a config readout, not gated by which act has unlocked the
+  // slider itself, so it stays in sync on every rebuild (act change, station
+  // select, reset), independent of timeoutControl below.
+  handle.service.frontTimeout.textContent = dur(sim.config.timeoutMs);
   panel.textContent = '';
   poolUIs = {};
   const header = document.createElement('div'); header.className = 'panelhead';
@@ -416,6 +438,13 @@ function showAct(i) {
   document.getElementById('act-caption').textContent = meta.caption;
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);
+  // Reflect the new roster's box visibility before measuring arrows: render()
+  // sets display:none on rows/boxes outside the new act, and layoutEdges
+  // (driven by relayout) skips edges whose endpoint is hidden. Without this
+  // render() first, a relayout racing ahead of the next animation frame's
+  // render() would still see last act's visibility and draw stale arrows.
+  render(sim.getState(), handle, selectedStation);
+  handle.relayout();
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,
@@ -470,7 +499,7 @@ function frame() {
   const osc = sim.config.loadOscillation;
   if (rateUI && osc.enabled) {
     const eff = Math.round(effectiveRate(sim.config.requestRatePerSec, osc, simNowMs));
-    rateUI.input.value = String(eff);
+    rateUI.input.value = String(rateUI.toPos(eff));   // the slider is log-scaled; drive it by position
     rateUI.val.textContent = perSec(eff);
   }
   // Adaptive services drive and lock their own pool slider, so control is visibly

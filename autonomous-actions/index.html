@@ -58,18 +58,17 @@
       padding: 8px 10px; font-size: 11px; font-weight: 400; color: var(--ink); line-height: 1.45; z-index: 20;
     }
     .info:hover .tip, .info:focus .tip { display: block; }
-    svg#stage { width: 100%; height: auto; display: block; }
 
     /* Fixed bottom status bar: every metric, always visible, no progressive
        reveal. The first two slots (availability, p95) are the SLO metrics and
        carry a pass/fail state; the rest are plain counters. */
     body { padding-bottom: 64px; }   /* keep content clear of the fixed bar */
     #statusbar {
-      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
       display: flex; align-items: stretch; gap: 0;
       background: var(--panel-solid); border-top: 1px solid var(--border);
       box-shadow: 0 -2px 10px rgba(43,29,16,0.08);
-      overflow-x: auto;
+      overflow: visible;   /* was overflow-x:auto, which forces overflow-y:auto and clipped the ⓘ tips popping up over the diagram */
     }
     .barslot {
       flex: 1; min-width: 96px; padding: 8px 14px;
@@ -142,22 +141,6 @@
       font-variant-numeric: tabular-nums; min-height: 1em;
     }
 
-    /* SVG scene */
-    .bg { fill: transparent; }
-    .card { fill: var(--panel-solid); stroke: var(--border); stroke-width: 1.5; }
-    .card.gateway { fill: #fff3dc; stroke: #d9c093; transition: stroke .3s ease, filter .3s ease; }
-    .card.gateway.faulted { stroke: var(--red); stroke-width: 2.5; filter: drop-shadow(0 0 12px var(--red)); }
-    .card.dep { stroke-width: 2; cursor: pointer; }
-    .card.dep.faulted { stroke: var(--red) !important; stroke-width: 3.5; filter: drop-shadow(0 0 10px var(--red)); }
-    .card.dep.slow { stroke: var(--amber) !important; stroke-width: 3; filter: drop-shadow(0 0 9px var(--amber)); }
-    .card.dep.selected { stroke: var(--ink); stroke-width: 3; filter: drop-shadow(0 0 6px var(--ink)); }
-    .nodelabel { fill: var(--ink); font-size: 14px; font-weight: 600; }
-    .nodesub { fill: var(--ink-dim); font-size: 11px; }
-    .glyph { fill: var(--ink-dim); font-size: 11px; }
-    .region { fill: var(--ink-dim); font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    .outlabel { fill: var(--ink-dim); font-size: 14px; font-weight: 700; }
-    .fire { font-size: 17px; }
-
     .edge { stroke: #e8d9bd; stroke-width: 3; fill: none; }
     .edge-flow {
       stroke: var(--teal); stroke-width: 3; fill: none;
@@ -168,20 +151,97 @@
     .edge-flow.danger { stroke: var(--red); opacity: 0.85; stroke-dasharray: 2 7; animation: none; }
     @keyframes flow { to { stroke-dashoffset: -15; } }
 
-    .slot { fill: #f5e8ca; stroke: #d9c093; stroke-width: 1; opacity: 0; transition: fill .28s ease, opacity .28s ease; }
-    .slot.on { opacity: 1; }
-    .slot.capped { opacity: 0.6; stroke-dasharray: 2 2; }   /* slot present but beyond the bulkhead cap */
-    .slot.filled { stroke: rgba(43,29,16,0.28); }
-    /* Outbound slots a bulkhead walls off: dimmed with a red X overlay so it is
-       clear those workers are reserved for other dependencies, not available here. */
-    .slot.walled { opacity: 0.4; stroke: var(--red); stroke-dasharray: 2 2; }
-    .slotx { stroke: var(--red); stroke-width: 1.1; opacity: 0; transition: opacity .2s ease; }
-    .slotx.on { opacity: 0.7; }
-
-    /* Per-dependency latency sparkline: a small boxed trend line, stroked in the
-       station's own color, that clips at the top when latency hits the timeout. */
-    .sparklinebox { fill: rgba(43,29,16,0.04); stroke: var(--ink-dim); stroke-width: 0.75; opacity: 0.5; }
-    .sparklinepath { fill: none; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+    /* Diagram is now DOM boxes (rem-sized) plus one SVG arrow overlay. */
+    #stage.diagram { position: relative; min-width: 60rem; }   /* legibility floor; tune */
+    .stagewrap { overflow-x: auto; }
+    .diagram .edges {                       /* arrow overlay, behind the boxes */
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: visible;
+    }
+    .diagram .cols {
+      position: relative; z-index: 1;       /* boxes paint over the arrows */
+      display: flex; align-items: center; gap: 3rem; padding: 0.5rem;
+      justify-content: space-between;       /* window slack goes between the columns, not inside boxes */
+    }
+    .diagram .col-deps { display: flex; flex-direction: column; gap: 1rem; }
+    .box {
+      position: relative;   /* anchors the absolutely positioned .fire glyph */
+      background: var(--panel-solid); border: 1px solid var(--border);
+      border-radius: 0.6rem; padding: 0.6rem 0.7rem; min-width: 9rem;
+    }
+    /* Fixed dep width so per-frame text can never resize the box (hot-path
+       rule: render() must not move layout, or the arrows go stale). The
+       service box needs no width: every column in its grid is fixed (see
+       .egress.call), so it sizes to exactly fit its content. */
+    .box.dep { cursor: pointer; border-color: var(--depcolor); width: 13rem; }
+    /* Selection is a neutral ink ring: teal would read as a health state. */
+    .box.dep.selected { box-shadow: 0 0 0 2px var(--ink); }
+    .box.dep.slow { border-color: var(--amber); }
+    .box.dep.faulted { border-color: var(--red); }
+    /* Non-color redundant cue for a failing box: absolutely positioned so it
+       never affects the box's outer size (hot-path rule), hidden by default. */
+    .box .fire {
+      position: absolute; top: 0.2rem; right: 0.3rem;
+      font-size: 0.65rem; line-height: 1; opacity: 0; pointer-events: none;
+    }
+    .box .fire.show { opacity: 1; }
+    .box .label { font-size: 0.85rem; font-weight: 650; color: var(--ink); }
+    /* One line, clipped: per-frame text (the capacity readout) must never wrap
+       and change the box's height (hot-path rule). */
+    .box .sub { font-size: 0.7rem; color: var(--ink-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Worker / connection cells: a wrapping grid of small squares. */
+    .cells { display: flex; flex-wrap: wrap; gap: 0.15rem; margin-top: 0.35rem; }
+    .cell { width: 0.55rem; height: 0.55rem; border-radius: 0.12rem; background: var(--slot-idle, #d8cebc); }
+    .cell.busy { background: var(--teal); }
+    .cell.walled { background: transparent; outline: 1px solid var(--red); opacity: 0.5; }
+    /* Past the live pool size: absent, not just dim. visibility (not display)
+       keeps the cell's layout slot so the grid never reflows -- hot-path rule. */
+    .cell.hidden { visibility: hidden; }
+    /* Queue: a fixed-height track with a bottom-anchored fill. */
+    .queue { position: relative; width: 0.5rem; height: 3rem; border-radius: 0.25rem;
+      background: var(--slot-idle, #d8cebc); }
+    .queue .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0;
+      background: var(--amber); border-radius: 0.25rem; transition: height .2s ease; }
+    /* Horizontal variant: lies in the 4rem name column of the incoming row
+       (filling left to right), so the worker grid beside it starts exactly
+       where the outbound connections column starts. */
+    /* Top-aligned so the bar sits level with the first row of worker cells,
+       and 0.25rem narrower than its column for breathing room before the
+       cells; the column widths stay untouched so the grids keep their exact
+       alignment with the outbound rows. */
+    .queue.h { width: calc(100% - 0.25rem); height: 0.55rem; align-self: start; }
+    .queue.h .fill { top: 0; bottom: 0; left: 0; right: auto; width: 0; height: auto; transition: width .2s ease; }
+    /* Pills: fixed min-width so a value change never reflows. */
+    .pill { display: inline-block; min-width: 3.2rem; text-align: center;
+      font-size: 0.68rem; padding: 0.1rem 0.4rem; border-radius: 0.8rem;
+      border: 1px solid var(--border); color: var(--ink-dim); }
+    .pill.breaker.closed { color: var(--teal); }
+    .pill.breaker.open   { color: var(--red); }
+    .pill.breaker.half_open { color: var(--amber); }
+    /* Egress rows inside Our service: one per dependency. */
+    .egress { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.35rem; }
+    .egress .tag { min-width: 4rem; font-size: 0.72rem; color: var(--ink-dim); }
+    /* Tiny widget labels ("queue", "workers", column headers). */
+    .micro { font-size: 0.6rem; color: var(--ink-dim); letter-spacing: 0.4px; }
+    .micro.heading { margin-top: 0.6rem; text-transform: uppercase; letter-spacing: 1px; }
+    /* Outbound call rows align into labeled columns (header row shares the grid).
+       The connections column is sized to exactly one row of 30 cells (cell
+       0.55rem, gap 0.15rem, plus a hair of rounding slack), so the box is
+       always just big enough: no window width can open a gap before the
+       pills, and the 60 worker cells above wrap into two aligned rows of 30. */
+    .egress.call { display: grid; grid-template-columns: 4rem calc(30 * 0.55rem + 29 * 0.15rem + 0.1rem) 3.6rem 4.2rem 3.6rem; gap: 0.4rem; align-items: center; }
+    .egress.call .cells { margin-top: 0; }
+    /* Center the pill columns (cap, breaker, timeout) and their headers over
+       each other; the connections grid stays left-aligned. */
+    .egress.call > :nth-child(n+3) { justify-self: center; text-align: center; }
+    /* A protection that is not configured on this call (no breaker / no bulkhead). */
+    .pill.off { opacity: 0.55; }
+    /* Dependency-box row: same queue-then-workers language as the incoming
+       section, sized for the narrower box (capacity 12 fits one cell row). */
+    .egress.deprow { display: grid; grid-template-columns: 2.8rem 1fr; gap: 0.4rem; align-items: center; }
+    .egress.deprow .cells { margin-top: 0; }
+    /* Open-breaker edge: greyed, no flow. */
+    .edge-flow.blocked { stroke: var(--ink-dim); opacity: 0.3; animation: none; stroke-dasharray: 2 6; }
 
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
@@ -211,10 +271,10 @@
     .tourfoot button { font-size: 12px; padding: 5px 10px; }
 
     /* "Fork me on GitHub" corner ribbon (pure CSS, no external asset). */
-    .forkribbon { position: fixed; top: 0; right: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
+    .forkribbon { position: fixed; top: 0; left: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
     .forkribbon a {
-      position: absolute; top: 34px; right: -42px; width: 200px; padding: 6px 0;
-      transform: rotate(45deg); text-align: center; pointer-events: auto; text-decoration: none;
+      position: absolute; top: 34px; left: -42px; width: 200px; padding: 6px 0;
+      transform: rotate(-45deg); text-align: center; pointer-events: auto; text-decoration: none;
       background: var(--teal); color: var(--bg); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
       box-shadow: 0 2px 8px rgba(43,29,16,0.25);
       border-top: 1px solid rgba(255,255,255,0.4); border-bottom: 1px solid rgba(43,29,16,0.25);
@@ -224,15 +284,6 @@
       .forkribbon { display: none; }
     }
 
-    .badge { stroke: var(--panel-solid); stroke-width: 2; transition: fill .3s ease; }
-    .badge.closed { fill: var(--teal); }
-    .badge.half_open { fill: var(--amber); }
-    .badge.open { fill: var(--red); animation: pulse 1.1s ease-in-out infinite; }
-    .badgelabel { fill: var(--ink-dim); font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-    @keyframes pulse { 0%,100% { filter: none; } 50% { filter: drop-shadow(0 0 7px var(--red)); } }
-
-    .queuetrack { fill: #f5e8ca; stroke: #d9c093; stroke-width: 1; }
-    .queuebar { fill: var(--amber); opacity: 0.85; transition: height .2s ease, y .2s ease; }
   </style>
 </head>
 <body>
@@ -241,7 +292,7 @@
   <div class="layout">
     <div class="leftcol">
       <div class="stagewrap">
-        <svg id="stage" viewBox="0 0 1200 508" role="img" aria-label="system topology"></svg>
+        <div id="stage" role="img" aria-label="system topology"></div>
       </div>
 
       <div id="tour">
