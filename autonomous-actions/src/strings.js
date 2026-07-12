@@ -28,14 +28,14 @@ export const STRINGS = {
   // One entry per act, index 0..7. title carries a little of the arm's gentle
   // personality; instruction and caption stay plain so the lesson reads clearly.
   acts: [
-    { title: 'A quiet morning',                 instruction: 'Find the highest request rate the system still serves within the SLO.',                              caption: 'Each request hits every dependency at once and holds a worker until the slowest one returns.' },
-    { title: 'Payments drops out',              instruction: 'Make Payments fail and watch availability fall.',                                                     caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
-    { title: 'Stop waiting on Payments',        instruction: 'Turn on a breaker and watch it trip so the system stops waiting on Payments.',                        caption: 'A breaker skips a dependency you know is down, trading that one feature for the SLO.' },
-    { title: 'Search freezes',                  instruction: 'Make Search hang, then add a tight timeout.',                                                         caption: 'A timeout caps how long one hung call can tie up a worker.' },
-    { title: 'Recommendations backs up',        instruction: 'Push the request rate until Recommendations backs up and wait time crosses the SLO.',                caption: 'A breaker cannot help a dependency that is slow but not failing.' },
-    { title: 'Give Recommendations its own lane', instruction: 'Turn on bulkheads and cap Recommendations so its overflow is turned away fast.',                   caption: 'A bulkhead turns a slow dependency into fast rejections the breaker can catch.' },
-    { title: 'Stop guessing the size',          instruction: 'Turn on adaptive sizing while calm, then push load and watch Recommendations size its own lane.',    caption: 'It learns the normal response time and sheds only when the queue grows. One knob instead of a guess.' },
-    { title: 'The place is yours',              instruction: 'Everything is unlocked. Break the SLO however you like.',                                             caption: 'No single tool wins. Which one holds depends on whether the dependency is slow or failing.' },
+    { title: 'A quiet morning',                 instruction: 'Find the highest {{Request rate}} the system still serves within the [[SLO]].',                                    caption: 'Each request hits every [[dependency]] at once and holds a [[worker]] until the slowest one returns.' },
+    { title: 'Payments drops out',              instruction: 'Make Payments fail: raise its {{error rate}} and watch availability fall.',                                        caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
+    { title: 'Stop waiting on Payments',        instruction: 'Turn on {{Breakers}} and watch one trip so the system stops waiting on Payments.',                                 caption: 'A [[breaker]] skips a dependency you know is down, trading that one feature for the [[SLO]].' },
+    { title: 'Search freezes',                  instruction: 'Make Search hang: raise its {{latency}}, then rein it in with a tight {{outgoing timeout}}.',                      caption: 'A [[timeout]] caps how long one hung call can tie up a [[worker]].' },
+    { title: 'Recommendations backs up',        instruction: 'Push {{Request rate}} until Recommendations backs up and [[wait]] time crosses the [[SLO]].',                      caption: 'A [[breaker]] cannot help a dependency that is slow but not failing.' },
+    { title: 'Give Recommendations its own lane', instruction: 'Turn on {{Bulkheads}} and cap Recommendations with its {{pool size}} so overflow is turned away fast.',          caption: 'A [[bulkhead]] turns a slow dependency into fast rejections the breaker can catch.' },
+    { title: 'Stop guessing the size',          instruction: 'Turn on {{Adaptive pools}} while calm, then push {{Request rate}} and watch Recommendations size its own lane.',   caption: 'It learns the normal response time and sheds only when the [[queue]] grows. One knob instead of a guess.' },
+    { title: 'The place is yours',              instruction: 'Everything is unlocked. Break the [[SLO]] however you like.',                                                      caption: 'No single tool wins. Which one holds depends on whether the dependency is slow or failing.' },
   ],
 
   // Guided tour: button labels, the step counter, the welcome dialog, and one
@@ -44,7 +44,7 @@ export const STRINGS = {
   tour: {
     buttons: { skip: 'Skip', prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
     step: 'Step {n} of {m}',
-    welcome: 'This is my service. Each request fans out to every dependency at once, and I hold a worker until the slowest one answers. Keep 99 of every 100 succeeding and the slow ones under 5 seconds. Poke something and see what breaks.',
+    welcome: 'This is my service. Each request fans out to every [[dependency]] at once, and I hold a [[worker]] until the slowest one answers. Keep 99 of every 100 succeeding and the slow ones under 5 seconds; that promise is the [[SLO]]. Poke something and see what breaks.',
     bubbleBar: 'Down here is the scoreboard: availability and wait time against the goal, with the rest of the counters beside them.',
     bubbleStation: 'Each node is one dependency. Every request needs all of them at once, so the slowest one sets the pace.',
     bubblePanel: 'Use the knobs on the right to break things, then add protections and watch the system recover.',

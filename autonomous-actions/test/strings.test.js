@@ -37,3 +37,9 @@ test('every [[term]] in STRINGS resolves to a glossary entry (case-insensitive)'
     assert.ok(Object.hasOwn(STRINGS.glossary, term.toLowerCase()), `term [[${term}]] missing from glossary`);
   }
 });
+
+test('the act copy references control chips (instructions stay actionable)', () => {
+  const actStrings = collectStrings(STRINGS.acts);
+  const chips = actStrings.flatMap((s) => [...s.matchAll(/\{\{([^}]+)\}\}/g)]);
+  assert.ok(chips.length >= 6, 'expected the audited act copy to name controls as {{chips}}');
+});
