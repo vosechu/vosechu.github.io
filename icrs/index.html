@@ -39,6 +39,14 @@
   /* Non-concurrent moments (plenaries, meals, ceremonies) read differently
      from the parallel-session blocks. */
   .row.fixed{background:#eaf1f3;box-shadow:inset 3px 0 0 #7d9aa3;}
+  /* Concurrent slot: time in a left cell, sessions on the right. The time
+     lives outside the rows, so dimming/collapsing rows never hides it. */
+  .slot{display:grid;grid-template-columns:84px minmax(0,1fr);border-bottom:1px solid var(--line);}
+  .slot-time{padding:10px 10px 10px 14px;font-size:12px;color:var(--muted);
+    font-variant-numeric:tabular-nums;line-height:1.35;background:#faf7f0;border-right:1px solid var(--line);}
+  .slot-body{min-width:0;}
+  .slot-body > .row:last-child{border-bottom:none;}
+  .slot-body > .row .time{display:none;}
   .time{flex:0 0 78px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:1px;}
   .label{flex:1;}
   .tag{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);
@@ -132,95 +140,98 @@
     <div class="row" data-row="mon20-plenary1"><div class="time"></div><div class="label">Plenary: "Being a Good Ancestor," 9:00am &mdash; Dan Hikuroa, University of Auckland</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:45am</div><div class="label">Morning tea</div></div>
-    <div class="row filler"><div class="time">10:15–11:45am</div><div class="label"></div></div>
-    <div class="row" data-row="cs-mon-001"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Gabriela Cristina Mitsuhashi, Cristina Linares Prats +7</span></div>
+    <div class="slot"><div class="slot-time">10:15–11:45am</div><div class="slot-body">
+    <div class="row" data-row="cs-mon-001" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Gabriela Cristina Mitsuhashi, Cristina Linares Prats +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-001"></label></div></div>
-    <div class="row" data-row="cs-mon-011"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Mark Meekan, Thomas Johnstone +6</span></div>
+    <div class="row" data-row="cs-mon-011" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Mark Meekan, Thomas Johnstone +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-011"></label></div></div>
-    <div class="row" data-row="cs-mon-010"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 A window on future oceans <span class="tag speakers">Mei-Fang Lin, Matias Gomez Corrales +4</span></div>
+    <div class="row" data-row="cs-mon-010" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 A window on future oceans <span class="tag speakers">Mei-Fang Lin, Matias Gomez Corrales +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-010"></label></div></div>
-    <div class="row" data-row="cs-mon-003"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts and ecological consequences <span class="tag speakers">Haruko Kurihara, Thomas Oliver +4</span></div>
+    <div class="row" data-row="cs-mon-003" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts and ecological consequences <span class="tag speakers">Haruko Kurihara, Thomas Oliver +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-003"></label></div></div>
-    <div class="row" data-row="cs-mon-005"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools for biodiversity <span class="tag speakers">Yi-kai Tea, Jenny Wang +5</span></div>
+    <div class="row" data-row="cs-mon-005" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools for biodiversity <span class="tag speakers">Yi-kai Tea, Jenny Wang +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-005"></label></div></div>
-    <div class="row" data-row="cs-mon-007"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag speakers">Margaux Steyaert, Adelaide Dahl +6</span></div>
+    <div class="row" data-row="cs-mon-007" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag speakers">Margaux Steyaert, Adelaide Dahl +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-007"></label></div></div>
-    <div class="row" data-row="cs-mon-008"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Understanding mesophotic coral ecosystems <span class="tag speakers">Michel Pichon, Gonzalo Pérez-Rosales +11</span></div>
+    <div class="row" data-row="cs-mon-008" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Understanding mesophotic coral ecosystems <span class="tag speakers">Michel Pichon, Gonzalo Pérez-Rosales +11</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-008"></label></div></div>
-    <div class="row" data-row="cs-mon-009"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling frameworks <span class="tag speakers">Kailey Pascoe, Guan-Yan Chen +12</span></div>
+    <div class="row" data-row="cs-mon-009" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling frameworks <span class="tag speakers">Kailey Pascoe, Guan-Yan Chen +12</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-009"></label></div></div>
-    <div class="row" data-row="cs-mon-002"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 The role of calcifying algae in reef resilience <span class="tag speakers">Holly Koch, Camille Vizon +5</span></div>
+    <div class="row" data-row="cs-mon-002" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 The role of calcifying algae in reef resilience <span class="tag speakers">Holly Koch, Camille Vizon +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-002"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-mon-012"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics in habitat-forming species <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Benjamin Glass, Colin Lock +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-012" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics in habitat-forming species <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Benjamin Glass, Colin Lock +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-012"></label></div></div>
-    <div class="row" data-row="cs-mon-013"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular insights into coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Christian Voolstra, Hollie Putnam +7</span></div>
+    <div class="row" data-row="cs-mon-013" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular insights into coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Christian Voolstra, Hollie Putnam +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-013"></label></div></div>
-    <div class="row" data-row="cs-mon-006"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag speakers">Sheriden Morris, Brandon Sosa +5</span></div>
+    <div class="row" data-row="cs-mon-006" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag speakers">Sheriden Morris, Brandon Sosa +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-006"></label></div></div>
-    <div class="row" data-row="cs-mon-004"><div class="time"></div><div class="label"><b>518</b> &mdash; #74 Nanobiotechnology for coral reef research <span class="tag speakers">Daniel Wangpraseurt, Marco Contardi +4</span></div>
+    <div class="row" data-row="cs-mon-004" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>518</b> &mdash; #74 Nanobiotechnology for coral reef research <span class="tag speakers">Daniel Wangpraseurt, Marco Contardi +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-004"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">11:45am</div><div class="label">Lunch</div></div>
     <div class="row" data-row="mon20-plenary2"><div class="time"></div><div class="label">Plenary: "Coral Reef Islands and Reef-System Resilience: An Eco-Geomorphic Perspective," 1:15pm &mdash; Paul Kench, University of Waikato</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-plenary2"></label></div></div>
-    <div class="row filler"><div class="time">2–3:30pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-mon-014"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Douglas Fenner, Kerryn Crossman +7</span></div>
+    <div class="slot"><div class="slot-time">2–3:30pm</div><div class="slot-body">
+    <div class="row" data-row="cs-mon-014" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Douglas Fenner, Kerryn Crossman +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-014"></label></div></div>
-    <div class="row" data-row="cs-mon-025"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Oren Levy, Roger Huerlimann +6</span></div>
+    <div class="row" data-row="cs-mon-025" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Oren Levy, Roger Huerlimann +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-025"></label></div></div>
-    <div class="row" data-row="cs-mon-023"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 Window on future oceans <span class="tag speakers">David Paz-Garcia, Stephanie Reynaud +7</span></div>
+    <div class="row" data-row="cs-mon-023" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 Window on future oceans <span class="tag speakers">David Paz-Garcia, Stephanie Reynaud +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-023"></label></div></div>
-    <div class="row" data-row="cs-mon-024"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology and dispersal <span class="tag speakers">Alexandra Jordan, Stephen Swearer +4</span></div>
+    <div class="row" data-row="cs-mon-024" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology and dispersal <span class="tag speakers">Alexandra Jordan, Stephen Swearer +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-024"></label></div></div>
-    <div class="row" data-row="cs-mon-016"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag speakers">Takashi Nakamura, Gabriel Lucas Xavier Da Silva +4</span></div>
+    <div class="row" data-row="cs-mon-016" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag speakers">Takashi Nakamura, Gabriel Lucas Xavier Da Silva +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-016"></label></div></div>
-    <div class="row" data-row="cs-mon-018"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag speakers">Peter Cowman, Octavio Ruben Salazar Moya +8</span></div>
+    <div class="row" data-row="cs-mon-018" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag speakers">Peter Cowman, Octavio Ruben Salazar Moya +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-018"></label></div></div>
-    <div class="row" data-row="cs-mon-020"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag speakers">Killian Ver Hoeye, Shawna Foo +4</span></div>
+    <div class="row" data-row="cs-mon-020" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag speakers">Killian Ver Hoeye, Shawna Foo +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-020"></label></div></div>
-    <div class="row" data-row="cs-mon-021"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Susanne Baehr, Maria Jordana Olano +6</span></div>
+    <div class="row" data-row="cs-mon-021" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Susanne Baehr, Maria Jordana Olano +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-021"></label></div></div>
-    <div class="row" data-row="cs-mon-022"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag speakers">Ahmi Cacapit, Deborah Burn +5</span></div>
+    <div class="row" data-row="cs-mon-022" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag speakers">Ahmi Cacapit, Deborah Burn +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-022"></label></div></div>
-    <div class="row" data-row="cs-mon-015"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 Calcifying algae in reef resilience <span class="tag speakers">Denisa Berbece, Abigail Turnlund +6</span></div>
+    <div class="row" data-row="cs-mon-015" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 Calcifying algae in reef resilience <span class="tag speakers">Denisa Berbece, Abigail Turnlund +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-015"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-mon-026"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Juntong Hu, Bastian Bentlage +6</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-026" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Juntong Hu, Bastian Bentlage +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-026"></label></div></div>
-    <div class="row" data-row="cs-mon-027"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Manuel Aranda Lastra, Stephanie Peak +4</span></div>
+    <div class="row" data-row="cs-mon-027" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Manuel Aranda Lastra, Stephanie Peak +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-027"></label></div></div>
-    <div class="row" data-row="cs-mon-019"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag speakers">Roger Beeden, Dennis Stanley +7</span></div>
+    <div class="row" data-row="cs-mon-019" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag speakers">Roger Beeden, Dennis Stanley +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-019"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-mon-017"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution for coral resilience <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">microbio</span> <span class="tag speakers">Andrew Baker, Maria Beger +7</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-017" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution for coral resilience <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">microbio</span> <span class="tag speakers">Andrew Baker, Maria Beger +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-017"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">3:30pm</div><div class="label">Afternoon tea</div></div>
-    <div class="row filler"><div class="time">4–5:30pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-mon-028"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sterling Tebbett, Michelle Paddack +4</span></div>
+    <div class="slot"><div class="slot-time">4–5:30pm</div><div class="slot-body">
+    <div class="row" data-row="cs-mon-028" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sterling Tebbett, Michelle Paddack +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-028"></label></div></div>
-    <div class="row" data-row="cs-mon-039"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Ryan Mcandrews, Rafaella Nunes-Palma +3</span></div>
+    <div class="row" data-row="cs-mon-039" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Ryan Mcandrews, Rafaella Nunes-Palma +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-039"></label></div></div>
-    <div class="row" data-row="cs-mon-037"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag speakers">William Arlidge, Kris-an Hinds +7</span></div>
+    <div class="row" data-row="cs-mon-037" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag speakers">William Arlidge, Kris-an Hinds +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-037"></label></div></div>
-    <div class="row" data-row="cs-mon-038"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Reagan Sharkey, Noa Ben Ami +4</span></div>
+    <div class="row" data-row="cs-mon-038" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Reagan Sharkey, Noa Ben Ami +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-038"></label></div></div>
-    <div class="row" data-row="cs-mon-030"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag speakers">Orlando Timmerman, Sarina Bao +2</span></div>
+    <div class="row" data-row="cs-mon-030" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag speakers">Orlando Timmerman, Sarina Bao +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-030"></label></div></div>
-    <div class="row" data-row="cs-mon-032"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag speakers">Laura Macrina, John Parkinson +3</span></div>
+    <div class="row" data-row="cs-mon-032" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag speakers">Laura Macrina, John Parkinson +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-032"></label></div></div>
-    <div class="row" data-row="cs-mon-034"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight <span class="tag speakers">Matthew Clements, Kate Heffner +7</span></div>
+    <div class="row" data-row="cs-mon-034" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight <span class="tag speakers">Matthew Clements, Kate Heffner +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-034"></label></div></div>
-    <div class="row" data-row="cs-mon-035"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Nicola Foster, Ludovic Hoarau +5</span></div>
+    <div class="row" data-row="cs-mon-035" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Nicola Foster, Ludovic Hoarau +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-035"></label></div></div>
-    <div class="row" data-row="cs-mon-036"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag speakers">Sean Ben-Shaprut, Gaby Carpenter +4</span></div>
+    <div class="row" data-row="cs-mon-036" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag speakers">Sean Ben-Shaprut, Gaby Carpenter +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-036"></label></div></div>
-    <div class="row" data-row="cs-mon-029"><div class="time"></div><div class="label"><b>513</b> &mdash; #77 Marine photosynthesis <span class="tag speakers">Nurhikmah Tenripada, Meggan Miller +1</span></div>
+    <div class="row" data-row="cs-mon-029" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>513</b> &mdash; #77 Marine photosynthesis <span class="tag speakers">Nurhikmah Tenripada, Meggan Miller +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-029"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-mon-040"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Alexander Van Nynatten, Lauren Fuess +4</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-040" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Alexander Van Nynatten, Lauren Fuess +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-040"></label></div></div>
-    <div class="row" data-row="cs-mon-041"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Mehdi Bouhaddou, Jess Axmaker +5</span></div>
+    <div class="row" data-row="cs-mon-041" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Mehdi Bouhaddou, Jess Axmaker +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-041"></label></div></div>
-    <div class="row" data-row="cs-mon-033"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening reef resilience <span class="tag speakers">Austin Bowden-Kerby, Claire Boitel +1</span></div>
+    <div class="row" data-row="cs-mon-033" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening reef resilience <span class="tag speakers">Austin Bowden-Kerby, Claire Boitel +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-033"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-mon-031"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">microbio</span> <span class="tag speakers">Liam Lachs, Matthew Warham +7</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-031" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">microbio</span> <span class="tag speakers">Liam Lachs, Matthew Warham +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-031"></label></div></div>
+    </div></div>
     <div class="row" data-row="mon20-poster"><div class="time"></div><div class="label">Poster session (Minderoo Foundation), 5:30&ndash;6:30pm</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-poster"></label></div></div>
     <div class="row optional" data-row="mon20-film"><div class="time"></div><div class="label">Optional: "Wealth Untold" film screening + panel, 6&ndash;8pm &mdash; panelists Melanie McField (Healthy Reefs), Kris-An Hinds (Fragments of Hope), Hilda Lionata (The Nature Conservancy); moderator Julie Robinson <span class="tag">optional</span></div>
@@ -232,122 +243,126 @@
     <div class="row" data-row="tue21-plenary1"><div class="time"></div><div class="label">Plenary: "In Sickness and in Health: Cellular Regulation of Cnidarian-Algal Symbioses," 8:30am &mdash; Virginia Weis, Oregon State University <span class="tag recommended" data-tip="Cellular regulation of cnidarian–algal symbiosis — foundational coral-symbiosis biology.">microbio</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
-    <div class="row" data-row="cs-tue-042"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Cher Chow, Juliana Mello Fonseca +5</span></div>
+    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="row" data-row="cs-tue-042" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Cher Chow, Juliana Mello Fonseca +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-042"></label></div></div>
-    <div class="row" data-row="cs-tue-053"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Allison Blanchette, Julie Hartup +7</span></div>
+    <div class="row" data-row="cs-tue-053" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Allison Blanchette, Julie Hartup +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-053"></label></div></div>
-    <div class="row" data-row="cs-tue-051"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag speakers">Ben Charo, Hellen Nanlohy +3</span></div>
+    <div class="row" data-row="cs-tue-051" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag speakers">Ben Charo, Hellen Nanlohy +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-051"></label></div></div>
-    <div class="row" data-row="cs-tue-052"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Erika Santoro, Sean Bensadon +4</span></div>
+    <div class="row" data-row="cs-tue-052" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Erika Santoro, Sean Bensadon +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-052"></label></div></div>
-    <div class="row" data-row="cs-tue-044"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Tackling water pollution <span class="tag speakers">Peter Musembi, Nicholas Hutley +5</span></div>
+    <div class="row" data-row="cs-tue-044" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Tackling water pollution <span class="tag speakers">Peter Musembi, Nicholas Hutley +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-044"></label></div></div>
-    <div class="row" data-row="cs-tue-046"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Lessons from ancient reefs <span class="tag speakers">Katarzyna Janiszewska, Mikolaj Zapalski +2</span></div>
+    <div class="row" data-row="cs-tue-046" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Lessons from ancient reefs <span class="tag speakers">Katarzyna Janiszewska, Mikolaj Zapalski +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-046"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-048"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Peter Mumby, Haiwei Luo +6</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-048" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Peter Mumby, Haiwei Luo +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-048"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-049"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease ecology <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Karen Neely, Hannah Swain +8</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-049" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease ecology <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Karen Neely, Hannah Swain +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-049"></label></div></div>
-    <div class="row" data-row="cs-tue-050"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Nicole Crane, Bustamam Bustamam +10</span></div>
+    <div class="row" data-row="cs-tue-050" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Nicole Crane, Bustamam Bustamam +10</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-050"></label></div></div>
-    <div class="row" data-row="cs-tue-043"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation cross-sectoral partnerships <span class="tag speakers">Orion Mccarthy, Stuart Sandin +5</span></div>
+    <div class="row" data-row="cs-tue-043" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation cross-sectoral partnerships <span class="tag speakers">Orion Mccarthy, Stuart Sandin +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-043"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-054"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">François Seneca, Lindsay Spiers +6</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-054" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">François Seneca, Lindsay Spiers +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-054"></label></div></div>
-    <div class="row" data-row="cs-tue-055"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Immy Ashley, Ruiqi Li +6</span></div>
+    <div class="row" data-row="cs-tue-055" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Immy Ashley, Ruiqi Li +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-055"></label></div></div>
-    <div class="row" data-row="cs-tue-047"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral sexual propagation <span class="tag speakers">Muhammad Abdul Wahab, Jamie Craggs +4</span></div>
+    <div class="row" data-row="cs-tue-047" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral sexual propagation <span class="tag speakers">Muhammad Abdul Wahab, Jamie Craggs +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-047"></label></div></div>
-    <div class="row" data-row="cs-tue-045"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Innovative restoration in Pacific Islands <span class="tag speakers">Shannon Ruseborn, Morgan Short +4</span></div>
+    <div class="row" data-row="cs-tue-045" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Innovative restoration in Pacific Islands <span class="tag speakers">Shannon Ruseborn, Morgan Short +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-045"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-tue-056"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Shouraseni Roy, Marji Puotinen +3</span></div>
+    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="row" data-row="cs-tue-056" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Shouraseni Roy, Marji Puotinen +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-056"></label></div></div>
-    <div class="row" data-row="cs-tue-066"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Brian Beck, Natalie Villafranca +2</span></div>
+    <div class="row" data-row="cs-tue-066" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Brian Beck, Natalie Villafranca +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-066"></label></div></div>
-    <div class="row" data-row="cs-tue-065"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices <span class="tag speakers">Nicholas Ford-Learner, Hoaka Thomas +5</span></div>
+    <div class="row" data-row="cs-tue-065" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices <span class="tag speakers">Nicholas Ford-Learner, Hoaka Thomas +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-065"></label></div></div>
-    <div class="row" data-row="cs-tue-058"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Water pollution <span class="tag speakers">Muhidin Muhidin*, Jane Waterhouse +2</span></div>
+    <div class="row" data-row="cs-tue-058" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Water pollution <span class="tag speakers">Muhidin Muhidin*, Jane Waterhouse +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-058"></label></div></div>
-    <div class="row" data-row="cs-tue-060"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Ancient reefs <span class="tag speakers">Lewis A. Jones, Nadia Santodomingo +3</span></div>
+    <div class="row" data-row="cs-tue-060" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Ancient reefs <span class="tag speakers">Lewis A. Jones, Nadia Santodomingo +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-060"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-062"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Katherine Hardy, Bailey Marquardt +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-062" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Katherine Hardy, Bailey Marquardt +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-062"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-063"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Laura Beenham, Keno Hsueh +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-063" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Laura Beenham, Keno Hsueh +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-063"></label></div></div>
-    <div class="row" data-row="cs-tue-064"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Jacinta Gigileia Jonathan, Ashton Gainsford +7</span></div>
+    <div class="row" data-row="cs-tue-064" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Jacinta Gigileia Jonathan, Ashton Gainsford +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-064"></label></div></div>
-    <div class="row" data-row="cs-tue-057"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag speakers">Kerry Dunleavy, Nanako Kosaka +5</span></div>
+    <div class="row" data-row="cs-tue-057" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag speakers">Kerry Dunleavy, Nanako Kosaka +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-057"></label></div></div>
-    <div class="row" data-row="cs-tue-061"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag speakers">James Guest, Corinne D'anna +5</span></div>
+    <div class="row" data-row="cs-tue-061" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag speakers">James Guest, Corinne D'anna +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-061"></label></div></div>
-    <div class="row" data-row="cs-tue-059"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag speakers">Laurie Raymundo, Meg Van Horn +4</span></div>
+    <div class="row" data-row="cs-tue-059" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag speakers">Laurie Raymundo, Meg Van Horn +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-059"></label></div></div>
+    </div></div>
     <div class="row optional" data-row="tue21-general-meeting"><div class="time">12:15pm</div><div class="label">Society General Meeting (lunch), 12:15&ndash;1:45pm, Room 302 &mdash; open to all members. <span class="tag">not in the official session programme copy; the invite email says "Tuesday 22nd" (Jul 22 is Wednesday) &mdash; confirm directly before planning around it</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-general-meeting"></label></div></div>
     <div class="row optional" data-row="tue21-deephope"><div class="time"></div><div class="label">Optional: "Deep Hope" film screening, 12:30&ndash;1:45pm, Room 516 &mdash; deep-sea coral exploration footage from Under the Pole's South Pacific expedition <span class="tag">optional</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-deephope"></label></div></div>
     <div class="row" data-row="tue21-plenary2"><div class="time"></div><div class="label">Plenary: "Comparative Seascape Genomics of Great Barrier Reef Corals," 1:45pm &mdash; Cynthia Riginos, Australian Institute of Marine Science</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-plenary2"></label></div></div>
-    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-tue-067"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">David Obura, Sara Melo-Merino +7</span></div>
+    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="row" data-row="cs-tue-067" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">David Obura, Sara Melo-Merino +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-067"></label></div></div>
-    <div class="row" data-row="cs-tue-078"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Rowana Walton, Tali Vardi +5</span></div>
+    <div class="row" data-row="cs-tue-078" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Rowana Walton, Tali Vardi +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-078"></label></div></div>
-    <div class="row" data-row="cs-tue-076"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag speakers">Matteo Collina, Scarlett Raine +5</span></div>
+    <div class="row" data-row="cs-tue-076" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag speakers">Matteo Collina, Scarlett Raine +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-076"></label></div></div>
-    <div class="row" data-row="cs-tue-077"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Ashley Rossin, Jeffry Jeve +4</span></div>
+    <div class="row" data-row="cs-tue-077" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Ashley Rossin, Jeffry Jeve +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-077"></label></div></div>
-    <div class="row" data-row="cs-tue-069"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D to save coral reefs <span class="tag speakers">Alexandra Steckbauer, David Suggett +7</span></div>
+    <div class="row" data-row="cs-tue-069" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D to save coral reefs <span class="tag speakers">Alexandra Steckbauer, David Suggett +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-069"></label></div></div>
-    <div class="row" data-row="cs-tue-071"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag speakers">Benjamin Henley, Sara Todorović +5</span></div>
+    <div class="row" data-row="cs-tue-071" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag speakers">Benjamin Henley, Sara Todorović +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-071"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-073"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Julia Briand, Emmanuel Hanert +4</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-073" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation — a core coral-microbiome focus.">microbio</span> <span class="tag speakers">Julia Briand, Emmanuel Hanert +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-073"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-074"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Brian Walker, Nicholas Jones +3</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-074" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">microbio</span> <span class="tag speakers">Brian Walker, Nicholas Jones +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-074"></label></div></div>
-    <div class="row" data-row="cs-tue-075"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Doris Kalamasaru, Natalia Rivas-Escobar +8</span></div>
+    <div class="row" data-row="cs-tue-075" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag speakers">Doris Kalamasaru, Natalia Rivas-Escobar +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-075"></label></div></div>
-    <div class="row" data-row="cs-tue-068"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag speakers">TY Fan, Kyle Pisano +3</span></div>
+    <div class="row" data-row="cs-tue-068" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag speakers">TY Fan, Kyle Pisano +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-068"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-tue-079"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Elena Quintanilla, Rayna Mcclintock +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-079" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">microbio</span> <span class="tag speakers">Elena Quintanilla, Rayna Mcclintock +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-079"></label></div></div>
-    <div class="row" data-row="cs-tue-080"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Mitsuru Jimbo, Alexander Venn +5</span></div>
+    <div class="row" data-row="cs-tue-080" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Mitsuru Jimbo, Alexander Venn +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-080"></label></div></div>
-    <div class="row" data-row="cs-tue-072"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag speakers">Jennifer Sneed, Nikki Fogarty +3</span></div>
+    <div class="row" data-row="cs-tue-072" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag speakers">Jennifer Sneed, Nikki Fogarty +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-072"></label></div></div>
-    <div class="row" data-row="cs-tue-070"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag speakers">Mengiau Sasao, Dawnette Olsudong +9</span></div>
+    <div class="row" data-row="cs-tue-070" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag speakers">Mengiau Sasao, Dawnette Olsudong +9</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-070"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-tue-081"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Alejandra Robles-Payán, Bhanuka Ranaweera +6</span></div>
+    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="row" data-row="cs-tue-081" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Alejandra Robles-Payán, Bhanuka Ranaweera +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-081"></label></div></div>
-    <div class="row" data-row="cs-tue-090"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag speakers">Migdonio Gonzalez, Jannis Luncke +1</span></div>
+    <div class="row" data-row="cs-tue-090" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag speakers">Migdonio Gonzalez, Jannis Luncke +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-090"></label></div></div>
-    <div class="row" data-row="cs-tue-091"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Itai Grisaru, Elizabeth Buccheri +14</span></div>
+    <div class="row" data-row="cs-tue-091" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag speakers">Itai Grisaru, Elizabeth Buccheri +14</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-091"></label></div></div>
-    <div class="row" data-row="cs-tue-083"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D <span class="tag speakers">Amelia Wenger, Peter Harrison +4</span></div>
+    <div class="row" data-row="cs-tue-083" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D <span class="tag speakers">Amelia Wenger, Peter Harrison +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-083"></label></div></div>
-    <div class="row" data-row="cs-tue-085"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag speakers">Diane Thompson, Eric Douville +3</span></div>
+    <div class="row" data-row="cs-tue-085" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag speakers">Diane Thompson, Eric Douville +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-085"></label></div></div>
-    <div class="row" data-row="cs-tue-087"><div class="time"></div><div class="label"><b>503</b> &mdash; #82 Intervening reef resilience <span class="tag speakers">David Williamson, Mary Bonin +10</span></div>
+    <div class="row" data-row="cs-tue-087" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>503</b> &mdash; #82 Intervening reef resilience <span class="tag speakers">David Williamson, Mary Bonin +10</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-087"></label></div></div>
-    <div class="row" data-row="cs-tue-088"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution in coral reefs <span class="tag speakers">Henry Arbaugh, Eseta Drova +6</span></div>
+    <div class="row" data-row="cs-tue-088" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution in coral reefs <span class="tag speakers">Henry Arbaugh, Eseta Drova +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-088"></label></div></div>
-    <div class="row" data-row="cs-tue-089"><div class="time"></div><div class="label"><b>505</b> &mdash; #64 Marine lenses (traditional knowledge) <span class="tag speakers">Uilani Naipo, Nicholas Sagum +2</span></div>
+    <div class="row" data-row="cs-tue-089" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>505</b> &mdash; #64 Marine lenses (traditional knowledge) <span class="tag speakers">Uilani Naipo, Nicholas Sagum +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-089"></label></div></div>
-    <div class="row" data-row="cs-tue-082"><div class="time"></div><div class="label"><b>513</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Kenji Takata, David Ory +5</span></div>
+    <div class="row" data-row="cs-tue-082" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>513</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag speakers">Kenji Takata, David Ory +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-082"></label></div></div>
-    <div class="row" data-row="cs-tue-092"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag speakers">Manuel Gonzalez-Rivero, Andrea Rivera-sosa +9</span></div>
+    <div class="row" data-row="cs-tue-092" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag speakers">Manuel Gonzalez-Rivero, Andrea Rivera-sosa +9</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-092"></label></div></div>
-    <div class="row" data-row="cs-tue-093"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Ioan Fuller, Nils Rädecker +4</span></div>
+    <div class="row" data-row="cs-tue-093" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">microbio</span> <span class="tag speakers">Ioan Fuller, Nils Rädecker +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-093"></label></div></div>
-    <div class="row" data-row="cs-tue-086"><div class="time"></div><div class="label"><b>517</b> &mdash; #33 Industrial coral production <span class="tag speakers">James Guest, David Suggett +5</span></div>
+    <div class="row" data-row="cs-tue-086" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>517</b> &mdash; #33 Industrial coral production <span class="tag speakers">James Guest, David Suggett +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-086"></label></div></div>
-    <div class="row" data-row="cs-tue-084"><div class="time"></div><div class="label"><b>518</b> &mdash; #111 Harmful cyanobacteria/microalgae <span class="tag speakers">Valerie Paul, Petra Visser +5</span></div>
+    <div class="row" data-row="cs-tue-084" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>518</b> &mdash; #111 Harmful cyanobacteria/microalgae <span class="tag speakers">Valerie Paul, Petra Visser +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-084"></label></div></div>
+    </div></div>
     <div class="row" data-row="tue21-darwin"><div class="time"></div><div class="label">Darwin Medal Plenary: "Coral Reefs at the Precipice: Accelerating Science and Policy Under Rapid Global Change," 6:00pm &mdash; Prof. Ove Hoegh-Guldberg (Univ. of Queensland)</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-darwin"></label></div></div>
     <div class="row filler"><div class="time">6:45pm</div><div class="label">Day close</div></div>
@@ -360,117 +375,121 @@
     <div class="row" data-row="wed22-plenary1"><div class="time"></div><div class="label">Plenary: "Innovations in Coral Reef Mapping and Conservation Assessments at Regional to Global Scales," 8:30am &mdash; Greg Asner, Center for Global Discovery and Conservation Science</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
-    <div class="row" data-row="cs-wed-094"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sergio Floeter, Brian Zgliczynski +5</span></div>
+    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="row" data-row="cs-wed-094" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sergio Floeter, Brian Zgliczynski +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-094"></label></div></div>
-    <div class="row" data-row="cs-wed-105"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet (restoration tech) <span class="tag speakers">Claire Boitel, Chloe Carbonne +7</span></div>
+    <div class="row" data-row="cs-wed-105" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet (restoration tech) <span class="tag speakers">Claire Boitel, Chloe Carbonne +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-105"></label></div></div>
-    <div class="row" data-row="cs-wed-103"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">Bruce Goldstein, Patrick Smallhorn-West +3</span></div>
+    <div class="row" data-row="cs-wed-103" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">Bruce Goldstein, Patrick Smallhorn-West +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-103"></label></div></div>
-    <div class="row" data-row="cs-wed-104"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters (ecosystem function) <span class="tag speakers">Hannah Barkley, John Burns +4</span></div>
+    <div class="row" data-row="cs-wed-104" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters (ecosystem function) <span class="tag speakers">Hannah Barkley, John Burns +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-104"></label></div></div>
-    <div class="row" data-row="cs-wed-096"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish and invertebrates <span class="tag speakers">Sarah Rider, Jia Jin Marc Chang +6</span></div>
+    <div class="row" data-row="cs-wed-096" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish and invertebrates <span class="tag speakers">Sarah Rider, Jia Jin Marc Chang +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-096"></label></div></div>
-    <div class="row" data-row="cs-wed-098"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Erin Dillon, Heather Donnelly +1</span></div>
+    <div class="row" data-row="cs-wed-098" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Erin Dillon, Heather Donnelly +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-098"></label></div></div>
-    <div class="row" data-row="cs-wed-100"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Aya M Rahil Naseem, Johanna Leonhardt +6</span></div>
+    <div class="row" data-row="cs-wed-100" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Aya M Rahil Naseem, Johanna Leonhardt +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-100"></label></div></div>
-    <div class="row" data-row="cs-wed-101"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution <span class="tag speakers">Cristiana Manullang, Ifenna Ilechukwu +6</span></div>
+    <div class="row" data-row="cs-wed-101" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution <span class="tag speakers">Cristiana Manullang, Ifenna Ilechukwu +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-101"></label></div></div>
-    <div class="row" data-row="cs-wed-102"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag speakers">Hannah Allan, Jordan Ivey +4</span></div>
+    <div class="row" data-row="cs-wed-102" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag speakers">Hannah Allan, Jordan Ivey +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-102"></label></div></div>
-    <div class="row" data-row="cs-wed-095"><div class="time"></div><div class="label"><b>513</b> &mdash; #132 Mesophotic ecosystem management <span class="tag speakers">Joshua Voss, Luis Calderon-Aguilera +6</span></div>
+    <div class="row" data-row="cs-wed-095" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>513</b> &mdash; #132 Mesophotic ecosystem management <span class="tag speakers">Joshua Voss, Luis Calderon-Aguilera +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-095"></label></div></div>
-    <div class="row" data-row="cs-wed-106"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag speakers">Nicole Krampitz, Juliette Verstaen +4</span></div>
+    <div class="row" data-row="cs-wed-106" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag speakers">Nicole Krampitz, Juliette Verstaen +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-106"></label></div></div>
-    <div class="row" data-row="cs-wed-099"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Renato Morais, Alexandre Siqueira +8</span></div>
+    <div class="row" data-row="cs-wed-099" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Renato Morais, Alexandre Siqueira +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-099"></label></div></div>
-    <div class="row" data-row="cs-wed-097"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ezri Tarazi, Aaron Bugaj +5</span></div>
+    <div class="row" data-row="cs-wed-097" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ezri Tarazi, Aaron Bugaj +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-097"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-wed-115"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Toru Kanyama, Joseph Unsworth +3</span></div>
+    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="row" data-row="cs-wed-115" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Toru Kanyama, Joseph Unsworth +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-115"></label></div></div>
-    <div class="row" data-row="cs-wed-113"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">Emma Camp, Kathryn Chartrand +1</span></div>
+    <div class="row" data-row="cs-wed-113" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">Emma Camp, Kathryn Chartrand +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-113"></label></div></div>
-    <div class="row" data-row="cs-wed-114"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Marleen Stuhr, Joelle Mattos +4</span></div>
+    <div class="row" data-row="cs-wed-114" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Marleen Stuhr, Joelle Mattos +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-114"></label></div></div>
-    <div class="row" data-row="cs-wed-107"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish/invertebrates <span class="tag speakers">Lisa Goberdhan, Jan Vicente +1</span></div>
+    <div class="row" data-row="cs-wed-107" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish/invertebrates <span class="tag speakers">Lisa Goberdhan, Jan Vicente +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-107"></label></div></div>
-    <div class="row" data-row="cs-wed-109"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Raúl González-Pech, Aranya Dhibar +2</span></div>
+    <div class="row" data-row="cs-wed-109" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Raúl González-Pech, Aranya Dhibar +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-109"></label></div></div>
-    <div class="row" data-row="cs-wed-111"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Robert Streit, Katharina Bauda +4</span></div>
+    <div class="row" data-row="cs-wed-111" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Robert Streit, Katharina Bauda +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-111"></label></div></div>
-    <div class="row" data-row="cs-wed-112"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag speakers">Courtney Burns, Teje Roy</span></div>
+    <div class="row" data-row="cs-wed-112" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag speakers">Courtney Burns, Teje Roy</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-112"></label></div></div>
-    <div class="row" data-row="cs-wed-116"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Joshua Feingold, Hope Wilson +6</span></div>
+    <div class="row" data-row="cs-wed-116" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Joshua Feingold, Hope Wilson +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-116"></label></div></div>
-    <div class="row" data-row="cs-wed-110"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Sarah Leinbach, Andrew McInnis +3</span></div>
+    <div class="row" data-row="cs-wed-110" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Sarah Leinbach, Andrew McInnis +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-110"></label></div></div>
-    <div class="row" data-row="cs-wed-108"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ali Dressel, Benjamin Darby +2</span></div>
+    <div class="row" data-row="cs-wed-108" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ali Dressel, Benjamin Darby +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-108"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
     <div class="row" data-row="wed22-plenary2"><div class="time"></div><div class="label">Plenary: Julia Baum, 1:45pm <span class="tag">title not yet listed</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-plenary2"></label></div></div>
-    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-wed-117"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Blake Spady, Neal Cantin +4</span></div>
+    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="row" data-row="cs-wed-117" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Blake Spady, Neal Cantin +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-117"></label></div></div>
-    <div class="row" data-row="cs-wed-128"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Andrea Grottoli, Shannon Dixon +7</span></div>
+    <div class="row" data-row="cs-wed-128" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Andrea Grottoli, Shannon Dixon +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-128"></label></div></div>
-    <div class="row" data-row="cs-wed-126"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">NIZAM IBRAHIM, Valeria Pizarro +4</span></div>
+    <div class="row" data-row="cs-wed-126" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">NIZAM IBRAHIM, Valeria Pizarro +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-126"></label></div></div>
-    <div class="row" data-row="cs-wed-127"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Anya Brown, Maya Powell +5</span></div>
+    <div class="row" data-row="cs-wed-127" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Anya Brown, Maya Powell +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-127"></label></div></div>
-    <div class="row" data-row="cs-wed-119"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag speakers">Andrew Altieri, Nicole Dilernia +2</span></div>
+    <div class="row" data-row="cs-wed-119" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag speakers">Andrew Altieri, Nicole Dilernia +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-119"></label></div></div>
-    <div class="row" data-row="cs-wed-121"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Nicole Leonard, Marlena Joppien +4</span></div>
+    <div class="row" data-row="cs-wed-121" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag speakers">Nicole Leonard, Marlena Joppien +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-121"></label></div></div>
-    <div class="row" data-row="cs-wed-123"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Giovanni Giallongo, Annie Ann Nee Chew +6</span></div>
+    <div class="row" data-row="cs-wed-123" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag speakers">Giovanni Giallongo, Annie Ann Nee Chew +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-123"></label></div></div>
-    <div class="row" data-row="cs-wed-124"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants/water quality <span class="tag speakers">Eileen Nalley, David E. Carrasco Rivera +9</span></div>
+    <div class="row" data-row="cs-wed-124" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants/water quality <span class="tag speakers">Eileen Nalley, David E. Carrasco Rivera +9</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-124"></label></div></div>
-    <div class="row" data-row="cs-wed-125"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag speakers">Hariz Bin Khairul Hisham, Yoluène Massey +2</span></div>
+    <div class="row" data-row="cs-wed-125" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag speakers">Hariz Bin Khairul Hisham, Yoluène Massey +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-125"></label></div></div>
-    <div class="row" data-row="cs-wed-118"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag speakers">Kate Brown, Trina Leberer +4</span></div>
+    <div class="row" data-row="cs-wed-118" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag speakers">Kate Brown, Trina Leberer +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-118"></label></div></div>
-    <div class="row" data-row="cs-wed-129"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Anna Koester, Virginie Bornarel +7</span></div>
+    <div class="row" data-row="cs-wed-129" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Anna Koester, Virginie Bornarel +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-129"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-wed-130"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Colin Howe, Marko Terzin +6</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-wed-130" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Colin Howe, Marko Terzin +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-130"></label></div></div>
-    <div class="row" data-row="cs-wed-122"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Tessa Hill, Alain Duran +4</span></div>
+    <div class="row" data-row="cs-wed-122" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag speakers">Tessa Hill, Alain Duran +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-122"></label></div></div>
-    <div class="row" data-row="cs-wed-120"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ana Teresa Herrera Reveles, Scott Heron +9</span></div>
+    <div class="row" data-row="cs-wed-120" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag speakers">Ana Teresa Herrera Reveles, Scott Heron +9</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-120"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-wed-131"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Morgan Pomeroy, Esmeralda Perez-Cervantes +5</span></div>
+    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="row" data-row="cs-wed-131" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Morgan Pomeroy, Esmeralda Perez-Cervantes +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-131"></label></div></div>
-    <div class="row" data-row="cs-wed-142"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Julia Briand, Christopher Grant +4</span></div>
+    <div class="row" data-row="cs-wed-142" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Julia Briand, Christopher Grant +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-142"></label></div></div>
-    <div class="row" data-row="cs-wed-140"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag speakers">Sruti Jeetun, Wichin Suebpala +3</span></div>
+    <div class="row" data-row="cs-wed-140" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag speakers">Sruti Jeetun, Wichin Suebpala +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-140"></label></div></div>
-    <div class="row" data-row="cs-wed-141"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Julian Lilkendey, Rupert Ormond +4</span></div>
+    <div class="row" data-row="cs-wed-141" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag speakers">Julian Lilkendey, Rupert Ormond +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-141"></label></div></div>
-    <div class="row" data-row="cs-wed-133"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag speakers">Ariel Pezner, Wyatt Million +4</span></div>
+    <div class="row" data-row="cs-wed-133" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag speakers">Ariel Pezner, Wyatt Million +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-133"></label></div></div>
-    <div class="row" data-row="cs-wed-135"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Christopher Cornwall, Tyler Cyronak +3</span></div>
+    <div class="row" data-row="cs-wed-135" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Christopher Cornwall, Tyler Cyronak +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-135"></label></div></div>
-    <div class="row" data-row="cs-wed-137"><div class="time"></div><div class="label"><b>503</b> &mdash; #70 Nature-based circular economy <span class="tag speakers">Lynn Drescher, Iain Caldwell +6</span></div>
+    <div class="row" data-row="cs-wed-137" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>503</b> &mdash; #70 Nature-based circular economy <span class="tag speakers">Lynn Drescher, Iain Caldwell +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-137"></label></div></div>
-    <div class="row" data-row="cs-wed-138"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants <span class="tag speakers">Katie Cramer, Madeline Berger +4</span></div>
+    <div class="row" data-row="cs-wed-138" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants <span class="tag speakers">Katie Cramer, Madeline Berger +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-138"></label></div></div>
-    <div class="row" data-row="cs-wed-139"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag speakers">Stirling Ludwick, Brody Gray +6</span></div>
+    <div class="row" data-row="cs-wed-139" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag speakers">Stirling Ludwick, Brody Gray +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-139"></label></div></div>
-    <div class="row" data-row="cs-wed-132"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag speakers">Piera Biondi, Eugene Joseph +3</span></div>
+    <div class="row" data-row="cs-wed-132" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag speakers">Piera Biondi, Eugene Joseph +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-132"></label></div></div>
-    <div class="row" data-row="cs-wed-143"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Daniela Ceccarelli, Erin Cain +6</span></div>
+    <div class="row" data-row="cs-wed-143" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag speakers">Daniela Ceccarelli, Erin Cain +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-143"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-wed-144"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Teresa Bednarek, Matthew Nitschke +4</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-wed-144" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Teresa Bednarek, Matthew Nitschke +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-144"></label></div></div>
-    <div class="row" data-row="cs-wed-136"><div class="time"></div><div class="label"><b>517</b> &mdash; #91 Genetic engineering in corals <span class="tag speakers">Nathan Crowe, Jann-Fredryck Matias +3</span></div>
+    <div class="row" data-row="cs-wed-136" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>517</b> &mdash; #91 Genetic engineering in corals <span class="tag speakers">Nathan Crowe, Jann-Fredryck Matias +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-136"></label></div></div>
-    <div class="row" data-row="cs-wed-134"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag speakers">Emmanuel Hanert, Bernhard Riegl Jr. +5</span></div>
+    <div class="row" data-row="cs-wed-134" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag speakers">Emmanuel Hanert, Bernhard Riegl Jr. +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-134"></label></div></div>
+    </div></div>
     <div class="row" data-row="wed22-poster"><div class="time"></div><div class="label">Poster session (Minderoo Foundation), 6:00&ndash;7:00pm</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-poster"></label></div></div>
     <div class="row optional" data-row="wed22-film"><div class="time"></div><div class="label">Optional: "Super Reefs" screening + panel, 6:30&ndash;8:15pm &mdash; panelists Joeli Veitayaki, Jenn Caselle, Kyle Zawada, Rita Bento, Yimnang Golbuu; moderator Stacy Jupiter <span class="tag">optional</span></div>
@@ -482,117 +501,121 @@
     <div class="row" data-row="thu23-plenary1"><div class="time"></div><div class="label">Plenary: "Diversity within Coral Reef Fisheries Supports Productivity, Equity, and Sustainability," 8:30am &mdash; Christina Hicks, Lancaster University (sponsored by UNEP and the GFCR)</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
-    <div class="row" data-row="cs-thu-145"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Neal Cantin, Mike Emslie +3</span></div>
+    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="row" data-row="cs-thu-145" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Neal Cantin, Mike Emslie +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-145"></label></div></div>
-    <div class="row" data-row="cs-thu-156"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Keivan Kabiri, Lindsay Dade +6</span></div>
+    <div class="row" data-row="cs-thu-156" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Keivan Kabiri, Lindsay Dade +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-156"></label></div></div>
-    <div class="row" data-row="cs-thu-154"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag speakers">Alessia Costa, Mary Mann +2</span></div>
+    <div class="row" data-row="cs-thu-154" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag speakers">Alessia Costa, Mary Mann +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-154"></label></div></div>
-    <div class="row" data-row="cs-thu-155"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Emily Howells, Hugo Denis +3</span></div>
+    <div class="row" data-row="cs-thu-155" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Emily Howells, Hugo Denis +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-155"></label></div></div>
-    <div class="row" data-row="cs-thu-147"><div class="time"></div><div class="label"><b>501</b> &mdash; #23 Coral triangle restoration framework <span class="tag speakers">Tara Alessandra Sumbillo Abrina, Rouenne Camille De Castro +6</span></div>
+    <div class="row" data-row="cs-thu-147" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>501</b> &mdash; #23 Coral triangle restoration framework <span class="tag speakers">Tara Alessandra Sumbillo Abrina, Rouenne Camille De Castro +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-147"></label></div></div>
-    <div class="row" data-row="cs-thu-149"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Laurel Diaz, Shoji Yamamoto +3</span></div>
+    <div class="row" data-row="cs-thu-149" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Laurel Diaz, Shoji Yamamoto +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-149"></label></div></div>
-    <div class="row" data-row="cs-thu-151"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Kyle John Alan Zawada, Gina Badlowski +3</span></div>
+    <div class="row" data-row="cs-thu-151" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Kyle John Alan Zawada, Gina Badlowski +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-151"></label></div></div>
-    <div class="row" data-row="cs-thu-152"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">Micaela Justo, Ellen Regina Skelton +6</span></div>
+    <div class="row" data-row="cs-thu-152" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">Micaela Justo, Ellen Regina Skelton +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-152"></label></div></div>
-    <div class="row" data-row="cs-thu-153"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Peter Musembi, Bing Lin +4</span></div>
+    <div class="row" data-row="cs-thu-153" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Peter Musembi, Bing Lin +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-153"></label></div></div>
-    <div class="row" data-row="cs-thu-146"><div class="time"></div><div class="label"><b>513</b> &mdash; #16 Deployment to decommissioning <span class="tag speakers">Prerana Gawde, Gavin Miller +1</span></div>
+    <div class="row" data-row="cs-thu-146" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>513</b> &mdash; #16 Deployment to decommissioning <span class="tag speakers">Prerana Gawde, Gavin Miller +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-146"></label></div></div>
-    <div class="row" data-row="cs-thu-157"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA as monitoring tool <span class="tag speakers">Omri Bronstein, Julia Terra Torres +6</span></div>
+    <div class="row" data-row="cs-thu-157" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA as monitoring tool <span class="tag speakers">Omri Bronstein, Julia Terra Torres +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-157"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-thu-158"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Karim Primov, Caroline Dennison +3</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-158" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Karim Primov, Caroline Dennison +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-158"></label></div></div>
-    <div class="row" data-row="cs-thu-150"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Wing Yan Chan, Lorenzo Massimo Toniolo +4</span></div>
+    <div class="row" data-row="cs-thu-150" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Wing Yan Chan, Lorenzo Massimo Toniolo +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-150"></label></div></div>
-    <div class="row" data-row="cs-thu-148"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag speakers">Geórgenes Cavalcante, Gabriel Lucas Xavier Da Silva +8</span></div>
+    <div class="row" data-row="cs-thu-148" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag speakers">Geórgenes Cavalcante, Gabriel Lucas Xavier Da Silva +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-148"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-thu-167"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Lucian Himes, Marianna Coppola +4</span></div>
+    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="row" data-row="cs-thu-167" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Lucian Himes, Marianna Coppola +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-167"></label></div></div>
-    <div class="row" data-row="cs-thu-165"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism <span class="tag speakers">Makamas Sutthacheep, Laongdow Jungrak +5</span></div>
+    <div class="row" data-row="cs-thu-165" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism <span class="tag speakers">Makamas Sutthacheep, Laongdow Jungrak +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-165"></label></div></div>
-    <div class="row" data-row="cs-thu-166"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Holland Elder, Paige Duffin +6</span></div>
+    <div class="row" data-row="cs-thu-166" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Holland Elder, Paige Duffin +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-166"></label></div></div>
-    <div class="row" data-row="cs-thu-160"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Ryusuke Obata, Aurora Pinto +8</span></div>
+    <div class="row" data-row="cs-thu-160" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag speakers">Ryusuke Obata, Aurora Pinto +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-160"></label></div></div>
-    <div class="row" data-row="cs-thu-162"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Hayden Acors, Shannon Dee +7</span></div>
+    <div class="row" data-row="cs-thu-162" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Hayden Acors, Shannon Dee +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-162"></label></div></div>
-    <div class="row" data-row="cs-thu-163"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">Andrew Negri, Elana Kysil +3</span></div>
+    <div class="row" data-row="cs-thu-163" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">Andrew Negri, Elana Kysil +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-163"></label></div></div>
-    <div class="row" data-row="cs-thu-164"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Helen Fox, Christine Roper +5</span></div>
+    <div class="row" data-row="cs-thu-164" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Helen Fox, Christine Roper +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-164"></label></div></div>
-    <div class="row" data-row="cs-thu-159"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity (interventions) <span class="tag speakers">Forest Rohwer, Juan Esquivel-muelbert +2</span></div>
+    <div class="row" data-row="cs-thu-159" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity (interventions) <span class="tag speakers">Forest Rohwer, Juan Esquivel-muelbert +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-159"></label></div></div>
-    <div class="row" data-row="cs-thu-168"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag speakers">Lewis Haines, Stephanie Martinez +2</span></div>
+    <div class="row" data-row="cs-thu-168" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag speakers">Lewis Haines, Stephanie Martinez +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-168"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-thu-169"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Bibi Renssen, Krista Ryon +2</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-169" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Bibi Renssen, Krista Ryon +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-169"></label></div></div>
-    <div class="row" data-row="cs-thu-161"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Claudia Pogoreutz, Louis Simon +3</span></div>
+    <div class="row" data-row="cs-thu-161" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Claudia Pogoreutz, Louis Simon +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-161"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
     <div class="row" data-row="thu23-plenary2"><div class="time"></div><div class="label">Plenary: "Rāhui, Mana, and Tapu: Community-Led Ocean Governance as a Model for Coral Reef Resilience," 1:45pm &mdash; Tamatoa Bambridge, National Center for Scientific Research</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-plenary2"></label></div></div>
-    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-thu-180"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Kailey Pascoe, Cilun Djakiman +4</span></div>
+    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="row" data-row="cs-thu-180" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Kailey Pascoe, Cilun Djakiman +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-180"></label></div></div>
-    <div class="row" data-row="cs-thu-178"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag speakers">Joshua Cinner, Fiona Chong +5</span></div>
+    <div class="row" data-row="cs-thu-178" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag speakers">Joshua Cinner, Fiona Chong +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-178"></label></div></div>
-    <div class="row" data-row="cs-thu-179"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Katharine Prata, Alejandra Hernández-Agreda +6</span></div>
+    <div class="row" data-row="cs-thu-179" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag speakers">Katharine Prata, Alejandra Hernández-Agreda +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-179"></label></div></div>
-    <div class="row" data-row="cs-thu-171"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag speakers">Catherine McFadden, Kate Gonzalez +5</span></div>
+    <div class="row" data-row="cs-thu-171" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag speakers">Catherine McFadden, Kate Gonzalez +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-171"></label></div></div>
-    <div class="row" data-row="cs-thu-173"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs (oceanic inputs) <span class="tag speakers">Renato Morais, Mathieu Reynaud +6</span></div>
+    <div class="row" data-row="cs-thu-173" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs (oceanic inputs) <span class="tag speakers">Renato Morais, Mathieu Reynaud +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-173"></label></div></div>
-    <div class="row" data-row="cs-thu-175"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Alastair Harborne, Hannah Lyford +4</span></div>
+    <div class="row" data-row="cs-thu-175" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag speakers">Alastair Harborne, Hannah Lyford +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-175"></label></div></div>
-    <div class="row" data-row="cs-thu-176"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">David Brefeld, Abigail Renegar +6</span></div>
+    <div class="row" data-row="cs-thu-176" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag speakers">David Brefeld, Abigail Renegar +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-176"></label></div></div>
-    <div class="row" data-row="cs-thu-177"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Matthew Tietbohl Talas, Walter Rich +8</span></div>
+    <div class="row" data-row="cs-thu-177" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Matthew Tietbohl Talas, Walter Rich +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-177"></label></div></div>
-    <div class="row" data-row="cs-thu-170"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity <span class="tag speakers">Peter Todd, Ezri Tarazi +3</span></div>
+    <div class="row" data-row="cs-thu-170" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity <span class="tag speakers">Peter Todd, Ezri Tarazi +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-170"></label></div></div>
-    <div class="row" data-row="cs-thu-181"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag speakers">Jonathan Whitney, Sven Uthicke +5</span></div>
+    <div class="row" data-row="cs-thu-181" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag speakers">Jonathan Whitney, Sven Uthicke +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-181"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-thu-182"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Guoxin Cui, Diana Vergara +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-182" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">microbio</span> <span class="tag speakers">Guoxin Cui, Diana Vergara +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-182"></label></div></div>
-    <div class="row" data-row="cs-thu-174"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Marina Botana, Sarah VanDiepenbos +4</span></div>
+    <div class="row" data-row="cs-thu-174" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag speakers">Marina Botana, Sarah VanDiepenbos +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-174"></label></div></div>
-    <div class="row" data-row="cs-thu-172"><div class="time"></div><div class="label"><b>518</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Kate Quigley, Kendall Chancellor +5</span></div>
+    <div class="row" data-row="cs-thu-172" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>518</b> &mdash; #89 Climate-resilient coral reefs <span class="tag speakers">Kate Quigley, Kendall Chancellor +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-172"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-thu-193"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Elizabeth Shaver, Emma Camp +4</span></div>
+    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="row" data-row="cs-thu-193" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Elizabeth Shaver, Emma Camp +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-193"></label></div></div>
-    <div class="row" data-row="cs-thu-191"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag speakers">Brett Taylor, Alice Rogers +3</span></div>
+    <div class="row" data-row="cs-thu-191" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag speakers">Brett Taylor, Alice Rogers +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-191"></label></div></div>
-    <div class="row" data-row="cs-thu-192"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Pim Bongaerts, Dominique Gallery +8</span></div>
+    <div class="row" data-row="cs-thu-192" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Pim Bongaerts, Dominique Gallery +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-192"></label></div></div>
-    <div class="row" data-row="cs-thu-184"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag speakers">Ana Yranzo Duque, Madelief Schelvis +2</span></div>
+    <div class="row" data-row="cs-thu-184" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag speakers">Ana Yranzo Duque, Madelief Schelvis +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-184"></label></div></div>
-    <div class="row" data-row="cs-thu-186"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs <span class="tag speakers">Jamison Gove, Alex Wyatt +5</span></div>
+    <div class="row" data-row="cs-thu-186" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs <span class="tag speakers">Jamison Gove, Alex Wyatt +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-186"></label></div></div>
-    <div class="row" data-row="cs-thu-188"><div class="time"></div><div class="label"><b>503</b> &mdash; #43 Ecological toolkit (trophic interactions) <span class="tag speakers">Stephanie Green, Giovanna Sabini-leite +3</span></div>
+    <div class="row" data-row="cs-thu-188" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>503</b> &mdash; #43 Ecological toolkit (trophic interactions) <span class="tag speakers">Stephanie Green, Giovanna Sabini-leite +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-188"></label></div></div>
-    <div class="row" data-row="cs-thu-189"><div class="time"></div><div class="label"><b>504</b> &mdash; #109 New era of data management <span class="tag speakers">Nicole Pedersen, Mary Donovan +1</span></div>
+    <div class="row" data-row="cs-thu-189" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>504</b> &mdash; #109 New era of data management <span class="tag speakers">Nicole Pedersen, Mary Donovan +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-189"></label></div></div>
-    <div class="row" data-row="cs-thu-190"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Katie Barott, Alexandra Wen +6</span></div>
+    <div class="row" data-row="cs-thu-190" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Katie Barott, Alexandra Wen +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-190"></label></div></div>
-    <div class="row" data-row="cs-thu-183"><div class="time"></div><div class="label"><b>513</b> &mdash; #102 Corals of Aotearoa New Zealand <span class="tag speakers">Diana Macpherson, Kareen Schnabel +5</span></div>
+    <div class="row" data-row="cs-thu-183" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>513</b> &mdash; #102 Corals of Aotearoa New Zealand <span class="tag speakers">Diana Macpherson, Kareen Schnabel +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-183"></label></div></div>
-    <div class="row" data-row="cs-thu-194"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Alexandre Siqueira, Sean Connolly +5</span></div>
+    <div class="row" data-row="cs-thu-194" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Alexandre Siqueira, Sean Connolly +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-194"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-thu-195"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">microbio</span> <span class="tag speakers">David Baker, Somok Banerjee +3</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-195" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">microbio</span> <span class="tag speakers">David Baker, Somok Banerjee +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-195"></label></div></div>
-    <div class="row" data-row="cs-thu-187"><div class="time"></div><div class="label"><b>517</b> &mdash; #69 Epigenetics of reef organisms <span class="tag speakers">Wai-Kwan Chu, Pauline Buso +5</span></div>
+    <div class="row" data-row="cs-thu-187" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>517</b> &mdash; #69 Epigenetics of reef organisms <span class="tag speakers">Wai-Kwan Chu, Pauline Buso +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-187"></label></div></div>
-    <div class="row" data-row="cs-thu-185"><div class="time"></div><div class="label"><b>518</b> &mdash; #128 South Pacific coral reef science <span class="tag speakers">Kira Turnham, Joeli Veitayaki +7</span></div>
+    <div class="row" data-row="cs-thu-185" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>518</b> &mdash; #128 South Pacific coral reef science <span class="tag speakers">Kira Turnham, Joeli Veitayaki +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-185"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">6:00pm</div><div class="label">Day close</div></div>
     <div class="row" data-row="thu23-banquet"><div class="time"></div><div class="label">Banquet (AIMS), 7:00&ndash;11:00pm &mdash; Te Paepae Theatre, Level 5. At capacity; waitlist via the registration desk.</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-banquet"></label></div></div>
@@ -600,65 +623,67 @@
 
   <div class="day" data-day="fri24">
     <div class="col-head"><div class="spacer">Fri 24</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
-    <div class="row filler"><div class="time">8:30–10am</div><div class="label"></div></div>
-    <div class="row" data-row="cs-fri-196"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Beatriz Corazza, Camilla Nivison +8</span></div>
+    <div class="slot"><div class="slot-time">8:30–10am</div><div class="slot-body">
+    <div class="row" data-row="cs-fri-196" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Beatriz Corazza, Camilla Nivison +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-196"></label></div></div>
-    <div class="row" data-row="cs-fri-207"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Adriana Humanes, Katrina McGuigan +5</span></div>
+    <div class="row" data-row="cs-fri-207" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Adriana Humanes, Katrina McGuigan +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-207"></label></div></div>
-    <div class="row" data-row="cs-fri-205"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag speakers">Jessica Zamborain Mason, Maria Eggertsen +6</span></div>
+    <div class="row" data-row="cs-fri-205" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag speakers">Jessica Zamborain Mason, Maria Eggertsen +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-205"></label></div></div>
-    <div class="row" data-row="cs-fri-206"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Ilha Byrne, Maxine Mouly +8</span></div>
+    <div class="row" data-row="cs-fri-206" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Ilha Byrne, Maxine Mouly +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-206"></label></div></div>
-    <div class="row" data-row="cs-fri-198"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response prediction <span class="tag speakers">Jeremie Vidal-Dupiol, Dan Barshis +6</span></div>
+    <div class="row" data-row="cs-fri-198" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response prediction <span class="tag speakers">Jeremie Vidal-Dupiol, Dan Barshis +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-198"></label></div></div>
-    <div class="row" data-row="cs-fri-200"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients / escaping climate change <span class="tag speakers">Joseph Brennan, Christopher Cooney +8</span></div>
+    <div class="row" data-row="cs-fri-200" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients / escaping climate change <span class="tag speakers">Joseph Brennan, Christopher Cooney +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-200"></label></div></div>
-    <div class="row" data-row="cs-fri-202"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag speakers">Jordan Pierce, Sai-Kit Yeung +3</span></div>
+    <div class="row" data-row="cs-fri-202" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag speakers">Jordan Pierce, Sai-Kit Yeung +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-202"></label></div></div>
-    <div class="row" data-row="cs-fri-203"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Coral disturbance preparedness/response <span class="tag speakers">Dana Wusinich-Mendez, Caroline McLaughlin +4</span></div>
+    <div class="row" data-row="cs-fri-203" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Coral disturbance preparedness/response <span class="tag speakers">Dana Wusinich-Mendez, Caroline McLaughlin +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-203"></label></div></div>
-    <div class="row" data-row="cs-fri-204"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag speakers">Jill Ashey, Daisy Flores +3</span></div>
+    <div class="row" data-row="cs-fri-204" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag speakers">Jill Ashey, Daisy Flores +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-204"></label></div></div>
-    <div class="row" data-row="cs-fri-197"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses to climate change <span class="tag speakers">Ira Cooke, Arjun Sai Krishnan +2</span></div>
+    <div class="row" data-row="cs-fri-197" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses to climate change <span class="tag speakers">Ira Cooke, Arjun Sai Krishnan +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-197"></label></div></div>
-    <div class="row" data-row="cs-fri-208"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Benjamin Farmer, David Anderson +6</span></div>
+    <div class="row" data-row="cs-fri-208" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Benjamin Farmer, David Anderson +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-208"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-fri-209"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">microbio</span> <span class="tag speakers">Hisatake Ishida, Alexa Huzar +4</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-209" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">microbio</span> <span class="tag speakers">Hisatake Ishida, Alexa Huzar +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-209"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-fri-201"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions in the holobiont <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">microbio</span> <span class="tag speakers">Diego Lera-Lozano, Cawa Tran +4</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-201" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions in the holobiont <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">microbio</span> <span class="tag speakers">Diego Lera-Lozano, Cawa Tran +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-201"></label></div></div>
-    <div class="row" data-row="cs-fri-199"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity/transformation <span class="tag speakers">Zoe Richards, Scott Heron +4</span></div>
+    <div class="row" data-row="cs-fri-199" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity/transformation <span class="tag speakers">Zoe Richards, Scott Heron +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-199"></label></div></div>
+    </div></div>
     <div class="row filler"><div class="time">10:00am</div><div class="label">Morning tea</div></div>
-    <div class="row filler"><div class="time">10:30am–12pm</div><div class="label"></div></div>
-    <div class="row" data-row="cs-fri-210"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Thiago Mendes, Róisín Hayden +6</span></div>
+    <div class="slot"><div class="slot-time">10:30am–12pm</div><div class="slot-body">
+    <div class="row" data-row="cs-fri-210" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Thiago Mendes, Róisín Hayden +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-210"></label></div></div>
-    <div class="row" data-row="cs-fri-221"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Tyler Cyronak, Liav Meoded Stern +7</span></div>
+    <div class="row" data-row="cs-fri-221" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Tyler Cyronak, Liav Meoded Stern +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-221"></label></div></div>
-    <div class="row" data-row="cs-fri-219"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag speakers">Bess Ruff, Sarah Martin +2</span></div>
+    <div class="row" data-row="cs-fri-219" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag speakers">Bess Ruff, Sarah Martin +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-219"></label></div></div>
-    <div class="row" data-row="cs-fri-220"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Sheila Kitchen, Tamar Goulet +5</span></div>
+    <div class="row" data-row="cs-fri-220" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag speakers">Sheila Kitchen, Tamar Goulet +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-220"></label></div></div>
-    <div class="row" data-row="cs-fri-212"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response <span class="tag speakers">William Zozaya, Erinn Muller +6</span></div>
+    <div class="row" data-row="cs-fri-212" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response <span class="tag speakers">William Zozaya, Erinn Muller +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-212"></label></div></div>
-    <div class="row" data-row="cs-fri-214"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients <span class="tag speakers">David Abrego, Sruti Jeetun +5</span></div>
+    <div class="row" data-row="cs-fri-214" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients <span class="tag speakers">David Abrego, Sruti Jeetun +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-214"></label></div></div>
-    <div class="row" data-row="cs-fri-216"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag speakers">Faye Diederiks, Gracia Schry +3</span></div>
+    <div class="row" data-row="cs-fri-216" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag speakers">Faye Diederiks, Gracia Schry +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-216"></label></div></div>
-    <div class="row" data-row="cs-fri-217"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Disturbance preparedness/response <span class="tag speakers">Marylaura Sandoval Siles, Nick Mcmahon +2</span></div>
+    <div class="row" data-row="cs-fri-217" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Disturbance preparedness/response <span class="tag speakers">Marylaura Sandoval Siles, Nick Mcmahon +2</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-217"></label></div></div>
-    <div class="row" data-row="cs-fri-218"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag speakers">Danielle Becker, Ee Suan Tan +3</span></div>
+    <div class="row" data-row="cs-fri-218" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag speakers">Danielle Becker, Ee Suan Tan +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-218"></label></div></div>
-    <div class="row" data-row="cs-fri-211"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses <span class="tag speakers">Kevin Bairos-Novak, Yves-Marie Bozec +1</span></div>
+    <div class="row" data-row="cs-fri-211" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses <span class="tag speakers">Kevin Bairos-Novak, Yves-Marie Bozec +1</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-211"></label></div></div>
-    <div class="row" data-row="cs-fri-222"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Anna Cresswell, Sun Kim +3</span></div>
+    <div class="row" data-row="cs-fri-222" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag speakers">Anna Cresswell, Sun Kim +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-222"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-fri-223"><div class="time"></div><div class="label"><b>516</b> &mdash; #62 Endozoicomonadaceae in coral holobionts <span class="tag recommended" data-tip="Strong match — Endozoicomonadaceae, the central bacterial family in coral-microbiome debates (mutualist or parasite?).">microbio</span> <span class="tag speakers">Claudia Pogoreutz, Jie Li +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-223" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>516</b> &mdash; #62 Endozoicomonadaceae in coral holobionts <span class="tag recommended" data-tip="Strong match — Endozoicomonadaceae, the central bacterial family in coral-microbiome debates (mutualist or parasite?).">microbio</span> <span class="tag speakers">Claudia Pogoreutz, Jie Li +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-223"></label></div></div>
-    <div class="row chuck-on erica-on" data-row="cs-fri-215"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">microbio</span> <span class="tag speakers">Hailey Hatch-West, Vivian Li +5</span></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-215" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">microbio</span> <span class="tag speakers">Hailey Hatch-West, Vivian Li +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-215"></label></div></div>
-    <div class="row" data-row="cs-fri-213"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity <span class="tag speakers">Abigail Mwalimu, Sharad Bayyana +7</span></div>
+    <div class="row" data-row="cs-fri-213" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity <span class="tag speakers">Abigail Mwalimu, Sharad Bayyana +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-213"></label></div></div>
+    </div></div>
     <div class="row" data-row="fri24-plenary"><div class="time"></div><div class="label">Plenary: "Scaling Coral Reef Restoration Activity to Meet Global Conservation Goals," 12:00pm &mdash; David Suggett, KAUST Coral Restoration Initiative</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="fri24-plenary"></label></div></div>
     <div class="row" data-row="fri24-closing"><div class="time"></div><div class="label">Closing ceremony and awards, 12:45pm</div>
@@ -684,7 +709,7 @@
   // A slot is a maximal run of consecutive concurrent-session rows (data-row
   // starting "cs-") within a day; fixed events / fillers break the run. Each
   // session row is tagged data-slot; a "+ Other" row is injected per slot.
-  function injectOther(afterRow, slotId){
+  function injectOther(container, slotId){
     var row = document.createElement('div');
     row.className = 'row other-row';
     row.setAttribute('data-other-slot', slotId);
@@ -697,7 +722,7 @@
           '<input type="text" data-other="other-' + slotId + '" placeholder="something else this slot — a talk not listed, coffee, etc.">' +
         '</div>' +
       '</div>';
-    afterRow.parentNode.insertBefore(row, afterRow.nextSibling);
+    container.appendChild(row);
     row.querySelectorAll('input[data-other]').forEach(function(inp){
       var key = inp.getAttribute('data-other');
       inp.value = state[key] || '';
@@ -708,20 +733,9 @@
   }
 
   function initSlots(){
-    document.querySelectorAll('.day').forEach(function(day){
-      var slotId = null, lastCs = null;
-      Array.prototype.slice.call(day.children).forEach(function(el){
-        var isCs = el.classList && el.classList.contains('row') && /^cs-/.test(el.getAttribute('data-row') || '');
-        if (isCs){
-          if (!slotId) slotId = el.getAttribute('data-row');
-          el.setAttribute('data-slot', slotId);
-          lastCs = el;
-        } else {
-          if (slotId && lastCs) injectOther(lastCs, slotId);
-          slotId = null; lastCs = null;
-        }
-      });
-      if (slotId && lastCs) injectOther(lastCs, slotId);
+    document.querySelectorAll('.slot-body').forEach(function(body){
+      var firstCs = body.querySelector('.row[data-slot]');
+      if (firstCs) injectOther(body, firstCs.getAttribute('data-slot'));
     });
   }
 
