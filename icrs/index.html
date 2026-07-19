@@ -12,6 +12,7 @@
   :root{
     --ink:#22302e; --muted:#6d7b76; --paper:#f6f3ec; --card:#fffdf8; --line:#e4ddcf;
     --teal:#0e7c86; --purple:#6d4aa7; --green:#2e8b57; --base:#22302e; --amber:#c77d14;
+    --head-h:34px;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);
@@ -25,7 +26,7 @@
   .day{border:1px solid var(--line);border-radius:12px;background:var(--card);
     margin:10px 0 18px;overflow:clip;
     box-shadow:0 1px 2px rgba(34,48,46,.05);}
-  .col-head{display:flex;align-items:center;gap:12px;padding:6px 14px;
+  .col-head{display:flex;align-items:center;gap:12px;padding:6px 14px;min-height:var(--head-h);
     background:#efe9db;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;
     position:sticky;top:0;z-index:5;}
   .col-head .spacer{flex:1;}
@@ -44,6 +45,23 @@
   .slot{display:grid;grid-template-columns:84px minmax(0,1fr);border-bottom:1px solid var(--line);}
   .slot-time{padding:10px 10px 10px 14px;font-size:12px;color:var(--muted);
     font-variant-numeric:tabular-nums;line-height:1.35;background:#faf7f0;border-right:1px solid var(--line);}
+  /* Pin the time label just under the day header while its slot is on screen,
+     so you always see the current time alongside the date. */
+  .slot-time span{position:sticky;top:var(--head-h);display:inline-block;}
+  /* Click a session row to expand its talks (title, presenter, co-authors, affiliations). */
+  .row[data-slot]{cursor:pointer;}
+  .row[data-slot].expanded{background:#f3eee2;}
+  .detail-panel{background:#fbf9f3;border-bottom:1px solid var(--line);padding:4px 14px 8px;}
+  .slot-body > .detail-panel:last-child{border-bottom:none;}
+  .talk{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);}
+  .talk:last-child{border-bottom:none;}
+  .talk-time{flex:0 0 62px;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;padding-top:2px;}
+  .talk-main{flex:1;min-width:0;}
+  .talk-title{font-weight:600;color:var(--ink);line-height:1.35;}
+  .talk-by{color:var(--ink);font-size:13.5px;margin-top:2px;}
+  .talk-aff{color:var(--muted);font-size:12px;margin-top:2px;}
+  .talk-empty{color:var(--muted);font-style:italic;font-size:13px;padding:4px 0;}
+  body.collapse-unstarred .row.hide-unstarred + .detail-panel{display:none;}
   .slot-body{min-width:0;}
   .slot-body > .row:last-child{border-bottom:none;}
   .slot-body > .row .time{display:none;}
@@ -87,6 +105,17 @@
     border-radius:8px;padding:5px 10px;cursor:pointer;}
   .clear-btn:hover{background:var(--line);}
   .top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;}
+  /* Options hamburger: a single button opening a dropdown whose controls wrap,
+     so they never break out of the page edge on narrow phones. */
+  .menu{position:relative;flex:0 0 auto;}
+  .menu-btn{font-size:13px;color:var(--muted);background:none;border:1px solid var(--line);
+    border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;}
+  .menu-btn:hover,.menu-btn[aria-expanded="true"]{background:var(--line);}
+  .menu-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:30;
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;
+    max-width:min(88vw,300px);padding:10px;background:var(--card);
+    border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(34,48,46,.16);}
+  .menu-panel[hidden]{display:none;}
   .legend{display:flex;gap:16px;font-size:13px;margin:0 0 10px;}
   .legend span{display:flex;align-items:center;gap:6px;}
   .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
@@ -112,10 +141,13 @@
 
   <div class="top-bar">
     <p class="key" style="margin:0">Saved in this browser only, not synced across devices.</p>
-    <div style="display:flex;gap:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;">
-      <button class="collapse-link" id="toggle-presenters" onclick="toggleAllPresenters()">Show all presenters</button>
-      <button class="collapse-link" id="collapse-unstarred" onclick="toggleCollapse()">Collapse unstarred</button>
-      <button class="clear-btn" onclick="clearAll()">Clear all</button>
+    <div class="menu">
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-haspopup="true">&#9776; Options</button>
+      <div class="menu-panel" id="menu-panel" hidden>
+        <button class="collapse-link" id="toggle-presenters" onclick="toggleAllPresenters()">Show all presenters</button>
+        <button class="collapse-link" id="collapse-unstarred" onclick="toggleCollapse()">Collapse unstarred</button>
+        <button class="clear-btn" onclick="clearAll()">Clear all</button>
+      </div>
     </div>
   </div>
 
@@ -140,7 +172,7 @@
     <div class="row" data-row="mon20-plenary1"><div class="time"></div><div class="label">Plenary: "Being a Good Ancestor," 9:00am &mdash; Dan Hikuroa, University of Auckland</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:45am</div><div class="label">Morning tea</div></div>
-    <div class="slot"><div class="slot-time">10:15–11:45am</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>10:15–11:45am</span></div><div class="slot-body">
     <div class="row" data-row="cs-mon-001" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Gabriela Cristina Mitsuhashi, Cristina Linares Prats +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-001"></label></div></div>
     <div class="row" data-row="cs-mon-011" data-slot="cs-mon-001"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Mark Meekan, Thomas Johnstone +6</span></div>
@@ -171,7 +203,7 @@
     <div class="row filler"><div class="time">11:45am</div><div class="label">Lunch</div></div>
     <div class="row" data-row="mon20-plenary2"><div class="time"></div><div class="label">Plenary: "Coral Reef Islands and Reef-System Resilience: An Eco-Geomorphic Perspective," 1:15pm &mdash; Paul Kench, University of Waikato</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-plenary2"></label></div></div>
-    <div class="slot"><div class="slot-time">2–3:30pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>2–3:30pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-mon-014" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Douglas Fenner, Kerryn Crossman +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-014"></label></div></div>
     <div class="row" data-row="cs-mon-025" data-slot="cs-mon-014"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag speakers">Oren Levy, Roger Huerlimann +6</span></div>
@@ -202,7 +234,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-017"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">3:30pm</div><div class="label">Afternoon tea</div></div>
-    <div class="slot"><div class="slot-time">4–5:30pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>4–5:30pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-mon-028" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sterling Tebbett, Michelle Paddack +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-mon-028"></label></div></div>
     <div class="row" data-row="cs-mon-039" data-slot="cs-mon-028"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Ryan Mcandrews, Rafaella Nunes-Palma +3</span></div>
@@ -243,7 +275,7 @@
     <div class="row" data-row="tue21-plenary1"><div class="time"></div><div class="label">Plenary: "In Sickness and in Health: Cellular Regulation of Cnidarian-Algal Symbioses," 8:30am &mdash; Virginia Weis, Oregon State University <span class="tag recommended" data-tip="Cellular regulation of cnidarian–algal symbiosis — foundational coral-symbiosis biology.">microbio</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>9:45–11:15am</span></div><div class="slot-body">
     <div class="row" data-row="cs-tue-042" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Cher Chow, Juliana Mello Fonseca +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-042"></label></div></div>
     <div class="row" data-row="cs-tue-053" data-slot="cs-tue-042"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag speakers">Allison Blanchette, Julie Hartup +7</span></div>
@@ -274,7 +306,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-045"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>11:20am–12:20pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-tue-056" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Shouraseni Roy, Marji Puotinen +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-056"></label></div></div>
     <div class="row" data-row="cs-tue-066" data-slot="cs-tue-056"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Brian Beck, Natalie Villafranca +2</span></div>
@@ -304,7 +336,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-deephope"></label></div></div>
     <div class="row" data-row="tue21-plenary2"><div class="time"></div><div class="label">Plenary: "Comparative Seascape Genomics of Great Barrier Reef Corals," 1:45pm &mdash; Cynthia Riginos, Australian Institute of Marine Science</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-plenary2"></label></div></div>
-    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>2:30–4pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-tue-067" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">David Obura, Sara Melo-Merino +7</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-067"></label></div></div>
     <div class="row" data-row="cs-tue-078" data-slot="cs-tue-067"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag speakers">Rowana Walton, Tali Vardi +5</span></div>
@@ -335,7 +367,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-070"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>4:30–6pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-tue-081" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Alejandra Robles-Payán, Bhanuka Ranaweera +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-tue-081"></label></div></div>
     <div class="row" data-row="cs-tue-090" data-slot="cs-tue-081"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag speakers">Migdonio Gonzalez, Jannis Luncke +1</span></div>
@@ -375,7 +407,7 @@
     <div class="row" data-row="wed22-plenary1"><div class="time"></div><div class="label">Plenary: "Innovations in Coral Reef Mapping and Conservation Assessments at Regional to Global Scales," 8:30am &mdash; Greg Asner, Center for Global Discovery and Conservation Science</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>9:45–11:15am</span></div><div class="slot-body">
     <div class="row" data-row="cs-wed-094" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag speakers">Sergio Floeter, Brian Zgliczynski +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-094"></label></div></div>
     <div class="row" data-row="cs-wed-105" data-slot="cs-wed-094"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet (restoration tech) <span class="tag speakers">Claire Boitel, Chloe Carbonne +7</span></div>
@@ -404,7 +436,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-097"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>11:20am–12:20pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-wed-115" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Toru Kanyama, Joseph Unsworth +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-115"></label></div></div>
     <div class="row" data-row="cs-wed-113" data-slot="cs-wed-115"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag speakers">Emma Camp, Kathryn Chartrand +1</span></div>
@@ -429,7 +461,7 @@
     <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
     <div class="row" data-row="wed22-plenary2"><div class="time"></div><div class="label">Plenary: Julia Baum, 1:45pm <span class="tag">title not yet listed</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-plenary2"></label></div></div>
-    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>2:30–4pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-wed-117" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Blake Spady, Neal Cantin +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-117"></label></div></div>
     <div class="row" data-row="cs-wed-128" data-slot="cs-wed-117"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Andrea Grottoli, Shannon Dixon +7</span></div>
@@ -460,7 +492,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-120"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>4:30–6pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-wed-131" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Morgan Pomeroy, Esmeralda Perez-Cervantes +5</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-wed-131"></label></div></div>
     <div class="row" data-row="cs-wed-142" data-slot="cs-wed-131"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag speakers">Julia Briand, Christopher Grant +4</span></div>
@@ -501,7 +533,7 @@
     <div class="row" data-row="thu23-plenary1"><div class="time"></div><div class="label">Plenary: "Diversity within Coral Reef Fisheries Supports Productivity, Equity, and Sustainability," 8:30am &mdash; Christina Hicks, Lancaster University (sponsored by UNEP and the GFCR)</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
-    <div class="slot"><div class="slot-time">9:45–11:15am</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>9:45–11:15am</span></div><div class="slot-body">
     <div class="row" data-row="cs-thu-145" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Neal Cantin, Mike Emslie +3</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-145"></label></div></div>
     <div class="row" data-row="cs-thu-156" data-slot="cs-thu-145"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Keivan Kabiri, Lindsay Dade +6</span></div>
@@ -532,7 +564,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-148"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
-    <div class="slot"><div class="slot-time">11:20am–12:20pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>11:20am–12:20pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-thu-167" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Lucian Himes, Marianna Coppola +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-167"></label></div></div>
     <div class="row" data-row="cs-thu-165" data-slot="cs-thu-167"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism <span class="tag speakers">Makamas Sutthacheep, Laongdow Jungrak +5</span></div>
@@ -559,7 +591,7 @@
     <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
     <div class="row" data-row="thu23-plenary2"><div class="time"></div><div class="label">Plenary: "Rāhui, Mana, and Tapu: Community-Led Ocean Governance as a Model for Coral Reef Resilience," 1:45pm &mdash; Tamatoa Bambridge, National Center for Scientific Research</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-plenary2"></label></div></div>
-    <div class="slot"><div class="slot-time">2:30–4pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>2:30–4pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-thu-180" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag speakers">Kailey Pascoe, Cilun Djakiman +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-180"></label></div></div>
     <div class="row" data-row="cs-thu-178" data-slot="cs-thu-180"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag speakers">Joshua Cinner, Fiona Chong +5</span></div>
@@ -588,7 +620,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-172"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
-    <div class="slot"><div class="slot-time">4:30–6pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>4:30–6pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-thu-193" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Elizabeth Shaver, Emma Camp +4</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-thu-193"></label></div></div>
     <div class="row" data-row="cs-thu-191" data-slot="cs-thu-193"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag speakers">Brett Taylor, Alice Rogers +3</span></div>
@@ -623,7 +655,7 @@
 
   <div class="day" data-day="fri24">
     <div class="col-head"><div class="spacer">Fri 24</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
-    <div class="slot"><div class="slot-time">8:30–10am</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>8:30–10am</span></div><div class="slot-body">
     <div class="row" data-row="cs-fri-196" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Beatriz Corazza, Camilla Nivison +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-196"></label></div></div>
     <div class="row" data-row="cs-fri-207" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Adriana Humanes, Katrina McGuigan +5</span></div>
@@ -654,7 +686,7 @@
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-199"></label></div></div>
     </div></div>
     <div class="row filler"><div class="time">10:00am</div><div class="label">Morning tea</div></div>
-    <div class="slot"><div class="slot-time">10:30am–12pm</div><div class="slot-body">
+    <div class="slot"><div class="slot-time"><span>10:30am–12pm</span></div><div class="slot-body">
     <div class="row" data-row="cs-fri-210" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Thiago Mendes, Róisín Hayden +6</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-210"></label></div></div>
     <div class="row" data-row="cs-fri-221" data-slot="cs-fri-210"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag speakers">Tyler Cyronak, Liav Meoded Stern +7</span></div>
@@ -867,6 +899,103 @@
     document.addEventListener('click', function(){ if (current) hide(); });
     window.addEventListener('scroll', function(){ if (current) hide(); }, true);
   })();
+
+  // Options hamburger: open/close the dropdown; close on outside click or Escape.
+  (function(){
+    var btn = document.getElementById('menu-btn');
+    var panel = document.getElementById('menu-panel');
+    if (!btn || !panel) return;
+    function setOpen(open){ panel.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    btn.addEventListener('click', function(e){ e.stopPropagation(); setOpen(panel.hidden); });
+    document.addEventListener('click', function(e){
+      if (!panel.hidden && !panel.contains(e.target) && e.target !== btn) setOpen(false);
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setOpen(false); });
+  })();
+
+  // ---- talk-level byline detail (click a session row to expand) ----
+  // Pulled once after load and cached durably via the Cache Storage API — NOT
+  // localStorage, so the settings store stays untouched. Stale-while-revalidate:
+  // serve instantly from cache (works offline), refresh in the background when
+  // online. GitHub Pages gzips detail.json on the wire.
+  var DETAIL = null;
+  (function(){
+    var url = 'detail.json';
+    function use(json){ DETAIL = json; refreshOpenPanels(); }
+    async function pull(){
+      try {
+        if (window.caches){
+          var cache = await caches.open('icrs-detail-v1');
+          var hit = await cache.match(url);
+          if (hit) use(await hit.clone().json());
+          fetch(url, {cache:'no-store'}).then(function(r){
+            if (r && r.ok){ cache.put(url, r.clone()); r.json().then(use); }
+          }).catch(function(){});
+          if (hit) return;
+          var resp = await fetch(url);
+          if (resp.ok){ cache.put(url, resp.clone()); use(await resp.json()); }
+          return;
+        }
+        var r = await fetch(url);
+        if (r.ok) use(await r.json());
+      } catch (e) { /* offline with nothing cached yet: rows still work, detail loads next visit */ }
+    }
+    pull();
+  })();
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+  function renderTalk(t){
+    var authors = t.a || [];
+    var presenter = t.p || authors[0] || '';
+    var co = authors.filter(function(a){ return a !== presenter; });
+    var by = '<b>' + esc(presenter) + '</b>';
+    if (co.length) by += ' &mdash; ' + co.map(esc).join(', ');
+    var aff = (t.af || []).map(esc).join(' &middot; ');
+    return '<div class="talk">' +
+      '<div class="talk-time">' + esc(t.st || '') + '</div>' +
+      '<div class="talk-main">' +
+        '<div class="talk-title">' + esc(t.t || 'Untitled') + '</div>' +
+        '<div class="talk-by">' + by + '</div>' +
+        (aff ? '<div class="talk-aff">' + aff + '</div>' : '') +
+      '</div></div>';
+  }
+  function panelHtml(rid){
+    if (!DETAIL) return '<div class="talk-empty">Loading talk details…</div>';
+    var talks = DETAIL[rid];
+    if (!talks || !talks.length) return '<div class="talk-empty">No individual talks listed for this session.</div>';
+    return talks.map(renderTalk).join('');
+  }
+  function refreshOpenPanels(){
+    document.querySelectorAll('.detail-panel').forEach(function(p){
+      p.innerHTML = panelHtml(p.getAttribute('data-for'));
+    });
+  }
+  function toggleDetail(row){
+    var rid = row.getAttribute('data-row');
+    var next = row.nextElementSibling;
+    if (next && next.classList.contains('detail-panel') && next.getAttribute('data-for') === rid){
+      next.parentNode.removeChild(next);
+      row.classList.remove('expanded');
+      return;
+    }
+    var panel = document.createElement('div');
+    panel.className = 'detail-panel';
+    panel.setAttribute('data-for', rid);
+    panel.innerHTML = panelHtml(rid);
+    row.parentNode.insertBefore(panel, row.nextSibling);
+    row.classList.add('expanded');
+  }
+  document.addEventListener('click', function(e){
+    if (e.target.closest('.who-boxes') || e.target.closest('a') ||
+        e.target.closest('button') || e.target.closest('input') ||
+        e.target.closest('.tag.recommended')) return;
+    var row = e.target.closest('.row[data-slot]');
+    if (row) toggleDetail(row);
+  });
 </script>
 
 </div>

@@ -8,15 +8,20 @@ folks called out. Data comes from EventsAir's public API — **not** by scraping
 ## Pipeline
 
 ```
-fetch_programme.rb ──▶ presenters.json ──▶ index.html (hand-edited page)
-        │
+fetch_programme.rb ──▶ presenters.json ─┬─▶ index.html (hand-edited page; embeds presenter names)
+        │                                └─▶ build_detail.rb ──▶ detail.json (committed; page fetches + caches it)
         └─▶ .data/agenda_full.json, .data/speakers.json   (gitignored raw feeds, for ad-hoc jq)
 ```
 
-Regenerate any time (programme changes during the week):
+`presenters.json` is gitignored (raw, 1.8 MB). `detail.json` is the trimmed,
+render-ready byline map (per `data-row` id: each talk's title, presenter,
+authors, affiliations) — it **is committed** because the live page fetches it on
+load and caches it via the Cache Storage API (not localStorage). Regenerate any
+time (programme changes during the week):
 
 ```
-ruby fetch_programme.rb
+ruby fetch_programme.rb   # refresh presenters.json from the API
+ruby build_detail.rb      # rebuild detail.json from presenters.json + index.html rows
 ```
 
 ## Why not mitmproxy / iPhone Mirroring
