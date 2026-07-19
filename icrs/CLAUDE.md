@@ -24,6 +24,21 @@ ruby fetch_programme.rb   # refresh presenters.json from the API
 ruby build_detail.rb      # rebuild detail.json from presenters.json + index.html rows
 ```
 
+## localStorage is sacred
+
+The page is live and in real use, so its saved settings are not disposable.
+State lives in localStorage under `STORE_KEY` (currently `icrs2026-programme-v5`):
+
+- `<data-row id>` → bool — a starred session (e.g. `cs-mon-001`)
+- `other-<slotId>` → string — per-slot "+ Other" free text
+- `__collapseUnstarred`, `__showAllPresenters` → bool
+
+**Never bump `STORE_KEY` or rename a `data-id`/slot id without a migration**
+that reads the old keys and copies them forward — losing a user's picks is not
+acceptable. Keep ephemeral UI state (expanded rows, open menu) in memory, and
+keep the fetched `detail.json` in the Cache Storage API — never localStorage —
+so the settings store stays small.
+
 ## Why not mitmproxy / iPhone Mirroring
 
 The Event App (by EventsAir) is a thin webview over a **public, unauthenticated**
