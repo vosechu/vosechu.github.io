@@ -59,6 +59,20 @@
     }
     .info:hover .tip, .info:focus .tip { display: block; }
 
+    /* Tokenized copy: [[terms]] are dotted-underline glossary hovers (same
+       tip visual as the bar's info hovers); {{chips}} echo a control label. */
+    .term { position: relative; text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
+    .term .tip {
+      display: none; position: absolute; bottom: 140%; left: 50%; transform: translateX(-50%);
+      width: 240px; background: var(--panel-solid); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 10px; font-size: 11px; font-weight: 400; color: var(--ink); line-height: 1.45; z-index: 70;
+    }
+    .term:hover .tip, .term:focus .tip { display: block; }
+    .ctl {
+      font-size: 0.85em; font-weight: 650; padding: 0 0.35em; white-space: nowrap;
+      border: 1px solid var(--border); border-radius: 0.5em; background: var(--panel);
+    }
+
     /* Fixed bottom status bar: every metric, always visible, no progressive
        reveal. The first two slots (availability, p95) are the SLO metrics and
        carry a pass/fail state; the rest are plain counters. */
@@ -249,8 +263,9 @@
 
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
-    /* Guided tour: a welcome dialog (step 0) plus three bubbles anchored to the
-       bar, a station, and the panel (steps 1-3). Overlays only; the sim keeps
+    /* Guided tour: a welcome dialog (step 0) plus one reusable bubble that
+       positionBubble (controls.js) moves to its anchor for steps 1-4. The
+       whats-new bubble reuses the same style. Overlays only; the sim keeps
        running underneath (no pause, no dimming of the page). */
     #tour-overlay { position: fixed; inset: 0; z-index: 90; pointer-events: none; }
     #tour-overlay.hidden { display: none; }
@@ -267,9 +282,15 @@
       box-shadow: 0 8px 24px rgba(43,29,16,0.24); pointer-events: auto;
     }
     .tourbubble p { margin: 0 0 12px; color: var(--ink); line-height: 1.5; font-size: 13px; }
-    #tourbubble-bar { left: 24px; bottom: 76px; }
-    #tourbubble-station { left: 24px; top: 90px; }
-    #tourbubble-panel { right: 280px; top: 90px; }
+    .tourbubble.hidden { display: none; }
+    #whatsnew { z-index: 85; }
+    /* Red notification dot on the Tour button: an act unlocked new controls
+       while the tour was skipped. Cleared when the tour is opened. */
+    .tour-rerun-btn { position: relative; }
+    .tour-rerun-btn.dot::after {
+      content: ''; position: absolute; top: -3px; right: -3px;
+      width: 9px; height: 9px; border-radius: 50%; background: var(--red);
+    }
     .tourfoot { display: flex; align-items: center; gap: 8px; }
     .tourfoot .tourstep { font-size: 11px; color: var(--ink-dim); margin-right: auto; }
     .tourfoot button { font-size: 12px; padding: 5px 10px; }
@@ -352,32 +373,21 @@
         <button id="tour-next">Next</button>
       </div>
     </div>
-    <div class="tourbubble" id="tourbubble-bar">
-      <p id="tourbubble-bar-text"></p>
+    <div class="tourbubble" id="tourbubble">
+      <p id="tourbubble-text"></p>
       <div class="tourfoot">
-        <span class="tourstep" id="tourbubble-bar-step"></span>
+        <span class="tourstep" id="tourbubble-step"></span>
         <button class="tour-skip-btn">Skip</button>
         <button class="tour-prev-btn">Back</button>
         <button class="tour-next-btn">Next</button>
       </div>
     </div>
-    <div class="tourbubble" id="tourbubble-station">
-      <p id="tourbubble-station-text"></p>
-      <div class="tourfoot">
-        <span class="tourstep" id="tourbubble-station-step"></span>
-        <button class="tour-skip-btn">Skip</button>
-        <button class="tour-prev-btn">Back</button>
-        <button class="tour-next-btn">Next</button>
-      </div>
-    </div>
-    <div class="tourbubble" id="tourbubble-panel">
-      <p id="tourbubble-panel-text"></p>
-      <div class="tourfoot">
-        <span class="tourstep" id="tourbubble-panel-step"></span>
-        <button class="tour-skip-btn">Skip</button>
-        <button class="tour-prev-btn">Back</button>
-        <button class="tour-next-btn">Next</button>
-      </div>
+  </div>
+
+  <div class="tourbubble hidden" id="whatsnew">
+    <p id="whatsnew-text"></p>
+    <div class="tourfoot">
+      <button id="whatsnew-done">Done</button>
     </div>
   </div>
 

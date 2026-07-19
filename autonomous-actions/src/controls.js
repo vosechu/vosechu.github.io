@@ -6,7 +6,8 @@ import { ACTS, actMeta } from './scenarios.js';
 import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
 import { STRINGS } from './strings.js';
-import { TOUR_STEPS, initialTourState, tourReducer } from './tour.js';
+import { TOUR_STEPS, NEW_CONTROLS_BY_ACT, initialTourState, tourReducer } from './tour.js';
+import { parseCopy, glossaryDef } from './copy.js';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -18,6 +19,27 @@ const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
 const DEFAULT_TARGETS = defaultConfig().targets;
 const handle = buildScene(document.getElementById('stage'), { targets: DEFAULT_TARGETS }, (name) => selectStation(name));
 const panel = document.getElementById('panel');
+
+// Render tokenized copy into an element: plain text nodes, {{chips}} as .ctl
+// spans, [[terms]] as focusable .term spans carrying their glossary tip.
+function renderCopyInto(el, str) {
+  el.textContent = '';
+  for (const seg of parseCopy(str)) {
+    if (seg.type === 'text') { el.appendChild(document.createTextNode(seg.value)); continue; }
+    const span = document.createElement('span');
+    span.textContent = seg.value;
+    if (seg.type === 'ctl') { span.className = 'ctl'; }
+    else {
+      span.className = 'term';
+      span.tabIndex = 0;
+      const tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = glossaryDef(seg.value) ?? '';
+      span.appendChild(tip);
+    }
+    el.appendChild(span);
+  }
+}
 
 // Narrow sim.config.targets to exactly the ids in `roster`, preserving the
 // DEFAULT_TARGETS key order (so the diagram rows stay in a stable order).
@@ -101,7 +123,7 @@ function rateSlider(parent) {
   const toPos = (v) => Math.round(((Math.log(Math.max(MIN, v)) - lmin) / lspan) * STEPS);
   const input = document.createElement('input');
   Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(sim.config.requestRatePerSec) });
-  const val = control(parent, 'Request rate', input, perSec, sim.config.requestRatePerSec);
+  const val = control(parent, STRINGS.controls.requestRate, input, perSec, sim.config.requestRatePerSec);
   input.addEventListener('input', () => {
     const v = toVal(Number(input.value));
     val.textContent = perSec(v);
@@ -114,21 +136,21 @@ function rateSlider(parent) {
   rateUI = { input, val, toPos };
 }
 function workerPoolSlider(parent) {
-  slider(parent, 'Worker pool', 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
+  slider(parent, STRINGS.controls.workerPool, 1, 60, 1, sim.config.workerPoolSize, plain, (v) => { sim.config.workerPoolSize = v; });
 }
 function timeoutControl(parent) {
-  logSlider(parent, 'Front-door timeout', 100, 90000, sim.config.timeoutMs, dur,
+  logSlider(parent, STRINGS.controls.frontDoorTimeout, 100, 90000, sim.config.timeoutMs, dur,
     (v) => { sim.config.timeoutMs = v; handle.service.frontTimeout.textContent = dur(v); });
 }
 function bulkheadsToggle(parent) {
-  toggle(parent, 'Bulkheads', sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
+  toggle(parent, STRINGS.controls.bulkheads, sim.config.bulkheadsEnabled, (on) => { sim.config.bulkheadsEnabled = on; });
 }
 // One service-level toggle enables an independent breaker on every callee. Each
 // still trips on its own error count, so only a failing dependency opens.
 function breakersToggle(parent) {
   const targets = sim.config.targets;
   const on = Object.values(targets).some((t) => t.breaker && t.breaker.enabled);
-  toggle(parent, 'Breakers', on, (checked) => {
+  toggle(parent, STRINGS.controls.breakers, on, (checked) => {
     for (const name of Object.keys(targets)) {
       const t = targets[name];
       if (checked) {
@@ -147,7 +169,7 @@ function breakersToggle(parent) {
 function adaptiveToggle(parent) {
   const targets = sim.config.targets;
   const on = Object.values(targets).some((t) => t.adaptive && t.adaptive.enabled);
-  toggle(parent, 'Adaptive pools', on, (checked) => {
+  toggle(parent, STRINGS.controls.adaptivePools, on, (checked) => {
     for (const name of Object.keys(targets)) {
       const t = targets[name];
       if (checked) {
@@ -161,7 +183,7 @@ function adaptiveToggle(parent) {
 }
 function oscillationToggle(parent) {
   const osc = sim.config.loadOscillation;
-  toggle(parent, 'Load oscillation', osc.enabled, (on) => {
+  toggle(parent, STRINGS.controls.oscillation, osc.enabled, (on) => {
     if (on) { osc.phaseRef = clock.now(); }
     else if (rateUI) { rateUI.input.value = String(rateUI.toPos(sim.config.requestRatePerSec)); rateUI.val.textContent = perSec(sim.config.requestRatePerSec); }
     osc.enabled = on;
@@ -171,11 +193,11 @@ function oscillationToggle(parent) {
 // Per-service sliders sit under the service's heading, so the labels drop the
 // service name.
 function latencySlider(parent, name) {
-  logSlider(parent, 'latency', 10, 10000, sim.config.targets[name].latencyMs, dur,
+  logSlider(parent, STRINGS.controls.latency, 10, 10000, sim.config.targets[name].latencyMs, dur,
     (v) => { sim.config.targets[name].latencyMs = v; });
 }
 function outgoingTimeoutSlider(parent, name) {
-  logSlider(parent, 'outgoing timeout', 100, 90000, sim.config.targets[name].timeoutMs, dur,
+  logSlider(parent, STRINGS.controls.outgoingTimeout, 100, 90000, sim.config.targets[name].timeoutMs, dur,
     (v) => { sim.config.targets[name].timeoutMs = v; });
 }
 // Error rate is log-scaled so 0.1% and 100% are both reachable, with position 0
@@ -190,15 +212,15 @@ function errorRateSlider(parent, name) {
   const fmt = (pct) => (pct === 0 ? 'off' : pct < 1 ? `${pct.toFixed(2)}%` : `${Math.round(pct)}%`);
   const input = document.createElement('input');
   Object.assign(input, { type: 'range', min: 0, max: STEPS, step: 1, value: toPos(t.errorRate * 100) });
-  const val = control(parent, 'error rate', input, fmt, t.errorRate * 100);
+  const val = control(parent, STRINGS.controls.errorRate, input, fmt, t.errorRate * 100);
   input.addEventListener('input', () => { const p = toPct(Number(input.value)); val.textContent = fmt(p); t.errorRate = p / 100; });
 }
 function capacitySlider(parent, name) {
-  slider(parent, 'capacity', 1, 60, 1, sim.config.targets[name].capacity, plain,
+  slider(parent, STRINGS.controls.capacity, 1, 60, 1, sim.config.targets[name].capacity, plain,
     (v) => { sim.config.targets[name].capacity = v; });
 }
 function bulkheadSlider(parent, name) {
-  poolUIs[name] = slider(parent, 'pool size', 1, 60, 1, sim.config.targets[name].bulkheadSize, plain,
+  poolUIs[name] = slider(parent, STRINGS.controls.poolSize, 1, 60, 1, sim.config.targets[name].bulkheadSize, plain,
     (v) => { sim.config.targets[name].bulkheadSize = v; });
 }
 // Per-callee breaker tuning on one compact line: a trip count next to the window
@@ -209,8 +231,8 @@ function breakerRow(parent, name) {
     state: 'closed', openedAtMs: null, errorTimestamps: [], probeInFlight: false };
   const br = t.breaker;
   const row = document.createElement('div'); row.className = 'ctlrow';
-  slider(row, 'num errors', 1, 200, 1, br.errorThreshold, plain, (v) => { br.errorThreshold = v; });
-  logSlider(row, 'per time', 1000, 60000, br.windowMs, dur, (v) => { br.windowMs = v; });
+  slider(row, STRINGS.controls.numErrors, 1, 200, 1, br.errorThreshold, plain, (v) => { br.errorThreshold = v; });
+  logSlider(row, STRINGS.controls.perTime, 1000, 60000, br.windowMs, dur, (v) => { br.windowMs = v; });
   parent.appendChild(row);
 }
 
@@ -332,34 +354,58 @@ function selectStation(name) {
 }
 
 // Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
-// three bubbles (steps 1-3), anchored at the bar, a station, and the panel.
-// localStorage persists whether the tour has been seen; guarded so a
-// non-browser environment (no localStorage) degrades to "not seen" rather
-// than throwing.
+// one reusable bubble (steps 1-4) that is measured against its anchor when the
+// step opens (and on window resize while open), never per frame. localStorage
+// persists seen and skipped; both degrade to defaults when storage is missing.
 const TOUR_SEEN_KEY = 'aa_tour_seen';
-function readTourSeen() {
-  try { return typeof localStorage !== 'undefined' && localStorage.getItem(TOUR_SEEN_KEY) === '1'; }
+const TOUR_SKIP_KEY = 'aa_tour_skipped';
+function readFlag(key) {
+  try { return typeof localStorage !== 'undefined' && localStorage.getItem(key) === '1'; }
   catch { return false; }
 }
-function writeTourSeen() {
-  try { if (typeof localStorage !== 'undefined') localStorage.setItem(TOUR_SEEN_KEY, '1'); }
-  catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
+function writeFlag(key, on) {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    if (on) localStorage.setItem(key, '1'); else localStorage.removeItem(key);
+  } catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
 }
 
-let tourState = initialTourState(readTourSeen());
+let tourState = initialTourState(readFlag(TOUR_SEEN_KEY), readFlag(TOUR_SKIP_KEY));
 
 const tourOverlay = document.getElementById('tour-overlay');
 const tourWelcome = document.getElementById('tour-welcome');
-const tourBubbles = {
-  1: document.getElementById('tourbubble-bar'),
-  2: document.getElementById('tourbubble-station'),
-  3: document.getElementById('tourbubble-panel'),
-};
-const TOUR_BUBBLE_TEXT = {
-  1: STRINGS.tour.bubbleBar,
-  2: STRINGS.tour.bubbleStation,
-  3: STRINGS.tour.bubblePanel,
-};
+const tourBubble = document.getElementById('tourbubble');
+const whatsnewEl = document.getElementById('whatsnew');
+
+// Step 1..4 anchors: what the bubble points at and which side it prefers.
+// Copy keys index STRINGS.tour.
+const TOUR_STEP_DEFS = [
+  null,                                                        // 0: welcome dialog
+  { anchor: '#statusbar', prefer: 'above', key: 'bubbleBar' },
+  { anchor: '.col-deps',  prefer: 'left',  key: 'bubbleDeps' },
+  { anchor: '#panel',     prefer: 'left',  key: 'bubblePanel' },
+  { anchor: '#tour',      prefer: 'above', key: 'bubbleInstructions' },
+];
+
+// Place a fixed-position bubble adjacent to its anchor, clamped to the
+// viewport. Measures once per call (step open, whats-new open, window resize
+// while open): never on the per-frame path.
+function positionBubble(bubble, anchorEl, prefer) {
+  const a = anchorEl.getBoundingClientRect();
+  const b = bubble.getBoundingClientRect();
+  let left, top;
+  if (prefer === 'above') { left = a.left + a.width / 2 - b.width / 2; top = a.top - b.height - 12; }
+  else if (prefer === 'left') { left = a.left - b.width - 16; top = a.top + 16; }
+  else { left = a.left + a.width / 2 - b.width / 2; top = a.bottom + 12; }
+  left = Math.max(8, Math.min(left, window.innerWidth - b.width - 8));
+  top = Math.max(8, Math.min(top, window.innerHeight - b.height - 8));
+  bubble.style.left = `${left}px`;
+  bubble.style.top = `${top}px`;
+}
+
+function setTourDot(on) {
+  for (const btn of document.querySelectorAll('.tour-rerun-btn')) btn.classList.toggle('dot', on);
+}
 
 function tourStepLabel(step) {
   return STRINGS.tour.step.replace('{n}', String(step + 1)).replace('{m}', String(TOUR_STEPS));
@@ -367,7 +413,9 @@ function tourStepLabel(step) {
 
 function dispatchTour(action) {
   tourState = tourReducer(tourState, action);
-  if (tourState.seen) writeTourSeen();
+  if (tourState.seen) writeFlag(TOUR_SEEN_KEY, true);
+  writeFlag(TOUR_SKIP_KEY, tourState.skipped);
+  if (action.type === 'open') setTourDot(false);   // opening the tour answers the dot
   renderTour();
 }
 
@@ -376,21 +424,20 @@ function renderTour() {
   if (!tourState.open) return;
   const isWelcome = tourState.step === 0;
   tourWelcome.style.display = isWelcome ? '' : 'none';
-  for (const [step, el] of Object.entries(tourBubbles)) {
-    el.style.display = !isWelcome && Number(step) === tourState.step ? '' : 'none';
-  }
+  tourBubble.style.display = isWelcome ? 'none' : '';
   if (isWelcome) {
-    document.getElementById('tour-welcome-text').textContent = STRINGS.tour.welcome;
-    document.getElementById('tour-welcome-step').textContent = tourStepLabel(tourState.step);
-  } else {
-    const el = tourBubbles[tourState.step];
-    el.querySelector('p').textContent = TOUR_BUBBLE_TEXT[tourState.step];
-    el.querySelector('.tourstep').textContent = tourStepLabel(tourState.step);
-    // The last step's advance button reads "Done" instead of "Next".
-    const nextBtn = el.querySelector('.tour-next-btn');
-    nextBtn.textContent = tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
+    renderCopyInto(document.getElementById('tour-welcome-text'), STRINGS.tour.welcome);
+    document.getElementById('tour-welcome-step').textContent = tourStepLabel(0);
+    return;
   }
+  const def = TOUR_STEP_DEFS[tourState.step];
+  renderCopyInto(document.getElementById('tourbubble-text'), STRINGS.tour[def.key]);
+  document.getElementById('tourbubble-step').textContent = tourStepLabel(tourState.step);
+  tourBubble.querySelector('.tour-next-btn').textContent =
+    tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
+  positionBubble(tourBubble, document.querySelector(def.anchor), def.prefer);
 }
+window.addEventListener('resize', () => { if (tourState.open && tourState.step > 0) renderTour(); });
 
 document.getElementById('tour-skip').textContent = STRINGS.tour.buttons.skip;
 document.getElementById('tour-next').textContent = STRINGS.tour.buttons.next;
@@ -402,13 +449,9 @@ for (const btn of document.querySelectorAll('.tour-skip-btn')) {
 }
 for (const btn of document.querySelectorAll('.tour-prev-btn')) {
   btn.textContent = STRINGS.tour.buttons.prev;
-  // The reducer has no dedicated "prev" action; back one step by re-dispatching
-  // from a state that is one step earlier. Bounded at step 0 by tourReducer's
-  // own [0, TOUR_STEPS-1] invariant (next never goes below 0 to begin with, so
-  // this mirrors that by clamping here).
+  // Back one step by rendering from one step earlier; bounded at 0.
   btn.addEventListener('click', () => {
-    const target = Math.max(0, tourState.step - 1);
-    tourState = { ...tourState, step: target };
+    tourState = { ...tourState, step: Math.max(0, tourState.step - 1) };
     renderTour();
   });
 }
@@ -419,7 +462,28 @@ for (const btn of document.querySelectorAll('.tour-rerun-btn')) {
 for (const btn of document.querySelectorAll('.tour-next-btn')) {
   btn.addEventListener('click', () => dispatchTour({ type: 'next' }));
 }
+
+// Whats-new: on forward entry into an act that unlocks controls, either show
+// the one-line bubble (tour not skipped) or light the Tour button's dot.
+// Once per act per session; Back never re-triggers it.
+let prevActIndex = -1;
+const whatsNewShown = new Set();
+document.getElementById('whatsnew-done').textContent = STRINGS.tour.buttons.done;
+document.getElementById('whatsnew-done').addEventListener('click', () => whatsnewEl.classList.add('hidden'));
+function maybeShowWhatsNew(i) {
+  // A prior act's bubble is stale the moment the act changes; clear it first,
+  // then re-show only on forward entry into an act that unlocks controls.
+  whatsnewEl.classList.add('hidden');
+  if (i <= prevActIndex || whatsNewShown.has(i) || !NEW_CONTROLS_BY_ACT[i]) return;
+  if (tourState.skipped) { setTourDot(true); return; }
+  whatsNewShown.add(i);
+  renderCopyInto(document.getElementById('whatsnew-text'), STRINGS.tour.whatsNew[i]);
+  whatsnewEl.classList.remove('hidden');
+  positionBubble(whatsnewEl, panel, 'left');
+}
+
 renderTour();
+setTourDot(false);
 
 // Acts never patch sim state directly (ACTS carries no `patch` field, see
 // scenarios.test.js): the knobs stay however the player left them, and the
@@ -434,8 +498,9 @@ function showAct(i) {
   applyRoster(rosterForAct(actIndex));
   selectedStation = defaultStationForAct(actIndex);
   document.getElementById('act-title').textContent = `${actIndex + 1}. ${meta.title}`;
-  document.getElementById('act-instruction').textContent = meta.instruction ? `${STRINGS.ui.tryThis} ${meta.instruction}` : '';
-  document.getElementById('act-caption').textContent = meta.caption;
+  renderCopyInto(document.getElementById('act-instruction'),
+    meta.instruction ? `${STRINGS.ui.tryThis} ${meta.instruction}` : '');
+  renderCopyInto(document.getElementById('act-caption'), meta.caption);
   dots.forEach((d, k) => { d.className = k === actIndex ? 'dot on' : 'dot'; });
   buildControls(actIndex);
   // Reflect the new roster's box visibility before measuring arrows: render()
@@ -445,6 +510,10 @@ function showAct(i) {
   // render() would still see last act's visibility and draw stale arrows.
   render(sim.getState(), handle, selectedStation);
   handle.relayout();
+  // Whats-new bubble (or the skip dot) for an act that unlocks new controls.
+  // Measured against the freshly built panel; forward-entry only (see the guard).
+  maybeShowWhatsNew(actIndex);
+  prevActIndex = actIndex;
 }
 
 // The only preset: return every knob to the healthy baseline and clear the sim,
