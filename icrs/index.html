@@ -47,7 +47,7 @@
     font-variant-numeric:tabular-nums;line-height:1.35;background:#faf7f0;border-right:1px solid var(--line);}
   /* Pin the time label just under the day header while its slot is on screen,
      so you always see the current time alongside the date. */
-  .slot-time span{position:sticky;top:var(--head-h);display:inline-block;}
+  .slot-time span{position:sticky;top:calc(var(--head-h) + 4px);display:inline-block;}
   /* Click a session row to expand its talks (title, presenter, co-authors, affiliations). */
   .row[data-slot]{cursor:pointer;}
   .row[data-slot].expanded{background:#f3eee2;}
