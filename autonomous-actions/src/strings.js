@@ -20,15 +20,15 @@ export const STRINGS = {
   // short is the terse diagram tag, hover states what it is and how it fails.
   stations: {
     'Database A': { label: 'Core datastore',                 short: 'core',     hover: 'The core datastore. Every request reads from it. Fast, always on, and the one dependency I never worry about.' },
-    'Service B':  { label: 'Recommendations Service',        short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; it just gets slow, in no hurry to catch up.' },
-    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. A tight timeout gives the worker back.' },
+    'Service B':  { label: 'Recommendations Service',        short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; like a cat that will not be hurried, it only gets slower, and pushing harder never makes it catch up.' },
+    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. Like a cat let out at night, it may never return on its own, so a tight timeout is what takes the worker back.' },
     'External':   { label: 'Payments Service (third-party)', short: 'payments', hover: 'A third-party we do not control. Usually it answers; sometimes it is simply gone and refuses the connection at once. A breaker skips it so one missing feature does not sink the rest.' },
   },
 
   // One entry per act, index 0..7. title carries a little of the arm's gentle
   // personality; instruction and caption stay plain so the lesson reads clearly.
   acts: [
-    { title: 'A quiet morning',                 instruction: 'Find the highest {{Request rate}} the system still serves within the [[SLO]].',                                    caption: 'Each request hits every [[dependency]] at once and holds a [[worker]] until the slowest one returns.' },
+    { title: 'A quiet morning',                 instruction: 'Find the highest {{Request rate}} the system still serves within the [[SLO]].',                                    caption: 'Each request hits every [[dependency]] at once and holds a [[worker]] until the slowest one returns, the way you cannot shut the door until the last cat is in.' },
     { title: 'Payments drops out',              instruction: 'Make Payments fail: raise its {{error rate}} and watch availability fall.',                                        caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
     { title: 'Stop waiting on Payments',        instruction: 'Turn on {{Breakers}} and watch one trip so the system stops waiting on Payments.',                                 caption: 'A [[breaker]] skips a dependency you know is down, trading that one feature for the [[SLO]].' },
     { title: 'Search freezes',                  instruction: 'Make Search hang: raise its {{latency}}, then rein it in with a tight {{outgoing timeout}}.',                      caption: 'A [[timeout]] caps how long one hung call can tie up a [[worker]].' },
@@ -141,7 +141,7 @@ export const STRINGS = {
     'dependency': 'A service ours must call to answer a request. Every request here fans out to all of them at once.',
     'queue': 'Requests waiting for a free worker. A growing queue means work is arriving faster than it is finishing.',
     'breaker': 'A circuit breaker watches a dependency for errors and, after enough failures, stops calling it for a while: fail fast now, retest later.',
-    'bulkhead': 'A cap on how many of our workers one dependency may hold at once, so a slow dependency cannot drag every worker down with it.',
+    'bulkhead': 'A cap on how many of our workers one dependency may hold at once. Like giving one cat its own room: the slow dependency can fill that room, but it cannot take the rest of the house down with it.',
     'connection pool': 'The outbound connections our service may hold to one dependency. Each in-flight call occupies one.',
     'timeout': 'The longest we will wait on a call before giving up and taking the worker back.',
     'adaptive pool': 'A bulkhead that sizes itself: it learns a dependency\'s normal response time and sheds load only when its queue grows.',
