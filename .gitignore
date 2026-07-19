@@ -4,5 +4,7 @@ _site/
 *.swp
 .jekyll-metadata
 
-# ICRS: raw EventsAir feeds cached by fetch_programme.rb (regenerable)
+# ICRS: raw EventsAir feeds + generated data (regenerable via fetch_programme.rb;
+# the presenter subset the page needs is embedded in index.html)
 icrs/.data/
+icrs/presenters.json
