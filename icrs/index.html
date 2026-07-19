@@ -104,18 +104,18 @@
   .clear-btn{font-size:12.5px;color:var(--muted);background:none;border:1px solid var(--line);
     border-radius:8px;padding:5px 10px;cursor:pointer;}
   .clear-btn:hover{background:var(--line);}
-  .top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;}
-  /* Options hamburger: a single button opening a dropdown whose controls wrap,
-     so they never break out of the page edge on narrow phones. */
-  .menu{position:relative;flex:0 0 auto;}
-  .menu-btn{font-size:13px;color:var(--muted);background:none;border:1px solid var(--line);
-    border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;}
-  .menu-btn:hover,.menu-btn[aria-expanded="true"]{background:var(--line);}
-  .menu-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:30;
-    display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;
+  /* Options hamburger: lives in each sticky day header, just left of the star,
+     so it stays pinned at the top like the date and star do. Its dropdown is
+     fixed and positioned under whichever button was clicked; controls wrap so
+     they never break out of the page edge on narrow phones. */
+  .col-head .menu-btn{font-size:13px;line-height:1;color:var(--muted);background:rgba(255,255,255,.5);
+    border:1px solid var(--line);border-radius:6px;padding:3px 9px;cursor:pointer;}
+  .col-head .menu-btn:hover,.col-head .menu-btn[aria-expanded="true"]{background:#fff;color:var(--ink);}
+  .menu-panel{position:fixed;z-index:40;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;
     max-width:min(88vw,300px);padding:10px;background:var(--card);
     border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(34,48,46,.16);}
   .menu-panel[hidden]{display:none;}
+  .menu-note{width:100%;margin:0 0 2px;font-size:11.5px;color:var(--muted);text-align:left;}
   .legend{display:flex;gap:16px;font-size:13px;margin:0 0 10px;}
   .legend span{display:flex;align-items:center;gap:6px;}
   .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
@@ -139,26 +139,21 @@
     <div class="row filler"><div class="time">Dress</div><div class="label">Smart casual for all social functions (welcome function, banquet, poster sessions)</div></div>
   </div>
 
-  <div class="top-bar">
-    <p class="key" style="margin:0">Saved in this browser only, not synced across devices.</p>
-    <div class="menu">
-      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-haspopup="true">&#9776; Options</button>
-      <div class="menu-panel" id="menu-panel" hidden>
-        <button class="collapse-link" id="toggle-presenters" onclick="toggleAllPresenters()">Show all presenters</button>
-        <button class="collapse-link" id="collapse-unstarred" onclick="toggleCollapse()">Collapse unstarred</button>
-        <button class="clear-btn" onclick="clearAll()">Clear all</button>
-      </div>
-    </div>
+  <div class="menu-panel" id="menu-panel" hidden>
+    <p class="menu-note">Saved in this browser only, not synced across devices.</p>
+    <button class="collapse-link" id="toggle-presenters" onclick="toggleAllPresenters()">Show all presenters</button>
+    <button class="collapse-link" id="collapse-unstarred" onclick="toggleCollapse()">Collapse unstarred</button>
+    <button class="clear-btn" onclick="clearAll()">Clear all</button>
   </div>
 
   <div class="day" data-day="sat18">
-    <div class="col-head"><div class="spacer">Sat 18</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Sat 18</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="sat18-workshop"><div class="time"></div><div class="label">Pre-conference workshop: Designing multiple driver experiments, 9:00am&ndash;5:00pm <span class="tag">only if registered</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="sat18-workshop"></label></div></div>
   </div>
 
   <div class="day" data-day="sun19">
-    <div class="col-head"><div class="spacer">Sun 19</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Sun 19</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="sun19-reg"><div class="time"></div><div class="label">Registration opens, 12:00pm</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="sun19-reg"></label></div></div>
     <div class="row" data-row="sun19-welcome"><div class="time"></div><div class="label">Welcome function (Waitt Foundation), 5:30&ndash;7:30pm &mdash; Ariki Hall, Level 3.</div>
@@ -166,7 +161,7 @@
   </div>
 
   <div class="day" data-day="mon20">
-    <div class="col-head"><div class="spacer">Mon 20</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Mon 20</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="mon20-opening"><div class="time"></div><div class="label">Opening ceremony, 8:15am</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="mon20-opening"></label></div></div>
     <div class="row" data-row="mon20-plenary1"><div class="time"></div><div class="label">Plenary: "Being a Good Ancestor," 9:00am &mdash; Dan Hikuroa, University of Auckland</div>
@@ -271,7 +266,7 @@
   </div>
 
   <div class="day" data-day="tue21">
-    <div class="col-head"><div class="spacer">Tue 21</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Tue 21</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="tue21-plenary1"><div class="time"></div><div class="label">Plenary: "In Sickness and in Health: Cellular Regulation of Cnidarian-Algal Symbioses," 8:30am &mdash; Virginia Weis, Oregon State University <span class="tag recommended" data-tip="Cellular regulation of cnidarian–algal symbiosis — foundational coral-symbiosis biology.">microbio</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="tue21-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
@@ -403,7 +398,7 @@
   </div>
 
   <div class="day" data-day="wed22">
-    <div class="col-head"><div class="spacer">Wed 22</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Wed 22</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="wed22-plenary1"><div class="time"></div><div class="label">Plenary: "Innovations in Coral Reef Mapping and Conservation Assessments at Regional to Global Scales," 8:30am &mdash; Greg Asner, Center for Global Discovery and Conservation Science</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="wed22-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
@@ -529,7 +524,7 @@
   </div>
 
   <div class="day" data-day="thu23">
-    <div class="col-head"><div class="spacer">Thu 23</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Thu 23</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="row" data-row="thu23-plenary1"><div class="time"></div><div class="label">Plenary: "Diversity within Coral Reef Fisheries Supports Productivity, Equity, and Sustainability," 8:30am &mdash; Christina Hicks, Lancaster University (sponsored by UNEP and the GFCR)</div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="thu23-plenary1"></label></div></div>
     <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
@@ -654,7 +649,7 @@
   </div>
 
   <div class="day" data-day="fri24">
-    <div class="col-head"><div class="spacer">Fri 24</div><div class="who-heads"><div class="who-head">⭐</div></div></div>
+    <div class="col-head"><div class="spacer">Fri 24</div><button class="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Options">&#9776;</button><div class="who-heads"><div class="who-head">⭐</div></div></div>
     <div class="slot"><div class="slot-time"><span>8:30–10am</span></div><div class="slot-body">
     <div class="row" data-row="cs-fri-196" data-slot="cs-fri-196"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag speakers">Beatriz Corazza, Camilla Nivison +8</span></div>
       <div class="who-boxes"><label><input type="checkbox" class="star" data-id="cs-fri-196"></label></div></div>
@@ -900,17 +895,36 @@
     window.addEventListener('scroll', function(){ if (current) hide(); }, true);
   })();
 
-  // Options hamburger: open/close the dropdown; close on outside click or Escape.
+  // Options hamburger: one button per sticky day header. Opens a shared dropdown
+  // positioned under whichever button was clicked; closes on outside click, Esc,
+  // or resize.
   (function(){
-    var btn = document.getElementById('menu-btn');
     var panel = document.getElementById('menu-panel');
-    if (!btn || !panel) return;
-    function setOpen(open){ panel.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-    btn.addEventListener('click', function(e){ e.stopPropagation(); setOpen(panel.hidden); });
-    document.addEventListener('click', function(e){
-      if (!panel.hidden && !panel.contains(e.target) && e.target !== btn) setOpen(false);
+    var btns = Array.prototype.slice.call(document.querySelectorAll('.col-head .menu-btn'));
+    if (!panel || !btns.length) return;
+    var openBtn = null;
+    function close(){
+      panel.hidden = true;
+      if (openBtn){ openBtn.setAttribute('aria-expanded', 'false'); openBtn = null; }
+    }
+    function openAt(btn){
+      if (openBtn && openBtn !== btn) openBtn.setAttribute('aria-expanded', 'false');
+      var r = btn.getBoundingClientRect();
+      panel.style.top = (r.bottom + 6) + 'px';
+      panel.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+      panel.style.left = 'auto';
+      panel.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      openBtn = btn;
+    }
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(e){ e.stopPropagation(); if (openBtn === btn) close(); else openAt(btn); });
     });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setOpen(false); });
+    document.addEventListener('click', function(e){
+      if (!panel.hidden && !panel.contains(e.target) && !e.target.closest('.menu-btn')) close();
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+    window.addEventListener('resize', close);
   })();
 
   // ---- talk-level byline detail (click a session row to expand) ----
