@@ -3,3 +3,6 @@ _site/
 .DS_Store
 *.swp
 .jekyll-metadata
+
+# ICRS: raw EventsAir feeds cached by fetch_programme.rb (regenerable)
+icrs/.data/

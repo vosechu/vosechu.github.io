@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>ICRS 2026 — programme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#22302e; --muted:#6d7b76; --paper:#f6f3ec; --card:#fffdf8; --line:#e4ddcf;
+    --teal:#0e7c86; --purple:#6d4aa7; --green:#2e8b57; --base:#22302e; --amber:#c77d14;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,sans-serif;line-height:1.55;}
+  .wrap{max-width:860px;margin:0 auto;padding:40px 22px 64px;}
+  h1{font-family:"Fraunces",Georgia,serif;font-weight:600;
+    font-size:clamp(30px,5vw,44px);margin:0 0 14px;letter-spacing:-0.015em;line-height:1.1;}
+  p{margin:0 0 14px;}
+  a{color:var(--teal);}
+  .key{font-size:13px;color:var(--muted);margin:6px 0 16px;}
+  .day{border:1px solid var(--line);border-radius:12px;background:var(--card);
+    margin:10px 0 18px;overflow:hidden;
+    box-shadow:0 1px 2px rgba(34,48,46,.05);}
+  .col-head{display:flex;align-items:center;gap:12px;padding:6px 14px;
+    background:#efe9db;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;}
+  .col-head .spacer{flex:1;}
+  .col-head .who-heads{display:flex;gap:12px;flex:0 0 62px;}
+  .col-head .who-head{width:23px;text-align:center;}
+  .row{display:flex;align-items:flex-start;gap:12px;padding:9px 14px;
+    border-bottom:1px solid var(--line);font-size:14.5px;}
+  .row:last-child{border-bottom:none;}
+  .row.filler{color:var(--muted);font-size:13px;padding:6px 14px;}
+  .row.optional{background:#f2ede0;}
+  .time{flex:0 0 78px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:1px;}
+  .label{flex:1;}
+  .tag{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);
+    border-radius:99px;padding:1px 8px;margin-left:6px;}
+  .tag.recommended{color:#7c5e0f;background:#fbeec2;border-color:#e3c85f;font-weight:600;cursor:help;}
+  .tag.recommended:focus-visible{outline:2px solid var(--amber);outline-offset:1px;}
+  .rec-tip{position:absolute;z-index:50;max-width:320px;background:var(--ink);color:#f6f3ec;
+    font-size:12.5px;font-weight:400;line-height:1.45;padding:8px 11px;border-radius:8px;
+    box-shadow:0 6px 18px rgba(34,48,46,.28);pointer-events:none;}
+  .rec-tip[hidden]{display:none;}
+  .who-boxes{display:flex;gap:12px;flex:0 0 62px;padding-top:1px;}
+  .who-boxes label{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;width:23px;
+    color:var(--muted);cursor:pointer;padding:3px 3px;border-radius:7px;transition:background .12s;}
+  input[type=checkbox]{width:17px;height:17px;margin:0;cursor:pointer;}
+  input[type=checkbox].chuck{accent-color:var(--teal);}
+  input[type=checkbox].erica{accent-color:var(--purple);}
+  /* Highlight only the checkbox cell that's ticked, not the whole row. */
+  .who-boxes label:has(input.chuck:checked){background:#cfe9df;}
+  .who-boxes label:has(input.erica:checked){background:#e6daf3;}
+  /* Auto-dim: in a slot where either of us has picked, the rows neither picked go dim. */
+  .row.dimmed{opacity:.4;}
+  /* Per-person collapse: hide that person's non-picks in slots they've decided. */
+  body.collapse-chuck .row.hide-for-chuck{display:none;}
+  body.collapse-erica .row.hide-for-erica{display:none;}
+  .collapse-link{font-size:12.5px;color:var(--muted);background:none;border:1px solid var(--line);
+    border-radius:8px;padding:5px 10px;cursor:pointer;}
+  .collapse-link:hover{background:var(--line);}
+  .collapse-link.on{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .collapse-link.on.for-erica{background:var(--purple);border-color:var(--purple);}
+  /* "+ Other" per-slot custom entry */
+  .other-row .label{display:flex;flex-direction:column;gap:6px;}
+  .other-toggle{align-self:flex-start;font-size:12px;color:var(--muted);background:none;
+    border:1px dashed var(--line);border-radius:7px;padding:2px 9px;cursor:pointer;}
+  .other-toggle:hover{background:#efe9db;}
+  .other-fields{display:flex;flex-direction:column;gap:5px;}
+  .other-fields label{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);}
+  .other-fields .swatch{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  .other-fields input[type=text]{flex:1;font:inherit;font-size:13px;padding:3px 8px;
+    border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink);}
+  .clear-btn{font-size:12.5px;color:var(--muted);background:none;border:1px solid var(--line);
+    border-radius:8px;padding:5px 10px;cursor:pointer;}
+  .clear-btn:hover{background:var(--line);}
+  .top-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px;}
+  .legend{display:flex;gap:16px;font-size:13px;margin:0 0 10px;}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+  .dot.chuck{background:var(--teal);}
+  .dot.erica{background:var(--purple);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>ICRS 2026 — programme</h1>
+  <p>16th International Coral Reef Symposium, NZICC, 101 Hobson Street, Auckland (Level 3 and Level 5). From the <a href="https://innovators-icrs2026programme.eventsair.site">full session programme</a> (updated 29 June 2026, subject to change) and Chuck's registration confirmation email. Room numbers are on Level 5 unless noted; concurrent sessions run in multiple parallel tracks, so most sessions below list several room/time parts rather than one slot.</p>
+
+  <div class="day" data-day="practical">
+    <div class="row filler"><div class="time">Badge</div><div class="label">Collect at the registration desk, Level 3 Atrium. Check in once; wear the badge daily after that.</div></div>
+    <div class="row filler"><div class="time">Hours</div><div class="label">Sun 12&ndash;7:30pm &middot; Mon 7:30am&ndash;6:30pm &middot; Tue 8am&ndash;6pm &middot; Wed 8am&ndash;7pm &middot; Thu 8am&ndash;6pm &middot; Fri 8am&ndash;1pm</div></div>
+    <div class="row filler"><div class="time">Opening</div><div class="label">Te Paepae Theatre, doors 7:45am, starts 8:15am sharp (Mon 20) &mdash; per Chuck's registration email. Note: the NZICC venue listing says 8:30am; going with the conference's own email as the more authoritative source.</div></div>
+    <div class="row filler"><div class="time">Dress</div><div class="label">Smart casual for all social functions (welcome function, banquet, poster sessions)</div></div>
+    <div class="row filler"><div class="time">App</div><div class="label">Event code ICRS, log in with the registered email for the full schedule, abstracts, and speaker bios &mdash; no printed programme onsite</div></div>
+  </div>
+
+  <div class="top-bar">
+    <p class="key" style="margin:0">Tick who's going. Saved in this browser only &mdash; it won't sync between devices or with Erica's.</p>
+    <div style="display:flex;gap:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;">
+      <button class="collapse-link" id="collapse-chuck" onclick="toggleCollapse('chuck')">Collapse non-Chuck</button>
+      <button class="collapse-link for-erica" id="collapse-erica" onclick="toggleCollapse('erica')">Collapse non-Erica</button>
+      <button class="clear-btn" onclick="clearAll()">Clear all</button>
+    </div>
+  </div>
+  <div class="legend"><span><span class="dot chuck"></span>Chuck</span><span><span class="dot erica"></span>Erica</span><span style="color:var(--muted)">dim = a slot you've decided &middot; use "+ Other" for a custom plan</span></div>
+
+  <p class="key" style="margin:2px 0 16px">Each day runs top&#8209;to&#8209;bottom in time order &mdash; plenaries and breaks interleaved with the parallel concurrent sessions. In a concurrent slot, <b>#nn</b> is the ICRS session&#8209;theme number: a theme runs its talks across several slots in one room, so rooms are listed in the same order every slot (Level 5 unless noted). Two lead speakers are named per session (+N = more presenters). <span class="tag recommended">recommended</span> flags sessions in Erica&#8217;s area &mdash; hover for why.</p>
+
+  <div class="day" data-day="sat18">
+    <div class="col-head"><div class="spacer">Sat 18</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="sat18-workshop"><div class="time"></div><div class="label">Pre-conference workshop: Designing multiple driver experiments, 9:00am&ndash;5:00pm <span class="tag">only if registered</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="sat18-workshop-chuck"></label><label><input type="checkbox" class="erica" data-id="sat18-workshop-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="sun19">
+    <div class="col-head"><div class="spacer">Sun 19</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="sun19-reg"><div class="time"></div><div class="label">Registration opens, 12:00pm</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="sun19-reg-chuck"></label><label><input type="checkbox" class="erica" data-id="sun19-reg-erica"></label></div></div>
+    <div class="row" data-row="sun19-welcome"><div class="time"></div><div class="label">Welcome function (Waitt Foundation), 5:30&ndash;7:30pm &mdash; Ariki Hall, Level 3. Chuck has a ticket; Erica's status not in Chuck's registration email.</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="sun19-welcome-chuck" checked></label><label><input type="checkbox" class="erica" data-id="sun19-welcome-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="mon20">
+    <div class="col-head"><div class="spacer">Mon 20</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="mon20-opening"><div class="time"></div><div class="label">Opening ceremony, 8:15am</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="mon20-opening-chuck"></label><label><input type="checkbox" class="erica" data-id="mon20-opening-erica"></label></div></div>
+    <div class="row" data-row="mon20-plenary1"><div class="time"></div><div class="label">Plenary: "Being a Good Ancestor," 9:00am &mdash; Dan Hikuroa, University of Auckland</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="mon20-plenary1-chuck"></label><label><input type="checkbox" class="erica" data-id="mon20-plenary1-erica"></label></div></div>
+    <div class="row filler"><div class="time">9:45am</div><div class="label">Morning tea</div></div>
+    <div class="row filler"><div class="time">10:15–11:45am</div><div class="label"></div></div>
+    <div class="row" data-row="cs-mon-001"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Gabriela Cristina Mitsuhashi, Cristina Linares Prats +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-001-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-001-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-011"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag">Mark Meekan, Thomas Johnstone +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-011-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-011-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-010"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 A window on future oceans <span class="tag">Mei-Fang Lin, Matias Gomez Corrales +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-010-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-010-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-003"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts and ecological consequences <span class="tag">Haruko Kurihara, Thomas Oliver +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-003-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-003-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-005"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools for biodiversity <span class="tag">Yi-kai Tea, Jenny Wang +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-005-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-005-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-007"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag">Margaux Steyaert, Adelaide Dahl +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-007-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-007-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-008"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Understanding mesophotic coral ecosystems <span class="tag">Michel Pichon, Gonzalo Pérez-Rosales +11</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-008-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-008-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-009"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling frameworks <span class="tag">Kailey Pascoe, Guan-Yan Chen +12</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-009-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-009-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-002"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 The role of calcifying algae in reef resilience <span class="tag">Holly Koch, Camille Vizon +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-002-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-002-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-012"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics in habitat-forming species <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">recommended</span> <span class="tag">Benjamin Glass, Colin Lock +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-012-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-mon-012-erica" checked></label></div></div>
+    <div class="row" data-row="cs-mon-013"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular insights into coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Christian Voolstra, Hollie Putnam +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-013-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-013-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-006"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag">Sheriden Morris, Brandon Sosa +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-006-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-006-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-004"><div class="time"></div><div class="label"><b>518</b> &mdash; #74 Nanobiotechnology for coral reef research <span class="tag">Daniel Wangpraseurt, Marco Contardi +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-004-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-004-erica"></label></div></div>
+    <div class="row filler"><div class="time">11:45am</div><div class="label">Lunch</div></div>
+    <div class="row" data-row="mon20-plenary2"><div class="time"></div><div class="label">Plenary: "Coral Reef Islands and Reef-System Resilience: An Eco-Geomorphic Perspective," 1:15pm &mdash; Paul Kench, University of Waikato</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="mon20-plenary2-chuck"></label><label><input type="checkbox" class="erica" data-id="mon20-plenary2-erica"></label></div></div>
+    <div class="row filler"><div class="time">2–3:30pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-mon-014"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Douglas Fenner, Kerryn Crossman +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-014-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-014-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-025"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology and symbioses <span class="tag">Oren Levy, Roger Huerlimann +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-025-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-025-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-023"><div class="time"></div><div class="label"><b>302</b> &mdash; #67 Window on future oceans <span class="tag">David Paz-Garcia, Stephanie Reynaud +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-023-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-023-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-024"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology and dispersal <span class="tag">Alexandra Jordan, Stephen Swearer +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-024-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-024-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-016"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag">Gabriel Lucas Xavier Da Silva, Takashi Nakamura +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-016-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-016-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-018"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag">Peter Cowman, Octavio Ruben Salazar Moya +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-018-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-018-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-020"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight (macroinvertebrates) <span class="tag">Killian Ver Hoeye, Shawna Foo +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-020-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-020-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-021"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag">Susanne Baehr, Maria Jordana Olano +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-021-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-021-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-022"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag">Ahmi Cacapit, Deborah Burn +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-022-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-022-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-015"><div class="time"></div><div class="label"><b>513</b> &mdash; #122 Calcifying algae in reef resilience <span class="tag">Denisa Berbece, Abigail Turnlund +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-015-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-015-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-026"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">recommended</span> <span class="tag">Juntong Hu, Bastian Bentlage +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-026-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-mon-026-erica" checked></label></div></div>
+    <div class="row" data-row="cs-mon-027"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Manuel Aranda Lastra, Stephanie Peak +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-027-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-027-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-019"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening to improve reef resilience <span class="tag">Roger Beeden, Dennis Stanley +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-019-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-019-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-017"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution for coral resilience <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">recommended</span> <span class="tag">Andrew Baker, Maria Beger +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-017-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-mon-017-erica" checked></label></div></div>
+    <div class="row filler"><div class="time">3:30pm</div><div class="label">Afternoon tea</div></div>
+    <div class="row filler"><div class="time">4–5:30pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-mon-028"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Sterling Tebbett, Michelle Paddack +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-028-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-028-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-039"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag">Pranay Sawant, Ryan Mcandrews +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-039-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-039-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-037"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag">William Arlidge, Kris-an Hinds +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-037-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-037-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-038"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag">Reagan Sharkey, Noa Ben Ami +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-038-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-038-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-030"><div class="time"></div><div class="label"><b>501</b> &mdash; #44 Range shifts <span class="tag">Orlando Timmerman, Sarina Bao +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-030-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-030-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-032"><div class="time"></div><div class="label"><b>502</b> &mdash; #83 Phylogenetic tools <span class="tag">Laura Macrina, John Parkinson +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-032-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-032-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-034"><div class="time"></div><div class="label"><b>503</b> &mdash; #27 Beyond the spotlight <span class="tag">Matthew Clements, Kate Heffner +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-034-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-034-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-035"><div class="time"></div><div class="label"><b>504</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag">Nicola Foster, Ludovic Hoarau +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-035-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-035-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-036"><div class="time"></div><div class="label"><b>505</b> &mdash; #101 Digital imagery + modelling <span class="tag">Sean Ben-Shaprut, Gaby Carpenter +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-036-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-036-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-029"><div class="time"></div><div class="label"><b>513</b> &mdash; #77 Marine photosynthesis <span class="tag">Nurhikmah Tenripada, Meggan Miller, Pranali Deore</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-029-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-029-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-040"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">recommended</span> <span class="tag">Alexander Van Nynatten, Lauren Fuess +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-040-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-mon-040-erica" checked></label></div></div>
+    <div class="row" data-row="cs-mon-041"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Mehdi Bouhaddou, Tingting Xiang +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-041-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-041-erica"></label></div></div>
+    <div class="row" data-row="cs-mon-033"><div class="time"></div><div class="label"><b>517</b> &mdash; #82 Intervening reef resilience <span class="tag">Austin Bowden-Kerby, Claire Boitel, Sandra Mendoza Quiroz</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-033-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-mon-033-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-mon-031"><div class="time"></div><div class="label"><b>518</b> &mdash; #119 Assisted evolution <span class="tag recommended" data-tip="Related — assisted evolution: manipulating coral photosymbionts and associated bacteria for thermal tolerance.">recommended</span> <span class="tag">Liam Lachs, Matthew Warham +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-mon-031-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-mon-031-erica" checked></label></div></div>
+    <div class="row" data-row="mon20-poster"><div class="time"></div><div class="label">Poster session (Minderoo Foundation), 5:30&ndash;6:30pm</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="mon20-poster-chuck"></label><label><input type="checkbox" class="erica" data-id="mon20-poster-erica"></label></div></div>
+    <div class="row optional" data-row="mon20-film"><div class="time"></div><div class="label">Optional: "Wealth Untold" film screening + panel, 6&ndash;8pm &mdash; panelists Melanie McField (Healthy Reefs), Kris-An Hinds (Fragments of Hope), Hilda Lionata (The Nature Conservancy); moderator Julie Robinson <span class="tag">optional</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="mon20-film-chuck"></label><label><input type="checkbox" class="erica" data-id="mon20-film-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="tue21">
+    <div class="col-head"><div class="spacer">Tue 21</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="tue21-plenary1"><div class="time"></div><div class="label">Plenary: "In Sickness and in Health: Cellular Regulation of Cnidarian-Algal Symbioses," 8:30am &mdash; Virginia Weis, Oregon State University <span class="tag">right in Erica's field</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-plenary1-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-plenary1-erica"></label></div></div>
+    <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
+    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
+    <div class="row" data-row="cs-tue-042"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Cher Chow, Juliana Mello Fonseca +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-042-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-042-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-053"><div class="time"></div><div class="label"><b>301</b> &mdash; #87 Reef fish ecology <span class="tag">Allison Blanchette, Julie Hartup +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-053-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-053-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-051"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices in reef management <span class="tag">Ben Charo, Hellen Nanlohy +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-051-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-051-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-052"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag">Erika Santoro, Sean Bensadon +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-052-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-052-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-044"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Tackling water pollution <span class="tag">Peter Musembi, Nicholas Hutley +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-044-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-044-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-046"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Lessons from ancient reefs <span class="tag">Katarzyna Janiszewska, Mikolaj Zapalski +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-046-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-046-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-048"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation, squarely in Erica’s area.">recommended</span> <span class="tag">Peter Mumby, Haiwei Luo +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-048-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-048-erica" checked></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-049"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease ecology <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">recommended</span> <span class="tag">Karen Neely, Hannah Swain +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-049-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-049-erica" checked></label></div></div>
+    <div class="row" data-row="cs-tue-050"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag">Nicole Crane, Bustamam Bustamam +10</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-050-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-050-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-043"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation cross-sectoral partnerships <span class="tag">Orion Mccarthy, Stuart Sandin +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-043-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-043-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-054"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">recommended</span> <span class="tag">François Seneca, Lindsay Spiers +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-054-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-054-erica" checked></label></div></div>
+    <div class="row" data-row="cs-tue-055"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Immy Ashley, Ruiqi Li +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-055-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-055-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-047"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral sexual propagation <span class="tag">Muhammad Abdul Wahab, Jamie Craggs +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-047-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-047-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-045"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Innovative restoration in Pacific Islands <span class="tag">Shannon Ruseborn, Morgan Short +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-045-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-045-erica"></label></div></div>
+    <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
+    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-tue-056"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Shouraseni Roy, Marji Puotinen +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-056-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-056-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-066"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag">Brian Beck, Natalie Villafranca +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-066-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-066-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-065"><div class="time"></div><div class="label"><b>302</b> &mdash; #54 Community voices <span class="tag">Nicholas Ford-Learner, Hoaka Thomas +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-065-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-065-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-058"><div class="time"></div><div class="label"><b>501</b> &mdash; #10 Water pollution <span class="tag">Muhidin Muhidin +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-058-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-058-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-060"><div class="time"></div><div class="label"><b>502</b> &mdash; #72 Ancient reefs <span class="tag">Lewis A. Jones, Nadia Santodomingo +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-060-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-060-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-062"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation, squarely in Erica’s area.">recommended</span> <span class="tag">Katherine Hardy, Bailey Marquardt +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-062-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-062-erica" checked></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-063"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">recommended</span> <span class="tag">Laura Beenham, Keno Hsueh +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-063-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-063-erica" checked></label></div></div>
+    <div class="row" data-row="cs-tue-064"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag">Jacinta Gigileia Jonathan, Ashton Gainsford +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-064-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-064-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-057"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag">Kerry Dunleavy, Nanako Kosaka +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-057-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-057-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-061"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag">James Guest, Corinne D'anna +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-061-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-061-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-059"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag">Laurie Raymundo, Meg Van Horn +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-059-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-059-erica"></label></div></div>
+    <div class="row optional" data-row="tue21-general-meeting"><div class="time">12:15pm</div><div class="label">Society General Meeting (lunch), 12:15&ndash;1:45pm, Room 302 &mdash; open to all members. <span class="tag">not in the official session programme copy; the invite email says "Tuesday 22nd" (Jul 22 is Wednesday) &mdash; confirm directly before planning around it</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-general-meeting-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-general-meeting-erica"></label></div></div>
+    <div class="row optional" data-row="tue21-deephope"><div class="time"></div><div class="label">Optional: "Deep Hope" film screening, 12:30&ndash;1:45pm, Room 516 &mdash; deep-sea coral exploration footage from Under the Pole's South Pacific expedition <span class="tag">optional</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-deephope-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-deephope-erica"></label></div></div>
+    <div class="row" data-row="tue21-plenary2"><div class="time"></div><div class="label">Plenary: "Comparative Seascape Genomics of Great Barrier Reef Corals," 1:45pm &mdash; Cynthia Riginos, Australian Institute of Marine Science</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-plenary2-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-plenary2-erica"></label></div></div>
+    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-tue-067"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">David Obura, Sara Melo-Merino +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-067-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-067-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-078"><div class="time"></div><div class="label"><b>301</b> &mdash; #2866 Special Coral Reef Policy Session <span class="tag">Rowana Walton, Tali Vardi +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-078-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-078-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-076"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag">Matteo Collina, Scarlett Raine +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-076-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-076-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-077"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag">Ashley Rossin, Jeffry Jeve +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-077-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-077-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-069"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D to save coral reefs <span class="tag">Alexandra Steckbauer, David Suggett +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-069-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-069-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-071"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag">Benjamin Henley, Sara Todorović +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-071-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-071-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-073"><div class="time"></div><div class="label"><b>503</b> &mdash; #121 Future-proofing coral reefs <span class="tag recommended" data-tip="Top match — chaired by Raquel Peixoto (the coral-probiotics/BMC pioneer); microbial therapies and symbiont manipulation, squarely in Erica’s area.">recommended</span> <span class="tag">Julia Briand, Emmanuel Hanert +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-073-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-073-erica" checked></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-074"><div class="time"></div><div class="label"><b>504</b> &mdash; #31 Infectious coral disease <span class="tag recommended" data-tip="Related — infectious coral disease ecology; microbiome-based biomarkers of disease resistance.">recommended</span> <span class="tag">Brian Walker, Nicholas Jones +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-074-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-074-erica" checked></label></div></div>
+    <div class="row" data-row="cs-tue-075"><div class="time"></div><div class="label"><b>505</b> &mdash; #32 Bridging tradition and science <span class="tag">Doris Kalamasaru, Natalia Rivas-Escobar +9</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-075-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-075-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-068"><div class="time"></div><div class="label"><b>513</b> &mdash; #40 Tech innovation partnerships <span class="tag">TY Fan, Kyle Pisano +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-068-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-068-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-tue-079"><div class="time"></div><div class="label"><b>515</b> &mdash; #118 Holobiont dynamics <span class="tag recommended" data-tip="Strong match — holobiont dynamics: how coral microbiomes shift under disturbance and what it means for host health.">recommended</span> <span class="tag">Elena Quintanilla, Rayna Mcclintock +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-079-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-tue-079-erica" checked></label></div></div>
+    <div class="row" data-row="cs-tue-080"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Mitsuru Jimbo, Alexander Venn +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-080-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-080-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-072"><div class="time"></div><div class="label"><b>517</b> &mdash; #73 Ex situ coral propagation <span class="tag">Jennifer Sneed, Nikki Fogarty +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-072-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-072-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-070"><div class="time"></div><div class="label"><b>518</b> &mdash; #15 Pacific Islands restoration <span class="tag">Mengiau Sasao, Dawnette Olsudong +9</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-070-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-070-erica"></label></div></div>
+    <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
+    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-tue-081"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Alejandra Robles-Payán, Bhanuka Ranaweera +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-081-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-081-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-090"><div class="time"></div><div class="label"><b>302</b> &mdash; #110 Imaging and image analysis <span class="tag">Migdonio Gonzalez, Jannis Luncke, Andy Ridley</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-090-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-090-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-091"><div class="time"></div><div class="label"><b>305</b> &mdash; #112 Reproductive ecology <span class="tag">Itai Grisaru, Elizabeth Buccheri +14</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-091-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-091-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-083"><div class="time"></div><div class="label"><b>501</b> &mdash; #39 Accelerated R&amp;D <span class="tag">Amelia Wenger, Peter Harrison +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-083-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-083-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-085"><div class="time"></div><div class="label"><b>502</b> &mdash; #103 Paleoclimatic archives <span class="tag">Diane Thompson, Eric Douville +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-085-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-085-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-087"><div class="time"></div><div class="label"><b>503</b> &mdash; #82 Intervening reef resilience <span class="tag">David Williamson, Mary Bonin +10</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-087-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-087-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-088"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution in coral reefs <span class="tag">Henry Arbaugh, Eseta Drova +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-088-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-088-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-089"><div class="time"></div><div class="label"><b>505</b> &mdash; #64 Marine lenses (traditional knowledge) <span class="tag">Uilani Naipo, Nicholas Sagum +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-089-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-089-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-082"><div class="time"></div><div class="label"><b>513</b> &mdash; #117 Mesophotic coral ecosystems <span class="tag">Kenji Takata, David Ory +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-082-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-082-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-092"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag">Manuel Gonzalez-Rivero, Andrea Rivera-sosa +9</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-092-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-092-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-093"><div class="time"></div><div class="label"><b>516</b> &mdash; #120 Cellular/molecular coral symbiosis <span class="tag recommended" data-tip="Strong match — led by Christian Voolstra (Univ. of Konstanz; co-author with Peixoto on coral microbiome manipulation / BMC probiotics). Cellular and molecular basis of coral–algal symbiosis.">recommended</span> <span class="tag">Ioan Fuller, Nils Rädecker +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-093-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-093-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-086"><div class="time"></div><div class="label"><b>517</b> &mdash; #33 Industrial coral production <span class="tag">James Guest, David Suggett +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-086-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-086-erica"></label></div></div>
+    <div class="row" data-row="cs-tue-084"><div class="time"></div><div class="label"><b>518</b> &mdash; #111 Harmful cyanobacteria/microalgae <span class="tag">Valerie Paul, Petra Visser +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-tue-084-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-tue-084-erica"></label></div></div>
+    <div class="row" data-row="tue21-darwin"><div class="time"></div><div class="label">Darwin Medal Plenary: "Coral Reefs at the Precipice: Accelerating Science and Policy Under Rapid Global Change," 6:00pm &mdash; Prof. Ove Hoegh-Guldberg (Univ. of Queensland)</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-darwin-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-darwin-erica"></label></div></div>
+    <div class="row filler"><div class="time">6:45pm</div><div class="label">Day close</div></div>
+    <div class="row optional" data-row="tue21-fellows"><div class="time"></div><div class="label">ICRS Fellows Reception, 6:45&ndash;8:45pm, Te Waha foyer (Level 5) &mdash; immediately after the Darwin Lecture. Invitation-only (Fellows, Officers, Councillors, Award Honorees + plus-one); check if this applies. <span class="tag">source date says "22nd," corrected here to match "immediately following" the 21st</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="tue21-fellows-chuck"></label><label><input type="checkbox" class="erica" data-id="tue21-fellows-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="wed22">
+    <div class="col-head"><div class="spacer">Wed 22</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="wed22-plenary1"><div class="time"></div><div class="label">Plenary: "Innovations in Coral Reef Mapping and Conservation Assessments at Regional to Global Scales," 8:30am &mdash; Greg Asner, Center for Global Discovery and Conservation Science</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="wed22-plenary1-chuck"></label><label><input type="checkbox" class="erica" data-id="wed22-plenary1-erica"></label></div></div>
+    <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
+    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
+    <div class="row" data-row="cs-wed-094"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #25 Temporal changes in coral reefs <span class="tag">Sergio Floeter, Brian Zgliczynski +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-094-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-094-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-105"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet (restoration tech) <span class="tag">Claire Boitel, Chloe Carbonne +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-105-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-105-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-103"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag">Bruce Goldstein, Patrick Smallhorn-West +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-103-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-103-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-104"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters (ecosystem function) <span class="tag">Hannah Barkley, John Burns +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-104-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-104-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-096"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish and invertebrates <span class="tag">Sarah Rider, Jia Jin Marc Chang +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-096-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-096-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-098"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag">Jessica Lueders-Dumont, Heather Donnelly +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-098-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-098-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-100"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag">Aya M Rahil Naseem, Johanna Leonhardt +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-100-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-100-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-101"><div class="time"></div><div class="label"><b>504</b> &mdash; #21 Plastic pollution <span class="tag">Cristiana Manullang, Ifenna Ilechukwu +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-101-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-101-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-102"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag">Hannah Allan, Jordan Ivey +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-102-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-102-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-095"><div class="time"></div><div class="label"><b>513</b> &mdash; #132 Mesophotic ecosystem management <span class="tag">Joshua Voss, Luis Calderon-Aguilera +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-095-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-095-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-106"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term coral reef monitoring <span class="tag">Maria Vega Rodriguez, Eric Appeldoorn-Sanders +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-106-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-106-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-099"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag">Renato Morais, Alexandre Siqueira +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-099-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-099-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-097"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag">Ezri Tarazi, Aaron Bugaj +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-097-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-097-erica"></label></div></div>
+    <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
+    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-wed-115"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag">Toru Kanyama, Joseph Unsworth +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-115-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-115-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-113"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag">Emma Camp, Kathryn Chartrand, Selina Stead</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-113-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-113-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-114"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag">Marleen Stuhr, Joelle Mattos +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-114-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-114-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-107"><div class="time"></div><div class="label"><b>501</b> &mdash; #79 Cryptobenthic fish/invertebrates <span class="tag">Lisa Goberdhan, Jan Vicente, Henrique Bravo</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-107-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-107-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-109"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag">Raúl González-Pech, Aranya Dhibar +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-109-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-109-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-111"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag">Robert Streit, Katharina Bauda +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-111-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-111-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-112"><div class="time"></div><div class="label"><b>505</b> &mdash; #97 First Nations knowledge <span class="tag">Courtney Burns, Teje Roy</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-112-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-112-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-116"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag">Joshua Feingold, Hope Wilson +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-116-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-116-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-110"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag">Sarah Leinbach, Andrew McInnis +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-110-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-110-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-108"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag">Ali Dressel, Benjamin Darby +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-108-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-108-erica"></label></div></div>
+    <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
+    <div class="row" data-row="wed22-plenary2"><div class="time"></div><div class="label">Plenary: Julia Baum, 1:45pm <span class="tag">title not yet listed</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="wed22-plenary2-chuck"></label><label><input type="checkbox" class="erica" data-id="wed22-plenary2-erica"></label></div></div>
+    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-wed-117"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Blake Spady, Neal Cantin +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-117-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-117-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-128"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag">Andrea Grottoli, Shannon Dixon +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-128-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-128-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-126"><div class="time"></div><div class="label"><b>302</b> &mdash; #45 Scaling community-led conservation <span class="tag">NIZAM IBRAHIM, Valeria Pizarro +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-126-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-126-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-127"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag">Anya Brown, Maya Powell +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-127-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-127-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-119"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag">Andrew Altieri, Nicole Dilernia +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-119-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-119-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-121"><div class="time"></div><div class="label"><b>502</b> &mdash; #124 Reefs through time <span class="tag">Nicole Leonard, Marlena Joppien +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-121-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-121-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-123"><div class="time"></div><div class="label"><b>503</b> &mdash; #42 Restoration to regeneration <span class="tag">Giovanni Giallongo, Annie Ann Nee Chew +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-123-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-123-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-124"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants/water quality <span class="tag">Eileen Nalley, David E. Carrasco Rivera +9</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-124-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-124-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-125"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag">Mavis Adwoa Essilfie, Hariz Bin Khairul Hisham +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-125-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-125-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-118"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag">Kate Brown, Trina Leberer +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-118-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-118-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-129"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag">Anna Koester, Virginie Bornarel +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-129-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-129-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-wed-130"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">recommended</span> <span class="tag">Colin Howe, Marko Terzin +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-130-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-wed-130-erica" checked></label></div></div>
+    <div class="row" data-row="cs-wed-122"><div class="time"></div><div class="label"><b>517</b> &mdash; #88 Dynamics of transformed reefs <span class="tag">Tessa Hill, Alain Duran +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-122-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-122-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-120"><div class="time"></div><div class="label"><b>518</b> &mdash; #61 Reefs reimagined (art) <span class="tag">Ana Teresa Herrera Reveles, Scott Heron +9</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-120-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-120-erica"></label></div></div>
+    <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
+    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-wed-131"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Morgan Pomeroy, Esmeralda Perez-Cervantes +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-131-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-131-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-142"><div class="time"></div><div class="label"><b>301</b> &mdash; #129 From pilot to planet <span class="tag">Julia Briand, Christopher Grant +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-142-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-142-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-140"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag">Sruti Jeetun, Wichin Suebpala +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-140-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-140-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-141"><div class="time"></div><div class="label"><b>305</b> &mdash; #75 Measuring what matters <span class="tag">Julian Lilkendey, Rupert Ormond +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-141-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-141-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-133"><div class="time"></div><div class="label"><b>501</b> &mdash; #17 Ocean deoxygenation <span class="tag">Ariel Pezner, Wyatt Million +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-133-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-133-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-135"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag">Christopher Cornwall, Tyler Cyronak +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-135-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-135-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-137"><div class="time"></div><div class="label"><b>503</b> &mdash; #70 Nature-based circular economy <span class="tag">Lynn Drescher, Iain Caldwell +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-137-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-137-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-138"><div class="time"></div><div class="label"><b>504</b> &mdash; #34 Land-based pollutants <span class="tag">Katie Cramer, Maria Vega Rodriguez +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-138-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-138-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-139"><div class="time"></div><div class="label"><b>505</b> &mdash; #86 SEKPS (indigenous stewardship) <span class="tag">Stirling Ludwick, Brody Gray +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-139-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-139-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-132"><div class="time"></div><div class="label"><b>513</b> &mdash; #76 Science to solutions (fisheries) <span class="tag">Piera Biondi, Eugene Joseph +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-132-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-132-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-143"><div class="time"></div><div class="label"><b>515</b> &mdash; #92 Long-term monitoring <span class="tag">Daniela Ceccarelli, Erin Cain +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-143-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-143-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-wed-144"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">recommended</span> <span class="tag">Teresa Bednarek, Annelise Lemonius +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-144-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-wed-144-erica" checked></label></div></div>
+    <div class="row" data-row="cs-wed-136"><div class="time"></div><div class="label"><b>517</b> &mdash; #91 Genetic engineering in corals <span class="tag">Nathan Crowe, Jann-Fredryck Matias +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-136-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-136-erica"></label></div></div>
+    <div class="row" data-row="cs-wed-134"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag">Emmanuel Hanert, Bernhard Riegl Jr. +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-wed-134-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-wed-134-erica"></label></div></div>
+    <div class="row" data-row="wed22-poster"><div class="time"></div><div class="label">Poster session (Minderoo Foundation), 6:00&ndash;7:00pm</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="wed22-poster-chuck"></label><label><input type="checkbox" class="erica" data-id="wed22-poster-erica"></label></div></div>
+    <div class="row optional" data-row="wed22-film"><div class="time"></div><div class="label">Optional: "Super Reefs" screening + panel, 6:30&ndash;8:15pm &mdash; panelists Joeli Veitayaki, Jenn Caselle, Kyle Zawada, Rita Bento, Yimnang Golbuu; moderator Stacy Jupiter <span class="tag">optional</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="wed22-film-chuck"></label><label><input type="checkbox" class="erica" data-id="wed22-film-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="thu23">
+    <div class="col-head"><div class="spacer">Thu 23</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row" data-row="thu23-plenary1"><div class="time"></div><div class="label">Plenary: "Diversity within Coral Reef Fisheries Supports Productivity, Equity, and Sustainability," 8:30am &mdash; Christina Hicks, Lancaster University (sponsored by UNEP and the GFCR)</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="thu23-plenary1-chuck"></label><label><input type="checkbox" class="erica" data-id="thu23-plenary1-erica"></label></div></div>
+    <div class="row filler"><div class="time">9:15am</div><div class="label">Morning tea</div></div>
+    <div class="row filler"><div class="time">9:45–11:15am</div><div class="label"></div></div>
+    <div class="row" data-row="cs-thu-145"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Neal Cantin, Mike Emslie +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-145-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-145-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-156"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag">Keivan Kabiri, Lindsay Dade +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-156-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-156-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-154"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism for resilience <span class="tag">Alessia Costa, Mary Mann +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-154-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-154-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-155"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag">Emily Howells, Hugo Denis +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-155-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-155-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-147"><div class="time"></div><div class="label"><b>501</b> &mdash; #23 Coral triangle restoration framework <span class="tag">Tara Alessandra Sumbillo Abrina, Rouenne Camille De Castro +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-147-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-147-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-149"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag">Laurel Diaz, Shoji Yamamoto +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-149-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-149-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-151"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag">Kyle John Alan Zawada, Gina Badlowski +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-151-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-151-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-152"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag">Micaela Justo, Ellen Regina Skelton +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-152-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-152-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-153"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag">Peter Musembi, Bing Lin +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-153-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-153-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-146"><div class="time"></div><div class="label"><b>513</b> &mdash; #16 Deployment to decommissioning <span class="tag">Prerana Gawde, Gavin Miller, Edric Wee</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-146-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-146-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-157"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA as monitoring tool <span class="tag">Omri Bronstein, Julia Terra Torres +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-157-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-157-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-158"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">recommended</span> <span class="tag">Karim Primov, Caroline Dennison +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-158-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-thu-158-erica" checked></label></div></div>
+    <div class="row" data-row="cs-thu-150"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag">Wing Yan Chan, Lorenzo Massimo Toniolo +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-150-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-150-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-148"><div class="time"></div><div class="label"><b>518</b> &mdash; #78 Arabian Peninsula reefs <span class="tag">Geórgenes Cavalcante, Gabriel Lucas Xavier Da Silva +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-148-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-148-erica"></label></div></div>
+    <div class="row filler"><div class="time">11:15am</div><div class="label">Session transition break</div></div>
+    <div class="row filler"><div class="time">11:20am–12:20pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-thu-167"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag">Lucian Himes, Marianna Coppola +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-167-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-167-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-165"><div class="time"></div><div class="label"><b>302</b> &mdash; #85 Reef tourism <span class="tag">Makamas Sutthacheep, Laongdow Jungrak +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-165-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-165-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-166"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag">Holland Elder, Paige Duffin +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-166-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-166-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-160"><div class="time"></div><div class="label"><b>502</b> &mdash; #127 Reef carbonate dynamics <span class="tag">Ryusuke Obata, Aurora Pinto +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-160-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-160-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-162"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag">Hayden Acors, Shannon Dee +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-162-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-162-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-163"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag">Andrew Negri, Elana Kysil +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-163-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-163-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-164"><div class="time"></div><div class="label"><b>505</b> &mdash; #89 Climate-resilient coral reefs <span class="tag">Helen Fox, Christine Roper +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-164-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-164-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-159"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity (interventions) <span class="tag">Forest Rohwer, Juan Esquivel-muelbert +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-159-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-159-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-168"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag">Lewis Haines, Stephanie Martinez +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-168-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-168-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-169"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">recommended</span> <span class="tag">Bibi Renssen, Krista Ryon +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-169-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-thu-169-erica" checked></label></div></div>
+    <div class="row" data-row="cs-thu-161"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag">Claudia Pogoreutz, Louis Simon +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-161-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-161-erica"></label></div></div>
+    <div class="row filler"><div class="time">12:20pm</div><div class="label">Lunch</div></div>
+    <div class="row" data-row="thu23-plenary2"><div class="time"></div><div class="label">Plenary: "Rāhui, Mana, and Tapu: Community-Led Ocean Governance as a Model for Coral Reef Resilience," 1:45pm &mdash; Tamatoa Bambridge, National Center for Scientific Research</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="thu23-plenary2-chuck"></label><label><input type="checkbox" class="erica" data-id="thu23-plenary2-erica"></label></div></div>
+    <div class="row filler"><div class="time">2:30–4pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-thu-180"><div class="time"></div><div class="label"><b>301</b> &mdash; #7 Drone/satellite/diver mapping <span class="tag">Kailey Pascoe, Cilun Djakiman +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-180-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-180-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-178"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag">Joshua Cinner, Fiona Chong +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-178-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-178-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-179"><div class="time"></div><div class="label"><b>305</b> &mdash; #126 Genomics/quantitative genetics <span class="tag">Katharine Prata, Alejandra Hernández-Agreda +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-179-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-179-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-171"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag">Catherine McFadden, Kate Gonzalez +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-171-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-171-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-173"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs (oceanic inputs) <span class="tag">Renato Morais, Mathieu Reynaud +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-173-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-173-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-175"><div class="time"></div><div class="label"><b>503</b> &mdash; #99 Cross-habitat linkages <span class="tag">Alastair Harborne, Hannah Lyford +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-175-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-175-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-176"><div class="time"></div><div class="label"><b>504</b> &mdash; #22 Chemical contaminant exposure <span class="tag">David Brefeld, Abigail Renegar +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-176-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-176-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-177"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Matthew Tietbohl Talas, Walter Rich +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-177-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-177-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-170"><div class="time"></div><div class="label"><b>513</b> &mdash; #53 Designing complexity <span class="tag">Peter Todd, Ezri Tarazi +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-170-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-170-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-181"><div class="time"></div><div class="label"><b>515</b> &mdash; #59 eDNA monitoring <span class="tag">Jonathan Whitney, Sven Uthicke +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-181-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-181-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-182"><div class="time"></div><div class="label"><b>516</b> &mdash; #94 Microbial ecology and symbioses <span class="tag recommended" data-tip="Top match — microbial ecology and symbioses; microbiome manipulation (incl. Symbiodiniaceae) to restore reef health — the probiotics angle.">recommended</span> <span class="tag">Guoxin Cui, Diana Vergara +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-182-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-thu-182-erica" checked></label></div></div>
+    <div class="row" data-row="cs-thu-174"><div class="time"></div><div class="label"><b>517</b> &mdash; #115 Metabolic foundations / omics <span class="tag">Marina Botana, Sarah VanDiepenbos +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-174-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-174-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-172"><div class="time"></div><div class="label"><b>518</b> &mdash; #89 Climate-resilient coral reefs <span class="tag">Kate Quigley, Kendall Chancellor +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-172-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-172-erica"></label></div></div>
+    <div class="row filler"><div class="time">4:00pm</div><div class="label">Afternoon tea</div></div>
+    <div class="row filler"><div class="time">4:30–6pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-thu-193"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag">Elizabeth Shaver, Emma Camp +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-193-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-193-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-191"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag">Brett Taylor, Alice Rogers +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-191-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-191-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-192"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag">Pim Bongaerts, Dominique Gallery +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-192-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-192-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-184"><div class="time"></div><div class="label"><b>501</b> &mdash; #49 Invasive species impacts <span class="tag">Ana Yranzo Duque, Madelief Schelvis +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-184-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-184-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-186"><div class="time"></div><div class="label"><b>502</b> &mdash; #60 Pelagic reefs <span class="tag">Jamison Gove, Alex Wyatt +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-186-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-186-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-188"><div class="time"></div><div class="label"><b>503</b> &mdash; #43 Ecological toolkit (trophic interactions) <span class="tag">Stephanie Green, Giovanna Sabini-leite +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-188-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-188-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-189"><div class="time"></div><div class="label"><b>504</b> &mdash; #109 New era of data management <span class="tag">Nicole Pedersen, Mary Donovan, Sarah O'Connor</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-189-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-189-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-190"><div class="time"></div><div class="label"><b>505</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Katie Barott, Alexandra Wen +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-190-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-190-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-183"><div class="time"></div><div class="label"><b>513</b> &mdash; #102 Corals of Aotearoa New Zealand <span class="tag">Diana Macpherson, Kareen Schnabel +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-183-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-183-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-194"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag">Alexandre Siqueira, Sean Connolly +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-194-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-194-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-thu-195"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">recommended</span> <span class="tag">David Baker, Somok Banerjee +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-195-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-thu-195-erica" checked></label></div></div>
+    <div class="row" data-row="cs-thu-187"><div class="time"></div><div class="label"><b>517</b> &mdash; #69 Epigenetics of reef organisms <span class="tag">Wai-Kwan Chu, Pauline Buso +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-187-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-187-erica"></label></div></div>
+    <div class="row" data-row="cs-thu-185"><div class="time"></div><div class="label"><b>518</b> &mdash; #128 South Pacific coral reef science <span class="tag">Kira Turnham, Joeli Veitayaki +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-thu-185-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-thu-185-erica"></label></div></div>
+    <div class="row filler"><div class="time">6:00pm</div><div class="label">Day close</div></div>
+    <div class="row" data-row="thu23-banquet"><div class="time"></div><div class="label">Banquet (AIMS), 7:00&ndash;11:00pm &mdash; Te Paepae Theatre, Level 5. Chuck has a ticket (at capacity, waitlist via teawa@conference.nz); Erica's status not in Chuck's registration email.</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="thu23-banquet-chuck" checked></label><label><input type="checkbox" class="erica" data-id="thu23-banquet-erica"></label></div></div>
+  </div>
+
+  <div class="day" data-day="fri24">
+    <div class="col-head"><div class="spacer">Fri 24</div><div class="who-heads"><div class="who-head">C</div><div class="who-head">E</div></div></div>
+    <div class="row filler"><div class="time">8:30–10am</div><div class="label"></div></div>
+    <div class="row" data-row="cs-fri-196"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Beatriz Corazza, Camilla Nivison +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-196-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-196-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-207"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag">Adriana Humanes, Katrina McGuigan +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-207-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-207-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-205"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability/resilience <span class="tag">Jessica Zamborain Mason, Maria Eggertsen +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-205-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-205-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-206"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag">Ilha Byrne, Maxine Mouly +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-206-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-206-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-198"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response prediction <span class="tag">Jeremie Vidal-Dupiol, Dan Barshis +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-198-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-198-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-200"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients / escaping climate change <span class="tag">Joseph Brennan, Christopher Cooney +8</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-200-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-200-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-202"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag">Jordan Pierce, Sai-Kit Yeung +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-202-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-202-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-203"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Coral disturbance preparedness/response <span class="tag">Dana Wusinich-Mendez, Caroline McLaughlin +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-203-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-203-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-204"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag">Jill Ashey, Daisy Flores +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-204-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-204-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-197"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses to climate change <span class="tag">Ira Cooke, Arjun Sai Krishnan +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-197-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-197-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-208"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag">Benjamin Farmer, David Anderson +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-208-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-208-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-209"><div class="time"></div><div class="label"><b>516</b> &mdash; #93 Microbial symbiosis in the reef <span class="tag recommended" data-tip="Strong match — cellular/molecular basis of reef microbial symbiosis; broad and multi-disciplinary.">recommended</span> <span class="tag">Hisatake Ishida, Alexa Huzar +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-209-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-fri-209-erica" checked></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-201"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions in the holobiont <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">recommended</span> <span class="tag">Diego Lera-Lozano, Cawa Tran +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-201-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-fri-201-erica" checked></label></div></div>
+    <div class="row" data-row="cs-fri-199"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity/transformation <span class="tag">Zoe Richards, Scott Heron +4</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-199-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-199-erica"></label></div></div>
+    <div class="row filler"><div class="time">10:00am</div><div class="label">Morning tea</div></div>
+    <div class="row filler"><div class="time">10:30am–12pm</div><div class="label"></div></div>
+    <div class="row" data-row="cs-fri-210"><div class="time"></div><div class="label"><b>Te Paepae</b> &mdash; #130 Coral bleaching dynamics <span class="tag">Courtney Tierney, Thiago Mendes +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-210-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-210-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-221"><div class="time"></div><div class="label"><b>301</b> &mdash; #35 Climate-smart reef restoration <span class="tag">Tyler Cyronak, Liav Meoded Stern +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-221-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-221-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-219"><div class="time"></div><div class="label"><b>302</b> &mdash; #52 Fisheries sustainability <span class="tag">Bess Ruff, Sarah Martin +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-219-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-219-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-220"><div class="time"></div><div class="label"><b>305</b> &mdash; #26 Cryptic diversity/hybridization <span class="tag">Sheila Kitchen, Tamar Goulet +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-220-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-220-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-212"><div class="time"></div><div class="label"><b>501</b> &mdash; #81 Trait-based climate response <span class="tag">William Zozaya, Erinn Muller +6</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-212-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-212-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-214"><div class="time"></div><div class="label"><b>502</b> &mdash; #96 Latitudinal gradients <span class="tag">David Abrego, Sruti Jeetun +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-214-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-214-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-216"><div class="time"></div><div class="label"><b>503</b> &mdash; #123 The human–AI nexus <span class="tag">Faye Diederiks, Gracia Schry +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-216-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-216-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-217"><div class="time"></div><div class="label"><b>504</b> &mdash; #29 Disturbance preparedness/response <span class="tag">Marylaura Sandoval Siles, Nick Mcmahon +2</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-217-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-217-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-218"><div class="time"></div><div class="label"><b>505</b> &mdash; #65 Understanding coral development <span class="tag">Danielle Becker, Ee Suan Tan +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-218-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-218-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-211"><div class="time"></div><div class="label"><b>513</b> &mdash; #98 Eco-evolutionary responses <span class="tag">Kevin Bairos-Novak, Yves-Marie Bozec, Liam Lachs</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-211-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-211-erica"></label></div></div>
+    <div class="row" data-row="cs-fri-222"><div class="time"></div><div class="label"><b>515</b> &mdash; #19 Modeling coral reef ecosystems <span class="tag">Anna Cresswell, Sun Kim +3</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-222-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-222-erica"></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-223"><div class="time"></div><div class="label"><b>516</b> &mdash; #62 Endozoicomonadaceae in coral holobionts <span class="tag recommended" data-tip="Strong match — Endozoicomonadaceae, the central bacterial family in coral-microbiome debates (mutualist or parasite?).">recommended</span> <span class="tag">Claudia Pogoreutz, Jie Li +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-223-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-fri-223-erica" checked></label></div></div>
+    <div class="row chuck-on erica-on" data-row="cs-fri-215"><div class="time"></div><div class="label"><b>517</b> &mdash; #104 Inter-kingdom interactions <span class="tag recommended" data-tip="Strong match — inter-kingdom interactions in the coral holobiont (virus–bacteria–protist dynamics).">recommended</span> <span class="tag">Hailey Hatch-West, Vivian Li +5</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-215-chuck" checked></label><label><input type="checkbox" class="erica" data-id="cs-fri-215-erica" checked></label></div></div>
+    <div class="row" data-row="cs-fri-213"><div class="time"></div><div class="label"><b>518</b> &mdash; #116 Indian Ocean biodiversity <span class="tag">Abigail Mwalimu, Sharad Bayyana +7</span></div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="cs-fri-213-chuck"></label><label><input type="checkbox" class="erica" data-id="cs-fri-213-erica"></label></div></div>
+    <div class="row" data-row="fri24-plenary"><div class="time"></div><div class="label">Plenary: "Scaling Coral Reef Restoration Activity to Meet Global Conservation Goals," 12:00pm &mdash; David Suggett, KAUST Coral Restoration Initiative</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="fri24-plenary-chuck"></label><label><input type="checkbox" class="erica" data-id="fri24-plenary-erica"></label></div></div>
+    <div class="row" data-row="fri24-closing"><div class="time"></div><div class="label">Closing ceremony and awards, 12:45pm</div>
+      <div class="who-boxes"><label><input type="checkbox" class="chuck" data-id="fri24-closing-chuck"></label><label><input type="checkbox" class="erica" data-id="fri24-closing-erica"></label></div></div>
+    <div class="row filler"><div class="time">1:45pm</div><div class="label">Symposium concludes &mdash; afternoon and evening free</div></div>
+  </div>
+
+<script>
+  var STORE_KEY = 'icrs2026-programme-checks-v4';
+  // Only Chuck's actually-ticketed events are pre-checked. Session
+  // recommendations are shown as "recommended" tags, not pre-selected.
+  var DEFAULT_CHECKED = [
+    "sun19-welcome-chuck",
+    "thu23-banquet-chuck"
+  ];
+  function load(){ try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch(e){ return {}; } }
+  function save(state){ try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){} }
+
+  // Defaults win on first load; anything the user has since toggled (in storage) overrides them.
+  var stored = load();
+  var state = {};
+  DEFAULT_CHECKED.forEach(function(id){ state[id] = true; });
+  Object.keys(stored).forEach(function(id){ state[id] = stored[id]; });
+
+  // ---- concurrent "slot" model ----
+  // A slot is a maximal run of consecutive concurrent-session rows (data-row
+  // starting "cs-") within a day; fixed events / fillers break the run. Each
+  // session row is tagged data-slot; a "+ Other" row is injected per slot.
+  function injectOther(afterRow, slotId){
+    var row = document.createElement('div');
+    row.className = 'row other-row';
+    row.setAttribute('data-other-slot', slotId);
+    var hasText = (state['other-' + slotId + '-chuck'] || '') || (state['other-' + slotId + '-erica'] || '');
+    row.innerHTML =
+      '<div class="time"></div>' +
+      '<div class="label">' +
+        '<button class="other-toggle" type="button">+ Other</button>' +
+        '<div class="other-fields"' + (hasText ? '' : ' hidden') + '>' +
+          '<label><span class="swatch" style="background:var(--teal)"></span>Chuck ' +
+            '<input type="text" data-other="other-' + slotId + '-chuck" placeholder="a talk not listed, coffee, etc."></label>' +
+          '<label><span class="swatch" style="background:var(--purple)"></span>Erica ' +
+            '<input type="text" data-other="other-' + slotId + '-erica" placeholder="a talk not listed, coffee, etc."></label>' +
+        '</div>' +
+      '</div>';
+    afterRow.parentNode.insertBefore(row, afterRow.nextSibling);
+    row.querySelectorAll('input[data-other]').forEach(function(inp){
+      var key = inp.getAttribute('data-other');
+      inp.value = state[key] || '';
+      inp.addEventListener('input', function(){ state[key] = inp.value; save(state); recompute(); });
+    });
+    var fields = row.querySelector('.other-fields');
+    row.querySelector('.other-toggle').addEventListener('click', function(){ fields.hidden = !fields.hidden; });
+  }
+
+  function initSlots(){
+    document.querySelectorAll('.day').forEach(function(day){
+      var slotId = null, lastCs = null;
+      Array.prototype.slice.call(day.children).forEach(function(el){
+        var isCs = el.classList && el.classList.contains('row') && /^cs-/.test(el.getAttribute('data-row') || '');
+        if (isCs){
+          if (!slotId) slotId = el.getAttribute('data-row');
+          el.setAttribute('data-slot', slotId);
+          lastCs = el;
+        } else {
+          if (slotId && lastCs) injectOther(lastCs, slotId);
+          slotId = null; lastCs = null;
+        }
+      });
+      if (slotId && lastCs) injectOther(lastCs, slotId);
+    });
+  }
+
+  // Recompute per-slot dimming + collapse targeting from current state.
+  function recompute(){
+    var bySlot = {};
+    document.querySelectorAll('.row[data-slot]').forEach(function(r){
+      var s = r.getAttribute('data-slot');
+      (bySlot[s] = bySlot[s] || []).push(r);
+    });
+    Object.keys(bySlot).forEach(function(sid){
+      var rows = bySlot[sid];
+      var chuckDecided = (state['other-' + sid + '-chuck'] || '').trim() !== '';
+      var ericaDecided = (state['other-' + sid + '-erica'] || '').trim() !== '';
+      rows.forEach(function(r){
+        var c = r.querySelector('input.chuck'), e = r.querySelector('input.erica');
+        if (c && c.checked) chuckDecided = true;
+        if (e && e.checked) ericaDecided = true;
+      });
+      var either = chuckDecided || ericaDecided;
+      rows.forEach(function(r){
+        var c = r.querySelector('input.chuck'), e = r.querySelector('input.erica');
+        var cOn = !!(c && c.checked), eOn = !!(e && e.checked);
+        r.classList.toggle('dimmed', either && !cOn && !eOn);
+        r.classList.toggle('hide-for-chuck', chuckDecided && !cOn);
+        r.classList.toggle('hide-for-erica', ericaDecided && !eOn);
+      });
+    });
+  }
+
+  // Drive checked state from JS so it survives sandboxes that strip attributes.
+  document.querySelectorAll('input[type=checkbox][data-id]').forEach(function(cb){
+    var id = cb.dataset.id;
+    cb.checked = !!state[id];
+    cb.addEventListener('change', function(){ state[id] = cb.checked; save(state); recompute(); });
+  });
+
+  function applyCollapseButtons(){
+    [['chuck', 'collapse-chuck', 'Chuck'], ['erica', 'collapse-erica', 'Erica']].forEach(function(t){
+      var on = !!state['__collapse-' + t[0]];
+      document.body.classList.toggle('collapse-' + t[0], on);
+      var btn = document.getElementById(t[1]);
+      if (btn){ btn.classList.toggle('on', on); btn.textContent = on ? ('Show non-' + t[2]) : ('Collapse non-' + t[2]); }
+    });
+  }
+  function toggleCollapse(who){
+    state['__collapse-' + who] = !state['__collapse-' + who];
+    save(state);
+    applyCollapseButtons();
+  }
+
+  function clearAll(){
+    if (!confirm('Clear everything for both of you — all selections, dimming, and Other notes? This cannot be undone.')) return;
+    state = {};
+    save(state);
+    document.querySelectorAll('input[type=checkbox][data-id]').forEach(function(cb){ cb.checked = false; });
+    document.querySelectorAll('input[data-other]').forEach(function(inp){ inp.value = ''; });
+    recompute();
+    applyCollapseButtons();
+  }
+
+  initSlots();
+  recompute();
+  applyCollapseButtons();
+
+  // Reliable tooltip for the "recommended" tags. Native title is flaky and
+  // .day{overflow:hidden} would clip a CSS tooltip, so this renders into <body>
+  // and fires on hover, keyboard focus, and click/tap.
+  (function(){
+    var tip = document.createElement('div');
+    tip.className = 'rec-tip';
+    tip.hidden = true;
+    document.body.appendChild(tip);
+    var current = null;
+    function show(el){
+      var txt = el.getAttribute('data-tip');
+      if (!txt) return;
+      tip.textContent = txt;
+      tip.hidden = false;
+      var r = el.getBoundingClientRect();
+      tip.style.top = (r.bottom + window.scrollY + 6) + 'px';
+      tip.style.left = '0px';
+      var maxLeft = window.scrollX + document.documentElement.clientWidth - tip.offsetWidth - 10;
+      var want = r.left + window.scrollX;
+      tip.style.left = Math.max(window.scrollX + 8, Math.min(want, maxLeft)) + 'px';
+      current = el;
+    }
+    function hide(){ tip.hidden = true; current = null; }
+    document.querySelectorAll('.tag.recommended[data-tip]').forEach(function(el){
+      el.tabIndex = 0;
+      el.addEventListener('mouseenter', function(){ show(el); });
+      el.addEventListener('mouseleave', hide);
+      el.addEventListener('focus', function(){ show(el); });
+      el.addEventListener('blur', hide);
+      el.addEventListener('click', function(e){ e.stopPropagation(); if (current === el) hide(); else show(el); });
+    });
+    document.addEventListener('click', function(){ if (current) hide(); });
+    window.addEventListener('scroll', function(){ if (current) hide(); }, true);
+  })();
+</script>
+
+</div>
+</body>
+</html>
