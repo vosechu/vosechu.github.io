@@ -32,6 +32,11 @@
   .col-head .spacer{flex:1;}
   .col-head .who-heads{display:flex;justify-content:center;flex:0 0 34px;}
   .col-head .who-head{text-align:center;font-size:13px;letter-spacing:0;}
+  /* Past days open as just their sticky header; click the header to expand or
+     re-collapse. Date-derived and DOM-only — never persisted. */
+  .day.is-past > .col-head{cursor:pointer;}
+  .day.collapsed > :not(.col-head){display:none;}
+  .day-caret{display:inline-block;width:.85em;margin-right:3px;font-size:10px;opacity:.7;}
   .row{display:flex;align-items:flex-start;gap:12px;padding:9px 14px;
     border-bottom:1px solid var(--line);font-size:14.5px;}
   .row:last-child{border-bottom:none;}
@@ -925,6 +930,38 @@
     });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
     window.addEventListener('resize', close);
+  })();
+
+  // Collapse past days by default: any dated day before today opens as just its
+  // sticky header; click the header to expand or re-collapse it. Derived from the
+  // clock and kept in the DOM only — never written to the sacred settings store.
+  (function(){
+    var DAY_DATE = { sat18:'2026-07-18', sun19:'2026-07-19', mon20:'2026-07-20',
+      tue21:'2026-07-21', wed22:'2026-07-22', thu23:'2026-07-23', fri24:'2026-07-24' };
+    var n = new Date();
+    var pad = function(x){ return (x < 10 ? '0' : '') + x; };
+    var today = n.getFullYear() + '-' + pad(n.getMonth() + 1) + '-' + pad(n.getDate());
+    function setCaret(day){
+      var c = day.querySelector('.day-caret');
+      if (c) c.textContent = day.classList.contains('collapsed') ? '▸' : '▾';
+    }
+    document.querySelectorAll('.day[data-day]').forEach(function(day){
+      var d = DAY_DATE[day.getAttribute('data-day')];
+      if (!d || d >= today) return;          // undated (practical) or today/future: stay open
+      var head = day.querySelector('.col-head');
+      var spacer = head && head.querySelector('.spacer');
+      if (!head || !spacer) return;
+      day.classList.add('is-past', 'collapsed');
+      var caret = document.createElement('span');
+      caret.className = 'day-caret';
+      spacer.insertBefore(caret, spacer.firstChild);
+      setCaret(day);
+      head.addEventListener('click', function(e){
+        if (e.target.closest('.menu-btn')) return;
+        day.classList.toggle('collapsed');
+        setCaret(day);
+      });
+    });
   })();
 
   // ---- talk-level byline detail (click a session row to expand) ----
