@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Autonomous actions: circuit breakers and bulkheads</title>
   <link rel="stylesheet" href="./vendor/driver.css">
+  <link rel="stylesheet" href="./vendor/tippy.css">
   <style>
     :root {
       --bg: #fdf6e9;
@@ -53,20 +54,16 @@
       backdrop-filter: blur(6px);
     }
     .info { position: relative; cursor: help; color: var(--ink-dim); }
-    .info .tip {
-      display: none; position: absolute; top: 0; left: 0;
-      width: 230px; background: var(--panel-solid); border: 1px solid var(--border); border-radius: 8px;
-      padding: 8px 10px; font-size: 11px; font-weight: 400; color: var(--ink); line-height: 1.45; z-index: 20;
+    /* Glossary/metric tooltips are Tippy instances (see vendor/tippy.css); this
+       theme matches them to the app palette. [[terms]] keep the dotted underline;
+       {{chips}} echo a control label. */
+    .term { text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
+    .tippy-box[data-theme~='aa'] {
+      background: var(--panel-solid); color: var(--ink);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 11px; line-height: 1.45; box-shadow: 0 8px 24px rgba(43,29,16,0.24);
     }
-
-    /* Tokenized copy: [[terms]] are dotted-underline glossary hovers (same
-       tip visual as the bar's info hovers); {{chips}} echo a control label. */
-    .term { position: relative; text-decoration: underline dotted; text-underline-offset: 2px; cursor: help; }
-    .term .tip {
-      display: none; position: absolute; top: 0; left: 0;
-      width: 240px; background: var(--panel-solid); border: 1px solid var(--border); border-radius: 8px;
-      padding: 8px 10px; font-size: 11px; font-weight: 400; color: var(--ink); line-height: 1.45; z-index: 70;
-    }
+    .tippy-box[data-theme~='aa'] .tippy-content { padding: 8px 10px; max-width: 240px; }
     .ctl {
       font-size: 0.85em; font-weight: 650; padding: 0 0.35em; white-space: nowrap;
       border: 1px solid var(--border); border-radius: 0.5em; background: var(--panel);
@@ -331,27 +328,27 @@
 
   <div id="statusbar">
     <div class="barslot emph" id="bar-availability">
-      <span class="baglabel"><span id="bar-availability-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-availability-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-availability-label"></span><span class="info" id="bar-availability-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-availability-value">100%</span>
     </div>
     <div class="barslot emph" id="bar-p95">
-      <span class="baglabel"><span id="bar-p95-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-p95-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-p95-label"></span><span class="info" id="bar-p95-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-p95-value">0 ms</span>
     </div>
     <div class="barslot" id="bar-throughput">
-      <span class="baglabel"><span id="bar-throughput-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-throughput-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-throughput-label"></span><span class="info" id="bar-throughput-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-throughput-value">0</span>
     </div>
     <div class="barslot" id="bar-errors">
-      <span class="baglabel"><span id="bar-errors-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-errors-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-errors-label"></span><span class="info" id="bar-errors-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-errors-value">0</span>
     </div>
     <div class="barslot" id="bar-queue">
-      <span class="baglabel"><span id="bar-queue-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-queue-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-queue-label"></span><span class="info" id="bar-queue-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-queue-value">0</span>
     </div>
     <div class="barslot" id="bar-rejects">
-      <span class="baglabel"><span id="bar-rejects-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-rejects-hover"></span></span></span>
+      <span class="baglabel"><span id="bar-rejects-label"></span><span class="info" id="bar-rejects-info" tabindex="0"> &#9432;</span></span>
       <span class="bagvalue" id="bar-rejects-value">0</span>
     </div>
   </div>
