@@ -21,18 +21,18 @@ export const STRINGS = {
   stations: {
     'Database A': { label: 'Core datastore',                 short: 'core',     hover: 'The core datastore. Every request reads from it. Fast, always on, and the one dependency I never worry about.' },
     'Service B':  { label: 'Recommendations Service',        short: 'recs',     hover: 'Healthy when traffic is light, but its response time climbs as load rises and requests pile up behind it. It does not error; like a cat that will not be hurried, it only gets slower, and pushing harder never makes it catch up.' },
-    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a worker waits. Like a cat let out at night, it may never return on its own, so a tight timeout is what takes the worker back.' },
+    'Service C':  { label: 'Search Service',                 short: 'search',   hover: 'Usually instant, but now and then it hangs: a call goes out, nothing comes back, and a slot stays stuck. Like a cat let out at night, it may never return on its own, so a tight timeout is what takes the slot back.' },
     'External':   { label: 'Payments Service (third-party)', short: 'payments', hover: 'A third-party we do not control. Usually it answers; sometimes it is simply gone and refuses the connection at once. A breaker skips it so one missing feature does not sink the rest.' },
   },
 
   // One entry per act, index 0..7. title carries a little of the arm's gentle
   // personality; instruction and caption stay plain so the lesson reads clearly.
   acts: [
-    { title: 'A quiet morning',                 instruction: 'Find the highest {{Request rate}} the system still serves within the [[SLO]].',                                    caption: 'Each request hits every [[dependency]] at once and holds a [[worker]] until the slowest one returns, the way you cannot shut the door until the last cat is in.' },
-    { title: 'Payments drops out',              instruction: 'Make Payments fail: raise its {{error rate}} and watch availability fall.',                                        caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
+    { title: 'A quiet morning',                 instruction: 'Find the highest {{Request rate}} the system still serves within the [[SLO]].',                                    caption: 'Each request hits every [[dependency]] at once and holds a [[slot]] until the slowest one returns, the way you cannot shut the door until the last cat is in.' },
+    { title: 'Payments drops out',              instruction: 'Make Payments fail: raise its {{error rate}} and watch availability fall. ',                                        caption: 'A fast failure with nothing to catch it goes straight to the caller.' },
     { title: 'Stop waiting on Payments',        instruction: 'Turn on {{Breakers}} and watch one trip so the system stops waiting on Payments.',                                 caption: 'A [[breaker]] skips a dependency you know is down, trading that one feature for the [[SLO]].' },
-    { title: 'Search freezes',                  instruction: 'Make Search hang: raise its {{latency}}, then rein it in with a tight {{outgoing timeout}}.',                      caption: 'A [[timeout]] caps how long one hung call can tie up a [[worker]].' },
-    { title: 'Recommendations backs up',        instruction: 'Push {{Request rate}} until Recommendations backs up and [[wait]] time crosses the [[SLO]].',                      caption: 'A [[breaker]] cannot help a dependency that is slow but not failing.' },
+    { title: 'Search freezes',                  instruction: 'Make Search hang: raise its {{latency}}, then rein it in with a tight {{outgoing timeout}}.',                      caption: 'A [[timeout]] caps how long one hung call can tie up a [[slot]].' },
+    { title: 'Recommendations backs up',        instruction: 'Push {{Request rate}} until Recommendations backs up and [[response time]] crosses the [[SLO]].',                      caption: 'A [[breaker]] cannot help a dependency that is slow but not failing.' },
     { title: 'Give Recommendations its own lane', instruction: 'Turn on {{Bulkheads}} and cap Recommendations with its {{pool size}} so overflow is turned away fast.',          caption: 'A [[bulkhead]] turns a slow dependency into fast rejections the breaker can catch.' },
     { title: 'Stop guessing the size',          instruction: 'Turn on {{Adaptive pools}} while calm, then push {{Request rate}} and watch Recommendations size its own lane.',   caption: 'It learns the normal response time and sheds only when the [[queue]] grows. One knob instead of a guess.' },
     { title: 'The place is yours',              instruction: 'Everything is unlocked. Break the [[SLO]] however you like.',                                                      caption: 'No single tool wins. Which one holds depends on whether the dependency is slow or failing.' },
@@ -44,10 +44,10 @@ export const STRINGS = {
   tour: {
     buttons: { skip: 'Skip', prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
     step: 'Step {n} of {m}',
-    welcome: 'This is my service. Each request fans out to every [[dependency]] at once, and I hold a [[worker]] until the slowest one answers. Keep 99 of every 100 succeeding and the slow ones under 5 seconds; that promise is the [[SLO]]. Poke something and see what breaks.',
-    bubbleBar: 'Down here is the scoreboard: availability and [[wait]] time against the goal, with the rest of the counters beside them. Hover any label for what it means.',
-    bubbleDeps: 'These boxes are the upstream dependencies. Every request needs all of them at once, so the slowest one sets the pace. Click a box to select it and its controls appear on the right.',
-    bubblePanel: 'These knobs break things and add protections. When an act names a control, like {{Request rate}}, the name matches a label here exactly.',
+    welcome: 'This is our service. Each request goes out to every [[dependency]] at once, and I hold a [[slot]] until the slowest one answers. Our [[SLO]] is the promise we are graded on: 99% of requests succeed, and 95% finish within 5s. Two reading tips: words with a dotted underline each have a definition, so hover or tap one; a word boxed like {{Request rate}} names a control in the panel on the right, matched to its label exactly.',
+    bubbleBar: 'Down here is our service\'s health: in particular the [[availability]] and [[response time]], as well as other health measurements that might help you diagnose problems. Click on any of the ⓘ icons to learn more about that measurement.',
+    bubbleDeps: 'These boxes are the [[upstream]] dependencies. Every request from the client generates a request to each of the upstream dependencies. Our service needs responses from every upstream dependency to proceed, so the slowest one sets the pace. Click a box to select it and its controls appear on the right.',
+    bubblePanel: 'These knobs break things and add protections. Some make a dependency misbehave; others defend against it.',
     bubbleInstructions: 'Your instructions live here. Each act sets one goal ("Try this"), and Back, Next, and the dots move between acts. New controls get introduced as acts unlock them.',
     // One line per act that unlocks or reveals controls (keys match
     // NEW_CONTROLS_BY_ACT in tour.js). Shown in the whats-new bubble on
@@ -55,7 +55,7 @@ export const STRINGS = {
     whatsNew: {
       1: 'New: Payments Service and its {{error rate}} slider. Push it up to make the third party fail.',
       2: 'New: {{Breakers}}. One toggle arms an independent [[breaker]] on every outbound call.',
-      3: 'New: Search Service with its {{outgoing timeout}}, and the {{Worker pool}} slider.',
+      3: 'New: Search Service with its {{outgoing timeout}}, and the {{Slot pool}} slider.',
       4: 'New: Recommendations Service, and the {{Front-door timeout}} for shedding load at the door.',
       5: 'New: {{Bulkheads}} and the Recommendations {{pool size}} cap.',
       6: 'New: {{Adaptive pools}}. Each [[bulkhead]] learns its own size.',
@@ -67,11 +67,11 @@ export const STRINGS = {
   // info. Friendly-but-literal: this is the arm's scoreboard, so the labels name
   // the real metric and the hovers stay unambiguous (percentiles never get cute).
   bar: {
-    availability: { label: 'Availability', hover: 'Share of requests that succeeded, even if a dependency was skipped. Goal 99%.' },
-    p95:          { label: 'Wait',         hover: 'How long the slowest 5% of requests took, start to finish. Goal under 5s.' },
+    availability: { label: 'Availability', hover: 'Share of requests that succeeded, even if a dependency was skipped. Our goal is 99% successes.' },
+    p95:          { label: 'Response time', hover: 'How long a request takes start to finish. We drop the slowest 5% of responses and record the worst of the rest (the p95). Goal under 5s.' },
     throughput:   { label: 'Throughput',   hover: 'Requests served per second.' },
     errors:       { label: 'Errors',       hover: 'Requests that failed: a dependency errored, or the request never completed. Per second.' },
-    queue:        { label: 'Queue',        hover: 'Requests waiting for a free worker.' },
+    queue:        { label: 'Queue',        hover: 'Requests waiting for a free slot.' },
     rejects:      { label: 'Rejects',      hover: 'Requests a bulkhead turned away fast to protect a dependency. Per second.' },
   },
 
@@ -87,7 +87,7 @@ export const STRINGS = {
     incoming: 'incoming',
     outbound: 'outbound',
     queue: 'queue',
-    workers: 'workers',
+    workers: 'slots',
     frontTimeout: 'front-door timeout',
     // A call with no breaker or no bulkhead says so instead of sitting blank.
     none: 'none',
@@ -96,7 +96,7 @@ export const STRINGS = {
     callHead: { pool: 'connections', cap: 'cap', breaker: 'breaker', timeout: 'timeout' },
     // open/closed reads as jargon to non-electricians; keep these plain-language.
     breaker: { closed: 'passing', open: 'blocking', half_open: 'testing' },
-    serviceSub: 'workers {workers}, connections {connections}/∞',
+    serviceSub: 'slots {workers}, connections {connections}/∞',
     capacityServing: '{inService}/{capacity} serving',
     capacityHeld: '{held} held: {inService}/{capacity} serving, {queued} queued',
   },
@@ -116,7 +116,7 @@ export const STRINGS = {
   // instructions can never drift from the panel again.
   controls: {
     requestRate: 'Request rate',
-    workerPool: 'Worker pool',
+    workerPool: 'Slot pool',
     frontDoorTimeout: 'Front-door timeout',
     breakers: 'Breakers',
     bulkheads: 'Bulkheads',
@@ -136,16 +136,18 @@ export const STRINGS = {
   // these appears. Keys are lowercase; lookup is case-insensitive. Telemetry
   // voice: plain, literal, one or two sentences.
   glossary: {
+    'availability': 'The percentage of requests that are successful. This is a better measure of service health than "uptime", but it takes more work to calculate.',
     'slo': 'The service level objective: the promise this service is graded on. Here: 99 of every 100 requests succeed, and the slowest 5% finish in under 5 seconds.',
-    'worker': 'One unit of concurrency in our service. Each request holds a worker until every dependency answers or times out; when all workers are busy, new requests wait in the queue.',
+    'slot': 'One unit of concurrency in our service. Each request takes a slot and holds it until every dependency answers or times out; when every slot is full, new requests wait in the queue.',
     'dependency': 'A service ours must call to answer a request. Every request here fans out to all of them at once.',
-    'queue': 'Requests waiting for a free worker. A growing queue means work is arriving faster than it is finishing.',
+    'upstream': 'A service ours depends on and calls out to, sitting above us in the flow of a request. If an upstream is slow or failing, every request that needs it feels it.',
+    'queue': 'Requests waiting for a free slot. A growing queue means work is arriving faster than it is finishing.',
     'breaker': 'A circuit breaker watches a dependency for errors and, after enough failures, stops calling it for a while: fail fast now, retest later.',
-    'bulkhead': 'A cap on how many of our workers one dependency may hold at once. Like giving one cat its own room: the slow dependency can fill that room, but it cannot take the rest of the house down with it.',
+    'bulkhead': 'A cap on how many of our slots one dependency may hold at once. Like giving one cat its own room: the slow dependency can fill that room, but it cannot take the rest of the house down with it.',
     'connection pool': 'The outbound connections our service may hold to one dependency. Each in-flight call occupies one.',
-    'timeout': 'The longest we will wait on a call before giving up and taking the worker back.',
+    'timeout': 'The longest we will wait on a call before giving up and taking the slot back.',
     'adaptive pool': 'A bulkhead that sizes itself: it learns a dependency\'s normal response time and sheds load only when its queue grows.',
-    'wait': 'How long a request takes start to finish. The scoreboard tracks the slowest 5% of requests (the p95).',
+    'response time': 'How long a request takes start to finish. The scoreboard removes the slowest 5% of responses, then records the worst time of the remaining 95% (the 95th percentile or "p95").',
     'throughput': 'Requests served per second.',
     'rejects': 'Requests a bulkhead turned away immediately instead of letting them wait for a slow dependency.',
   },
