@@ -272,18 +272,6 @@
 
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
-    /* What's-new bubble: positionBubble (controls.js) moves it beside the panel
-       when an act unlocks controls. (The guided tour itself is Driver.js; see
-       vendor/driver.css and the .driver-popover.aa-tour theme below.) The sim
-       keeps running underneath -- no pause, no page dimming. */
-    .tourbubble {
-      position: fixed; width: min(300px, 80vw); background: var(--panel-solid);
-      border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
-      box-shadow: 0 8px 24px rgba(43,29,16,0.24); pointer-events: auto;
-    }
-    .tourbubble p { margin: 0 0 12px; color: var(--ink); line-height: 1.5; font-size: 13px; }
-    .tourbubble.hidden { display: none; }
-    #whatsnew { z-index: 85; }
     /* Red notification dot on the Tour button: an act unlocked new controls
        while the tour was skipped. Cleared when the tour is opened. */
     .tour-rerun-btn { position: relative; }
@@ -291,8 +279,6 @@
       content: ''; position: absolute; top: -3px; right: -3px;
       width: 9px; height: 9px; border-radius: 50%; background: var(--red);
     }
-    .tourfoot { display: flex; align-items: center; gap: 8px; }
-    .tourfoot button { font-size: 12px; padding: 5px 10px; }
 
     /* Driver.js tour popover themed to the app palette (its default is a white
        card with blue buttons). Scoped by popoverClass 'aa-tour'. */
@@ -378,13 +364,6 @@
     <div class="barslot" id="bar-rejects">
       <span class="baglabel"><span id="bar-rejects-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-rejects-hover"></span></span></span>
       <span class="bagvalue" id="bar-rejects-value">0</span>
-    </div>
-  </div>
-
-  <div class="tourbubble hidden" id="whatsnew">
-    <p id="whatsnew-text"></p>
-    <div class="tourfoot">
-      <button id="whatsnew-done">Done</button>
     </div>
   </div>
 
