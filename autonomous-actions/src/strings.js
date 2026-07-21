@@ -42,7 +42,7 @@ export const STRINGS = {
   // line per bubble. {n} and {m} are filled in with the step number and total.
   // welcome is the one place the arm's voice gets a little room to breathe.
   tour: {
-    buttons: { skip: 'Skip', prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
+    buttons: { prev: 'Back', next: 'Next', done: 'Done', rerun: 'Tour' },
     step: 'Step {n} of {m}',
     welcome: 'This is our service. Each request goes out to every [[dependency]] at once, and I hold a [[slot]] until the slowest one answers. Our [[SLO]] is the promise we are graded on: 99% of requests succeed, and 95% finish within 5s. Two reading tips: words with a dotted underline each have a definition, so hover or tap one; a word boxed like {{Request rate}} names a control in the panel on the right, matched to its label exactly.',
     bubbleBar: 'Down here is our service\'s health: in particular the [[availability]] and [[response time]], as well as other health measurements that might help you diagnose problems. Click on any of the ⓘ icons to learn more about that measurement.',
