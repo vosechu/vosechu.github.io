@@ -296,24 +296,14 @@
     .driver-popover.aa-tour .driver-popover-close-btn { color: var(--ink-dim); }
     .driver-popover.aa-tour .driver-popover-arrow { border-color: var(--panel-solid); }
 
-    /* "Fork me on GitHub" corner ribbon (pure CSS, no external asset). */
-    .forkribbon { position: fixed; top: 0; left: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
-    .forkribbon a {
-      position: absolute; top: 34px; left: -42px; width: 200px; padding: 6px 0;
-      transform: rotate(-45deg); text-align: center; pointer-events: auto; text-decoration: none;
-      background: var(--teal); color: var(--bg); font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
-      box-shadow: 0 2px 8px rgba(43,29,16,0.25);
-      border-top: 1px solid rgba(255,255,255,0.4); border-bottom: 1px solid rgba(43,29,16,0.25);
-    }
-    .forkribbon a:hover { background: #1c6b3a; }
-    @media (max-width: 900px) {
-      .forkribbon { display: none; }
-    }
+    /* "Fork me on GitHub" ribbon -- github-fork-ribbon-css v0.2.3, MIT (Simon Whitaker), tinted var(--teal) */
+    .github-fork-ribbon{width:12.1em;height:12.1em;position:absolute;overflow:hidden;top:0;right:0;z-index:9999;pointer-events:none;font-size:13px;text-decoration:none;text-indent:-999999px}.github-fork-ribbon.fixed{position:fixed}.github-fork-ribbon:active,.github-fork-ribbon:hover{background-color:rgba(0,0,0,0)}.github-fork-ribbon:after,.github-fork-ribbon:before{position:absolute;display:block;width:15.38em;height:1.54em;top:3.23em;right:-3.23em;box-sizing:content-box;transform:rotate(45deg)}.github-fork-ribbon:before{content:"";padding:.38em 0;background-color:var(--teal);background-image:linear-gradient(to bottom,rgba(0,0,0,0),rgba(0,0,0,.15));box-shadow:0 .15em .23em 0 rgba(0,0,0,.5);pointer-events:auto}.github-fork-ribbon:after{content:attr(data-ribbon);color:#fff;font:700 1em "Helvetica Neue",Helvetica,Arial,sans-serif;line-height:1.54em;text-decoration:none;text-shadow:0 -.08em rgba(0,0,0,.5);text-align:center;text-indent:0;padding:.15em 0;margin:.15em 0;border-width:.08em 0;border-style:dotted;border-color:rgba(255,255,255,.7)}
+    @media (max-width:640px){.github-fork-ribbon{display:none}}
 
   </style>
 </head>
 <body>
-  <div class="forkribbon"><a href="https://github.com/vosechu/vosechu.github.io" target="_blank" rel="noopener">Fork me on GitHub</a></div>
+  <a class="github-fork-ribbon fixed" href="https://github.com/vosechu/vosechu.github.io/tree/master/autonomous-actions" data-ribbon="Fork me on GitHub" title="Fork me on GitHub" target="_blank" rel="noopener">Fork me on GitHub</a>
 
   <div class="layout">
     <div class="leftcol">
