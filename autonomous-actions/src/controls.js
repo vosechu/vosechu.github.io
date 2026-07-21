@@ -9,6 +9,9 @@ import { STRINGS } from './strings.js';
 import { driver } from '../vendor/driver.js.mjs';
 import { TOUR_STEP_DEFS, shouldAutoOpen, NEW_CONTROLS_BY_ACT } from './tour.js';
 import { parseCopy, glossaryDef } from './copy.js';
+// Floating UI (positioning only) -- @floating-ui/dom@1.8.0, MIT, vendored as a
+// self-contained bundle. Places glossary/metric tooltips without clipping.
+import { computePosition, offset, flip, shift, autoUpdate } from '../vendor/floating-ui.dom.mjs';
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -47,10 +50,39 @@ function renderCopyInto(el, str) {
       tip.className = 'tip';
       tip.textContent = glossaryDef(seg.value) ?? '';
       span.appendChild(tip);
+      attachTip(span);
     }
     el.appendChild(span);
   }
 }
+
+// Position a token's or metric's .tip above its trigger with Floating UI,
+// flipping and shifting so it never clips at a viewport edge (the old pure-CSS
+// tip was centered at a fixed width and clipped near the edges). Absolute
+// strategy resolves against the tip's offsetParent, so it works inside the
+// Driver popovers too, whose transform would otherwise trap a fixed element.
+function attachTip(trigger) {
+  const tip = trigger.querySelector(':scope > .tip');
+  if (!tip) return;
+  let stop = null;
+  const show = () => {
+    tip.style.display = 'block';
+    stop = autoUpdate(trigger, tip, () =>
+      computePosition(trigger, tip, {
+        placement: 'top',
+        middleware: [offset(6), flip(), shift({ padding: 8 })],
+      }).then(({ x, y }) => { tip.style.left = `${x}px`; tip.style.top = `${y}px`; }));
+  };
+  const hide = () => { if (stop) { stop(); stop = null; } tip.style.display = 'none'; };
+  trigger.addEventListener('mouseenter', show);
+  trigger.addEventListener('mouseleave', hide);
+  trigger.addEventListener('focus', show);
+  trigger.addEventListener('blur', hide);
+}
+
+// The bar's info tooltips are static markup; wire them once. Dynamic [[term]]
+// tips get wired as renderCopyInto creates them.
+for (const el of document.querySelectorAll('.info')) attachTip(el);
 
 // A chip names a control label exactly (test/strings.test.js enforces it).
 // Hovering or focusing the chip draws the eye to that control: pulse it, and
