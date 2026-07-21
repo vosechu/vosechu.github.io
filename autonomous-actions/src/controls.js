@@ -3,7 +3,7 @@ import { defaultConfig, MAX_TICK_MS } from './config.js';
 import { makeRng } from './rng.js';
 import { buildScene, render } from './render.js';
 import { ACTS, actMeta } from './scenarios.js';
-import { labelOf, colorOf, hoverOf, shortOf } from './theme.js';
+import { labelOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
 import { STRINGS } from './strings.js';
 import { TOUR_STEPS, NEW_CONTROLS_BY_ACT, initialTourState, tourReducer } from './tour.js';
