@@ -4,13 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "SEATBELT_FROZEN=1 eslint . && node --test",
+    "test": "eslint . && node --test",
     "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.7.0",
-    "eslint-seatbelt": "^0.1.3",
     "globals": "^17.7.0"
   }
 }

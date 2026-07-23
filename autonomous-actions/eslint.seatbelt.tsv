@@ -1,6 +1,0 @@
-# eslint-seatbelt temporarily allowed errors
-# docs: https://github.com/justjake/eslint-seatbelt#readme
-
-"src/controls.js"	"complexity"	1
-"src/engine.js"	"complexity"	4
-"src/render.js"	"complexity"	2
