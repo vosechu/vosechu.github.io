@@ -399,23 +399,6 @@ function writeFlag(key, on) {
   } catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
 }
 
-const whatsnewEl = document.getElementById('whatsnew');
-
-// Place a fixed-position bubble adjacent to its anchor, clamped to the
-// viewport. Measures once per call (step open, whats-new open, window resize
-// while open): never on the per-frame path.
-function positionBubble(bubble, anchorEl, prefer) {
-  const a = anchorEl.getBoundingClientRect();
-  const b = bubble.getBoundingClientRect();
-  let left, top;
-  if (prefer === 'above') { left = a.left + a.width / 2 - b.width / 2; top = a.top - b.height - 12; }
-  else if (prefer === 'left') { left = a.left - b.width - 16; top = a.top + 16; }
-  else { left = a.left + a.width / 2 - b.width / 2; top = a.bottom + 12; }
-  left = Math.max(8, Math.min(left, window.innerWidth - b.width - 8));
-  top = Math.max(8, Math.min(top, window.innerHeight - b.height - 8));
-  bubble.style.left = `${left}px`;
-  bubble.style.top = `${top}px`;
-}
 
 function setTourDot(on) {
   for (const btn of document.querySelectorAll('.tour-rerun-btn')) btn.classList.toggle('dot', on);
@@ -468,23 +451,39 @@ for (const btn of document.querySelectorAll('.tour-rerun-btn')) {
   btn.addEventListener('click', startTour);
 }
 
-// Whats-new: on forward entry into an act that unlocks controls, either show
-// the one-line bubble (tour not skipped) or light the Tour button's dot.
-// Once per act per session; Back never re-triggers it.
+// Whats-new: on forward entry into an act that unlocks controls, spotlight the
+// newly-unlocked control with a one-off Driver.js popover (tour not skipped) or
+// light the Tour button's dot. Once per act per session; Back never re-triggers.
 let prevActIndex = -1;
 const whatsNewShown = new Set();
-document.getElementById('whatsnew-done').textContent = STRINGS.tour.buttons.done;
-document.getElementById('whatsnew-done').addEventListener('click', () => whatsnewEl.classList.add('hidden'));
+let whatsNewCopy = '';
+const whatsNew = driver({
+  showButtons: ['close'],
+  popoverClass: 'aa-tour',
+  onPopoverRender: (popover) => renderCopyInto(popover.description, whatsNewCopy),
+});
+
+// The DOM node for an act's first newly-unlocked control, opening its collapsed
+// section so the spotlight lands on something visible. null when the act unlocks
+// nothing pointable (the free-play sentinel), which centers the popover instead.
+function newControlElement(i) {
+  for (const key of NEW_CONTROLS_BY_ACT[i]) {
+    const el = panel.querySelector(`[data-control="${STRINGS.controls[key]}"]`);
+    if (!el) continue;
+    const section = el.closest('details');
+    if (section && !section.open) section.open = true;
+    return el;
+  }
+  return null;
+}
+
 function maybeShowWhatsNew(i) {
-  // A prior act's bubble is stale the moment the act changes; clear it first,
-  // then re-show only on forward entry into an act that unlocks controls.
-  whatsnewEl.classList.add('hidden');
+  whatsNew.destroy();   // clear any prior act's spotlight before deciding
   if (i <= prevActIndex || whatsNewShown.has(i) || !NEW_CONTROLS_BY_ACT[i]) return;
   if (tourSkipped) { setTourDot(true); return; }
   whatsNewShown.add(i);
-  renderCopyInto(document.getElementById('whatsnew-text'), STRINGS.tour.whatsNew[i]);
-  whatsnewEl.classList.remove('hidden');
-  positionBubble(whatsnewEl, panel, 'left');
+  whatsNewCopy = STRINGS.tour.whatsNew[i];
+  whatsNew.highlight({ element: newControlElement(i) || undefined, popover: { description: ' ' } });
 }
 
 // Auto-open on a first-ever visit. On return visits the tour stays closed; the
