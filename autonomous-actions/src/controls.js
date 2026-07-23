@@ -6,7 +6,8 @@ import { ACTS, actMeta } from './scenarios.js';
 import { labelOf } from './theme.js';
 import { rosterForAct, defaultStationForAct } from './topology.js';
 import { STRINGS } from './strings.js';
-import { TOUR_STEPS, NEW_CONTROLS_BY_ACT, initialTourState, tourReducer } from './tour.js';
+import { driver } from '../vendor/driver.js.mjs';
+import { TOUR_STEP_DEFS, shouldAutoOpen, NEW_CONTROLS_BY_ACT } from './tour.js';
 import { parseCopy, glossaryDef } from './copy.js';
 
 const clock = { now: () => performance.now() };
@@ -382,9 +383,8 @@ function selectStation(name) {
   render(sim.getState(), handle, selectedStation);
 }
 
-// Guided tour: a pure reducer (tour.js) driving a welcome dialog (step 0) and
-// one reusable bubble (steps 1-4) that is measured against its anchor when the
-// step opens (and on window resize while open), never per frame. localStorage
+// Guided tour: Driver.js drives the 5 steps (vendored, see vendor/driver.js.mjs);
+// the step definitions and the auto-open rule live in tour.js. localStorage
 // persists seen and skipped; both degrade to defaults when storage is missing.
 const TOUR_SEEN_KEY = 'aa_tour_seen';
 const TOUR_SKIP_KEY = 'aa_tour_skipped';
@@ -399,22 +399,7 @@ function writeFlag(key, on) {
   } catch { /* ignore: storage may be unavailable (private mode, etc.) */ }
 }
 
-let tourState = initialTourState(readFlag(TOUR_SEEN_KEY), readFlag(TOUR_SKIP_KEY));
-
-const tourOverlay = document.getElementById('tour-overlay');
-const tourWelcome = document.getElementById('tour-welcome');
-const tourBubble = document.getElementById('tourbubble');
 const whatsnewEl = document.getElementById('whatsnew');
-
-// Step 1..4 anchors: what the bubble points at and which side it prefers.
-// Copy keys index STRINGS.tour.
-const TOUR_STEP_DEFS = [
-  null,                                                        // 0: welcome dialog
-  { anchor: '#statusbar', prefer: 'above', key: 'bubbleBar' },
-  { anchor: '.col-deps',  prefer: 'left',  key: 'bubbleDeps' },
-  { anchor: '#panel',     prefer: 'left',  key: 'bubblePanel' },
-  { anchor: '#tour',      prefer: 'above', key: 'bubbleInstructions' },
-];
 
 // Place a fixed-position bubble adjacent to its anchor, clamped to the
 // viewport. Measures once per call (step open, whats-new open, window resize
@@ -436,60 +421,51 @@ function setTourDot(on) {
   for (const btn of document.querySelectorAll('.tour-rerun-btn')) btn.classList.toggle('dot', on);
 }
 
-function tourStepLabel(step) {
-  return STRINGS.tour.step.replace('{n}', String(step + 1)).replace('{m}', String(TOUR_STEPS));
-}
+// Mirror of the persisted skip flag; maybeShowWhatsNew reads it to decide
+// between showing the bubble and lighting the Tour button's dot.
+let tourSkipped = readFlag(TOUR_SKIP_KEY);
 
-function dispatchTour(action) {
-  tourState = tourReducer(tourState, action);
-  if (tourState.seen) writeFlag(TOUR_SEEN_KEY, true);
-  writeFlag(TOUR_SKIP_KEY, tourState.skipped);
-  if (action.type === 'open') setTourDot(false);   // opening the tour answers the dot
-  renderTour();
-}
+// Build the Driver.js tour once from the pure step defs (tour.js). Each
+// popover's copy is injected in onPopoverRender so [[terms]] and {{chips}}
+// render as interactive DOM (the welcome's Request-rate chip still pulses the
+// panel). The destroy hook persists seen/skipped and lights the skip dot.
+const tour = driver({
+  showProgress: true,
+  showButtons: ['next', 'previous', 'close'],
+  progressText: STRINGS.tour.step.replace('{n}', '{{current}}').replace('{m}', '{{total}}'),
+  nextBtnText: STRINGS.tour.buttons.next,
+  prevBtnText: STRINGS.tour.buttons.prev,
+  doneBtnText: STRINGS.tour.buttons.done,
+  popoverClass: 'aa-tour',
+  steps: TOUR_STEP_DEFS.map((def) => ({
+    element: def.element || undefined,
+    popover: { description: ' ' },   // real copy is injected in onPopoverRender
+  })),
+  onPopoverRender: (popover) => {
+    const def = TOUR_STEP_DEFS[tour.getActiveIndex()];
+    renderCopyInto(popover.description, STRINGS.tour[def.copyKey]);
+  },
+  onDestroyStarted: () => {
+    // Fires on close/skip AND on finishing the last step. Reaching the last
+    // step is seen-not-skipped; closing before it counts as a skip.
+    tourSkipped = !tour.isLastStep();
+    writeFlag(TOUR_SEEN_KEY, true);
+    writeFlag(TOUR_SKIP_KEY, tourSkipped);
+    if (tourSkipped) setTourDot(true);
+    tour.destroy();
+  },
+});
 
-function renderTour() {
-  tourOverlay.classList.toggle('hidden', !tourState.open);
-  if (!tourState.open) return;
-  const isWelcome = tourState.step === 0;
-  tourWelcome.style.display = isWelcome ? '' : 'none';
-  tourBubble.style.display = isWelcome ? 'none' : '';
-  if (isWelcome) {
-    renderCopyInto(document.getElementById('tour-welcome-text'), STRINGS.tour.welcome);
-    document.getElementById('tour-welcome-step').textContent = tourStepLabel(0);
-    return;
-  }
-  const def = TOUR_STEP_DEFS[tourState.step];
-  renderCopyInto(document.getElementById('tourbubble-text'), STRINGS.tour[def.key]);
-  document.getElementById('tourbubble-step').textContent = tourStepLabel(tourState.step);
-  tourBubble.querySelector('.tour-next-btn').textContent =
-    tourState.step >= TOUR_STEPS - 1 ? STRINGS.tour.buttons.done : STRINGS.tour.buttons.next;
-  positionBubble(tourBubble, document.querySelector(def.anchor), def.prefer);
-}
-window.addEventListener('resize', () => { if (tourState.open && tourState.step > 0) renderTour(); });
-
-document.getElementById('tour-skip').textContent = STRINGS.tour.buttons.skip;
-document.getElementById('tour-next').textContent = STRINGS.tour.buttons.next;
-document.getElementById('tour-skip').addEventListener('click', () => dispatchTour({ type: 'skip' }));
-document.getElementById('tour-next').addEventListener('click', () => dispatchTour({ type: 'next' }));
-for (const btn of document.querySelectorAll('.tour-skip-btn')) {
-  btn.textContent = STRINGS.tour.buttons.skip;
-  btn.addEventListener('click', () => dispatchTour({ type: 'skip' }));
-}
-for (const btn of document.querySelectorAll('.tour-prev-btn')) {
-  btn.textContent = STRINGS.tour.buttons.prev;
-  // Back one step by rendering from one step earlier; bounded at 0.
-  btn.addEventListener('click', () => {
-    tourState = { ...tourState, step: Math.max(0, tourState.step - 1) };
-    renderTour();
-  });
+// Re-run from the Tour button: opening answers a prior skip (and clears its dot).
+function startTour() {
+  tourSkipped = false;
+  writeFlag(TOUR_SKIP_KEY, false);
+  setTourDot(false);
+  tour.drive(0);
 }
 for (const btn of document.querySelectorAll('.tour-rerun-btn')) {
   btn.textContent = STRINGS.tour.buttons.rerun;
-  btn.addEventListener('click', () => dispatchTour({ type: 'open' }));
-}
-for (const btn of document.querySelectorAll('.tour-next-btn')) {
-  btn.addEventListener('click', () => dispatchTour({ type: 'next' }));
+  btn.addEventListener('click', startTour);
 }
 
 // Whats-new: on forward entry into an act that unlocks controls, either show
@@ -504,15 +480,18 @@ function maybeShowWhatsNew(i) {
   // then re-show only on forward entry into an act that unlocks controls.
   whatsnewEl.classList.add('hidden');
   if (i <= prevActIndex || whatsNewShown.has(i) || !NEW_CONTROLS_BY_ACT[i]) return;
-  if (tourState.skipped) { setTourDot(true); return; }
+  if (tourSkipped) { setTourDot(true); return; }
   whatsNewShown.add(i);
   renderCopyInto(document.getElementById('whatsnew-text'), STRINGS.tour.whatsNew[i]);
   whatsnewEl.classList.remove('hidden');
   positionBubble(whatsnewEl, panel, 'left');
 }
 
-renderTour();
+// Auto-open on a first-ever visit. On return visits the tour stays closed; the
+// skip dot is lit later by maybeShowWhatsNew if an act unlocks controls while
+// the tour was skipped.
 setTourDot(false);
+if (shouldAutoOpen(readFlag(TOUR_SEEN_KEY))) tour.drive(0);
 
 // Acts never patch sim state directly (ACTS carries no `patch` field, see
 // scenarios.test.js): the knobs stay however the player left them, and the

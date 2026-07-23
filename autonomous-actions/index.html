@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Autonomous actions: circuit breakers and bulkheads</title>
+  <link rel="stylesheet" href="./vendor/driver.css">
   <style>
     :root {
       --bg: #fdf6e9;
@@ -271,19 +272,10 @@
 
     input[type=range]:disabled { accent-color: var(--ink-dim); opacity: 0.55; cursor: not-allowed; }
 
-    /* Guided tour: a welcome dialog (step 0) plus one reusable bubble that
-       positionBubble (controls.js) moves to its anchor for steps 1-4. The
-       whats-new bubble reuses the same style. Overlays only; the sim keeps
-       running underneath (no pause, no dimming of the page). */
-    #tour-overlay { position: fixed; inset: 0; z-index: 90; pointer-events: none; }
-    #tour-overlay.hidden { display: none; }
-    #tour-welcome {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: min(440px, 86vw); background: var(--panel-solid); border: 1px solid var(--border);
-      border-radius: 14px; padding: 20px 22px; box-shadow: 0 12px 32px rgba(43,29,16,0.28);
-      pointer-events: auto;
-    }
-    #tour-welcome p { margin: 0 0 14px; color: var(--ink); line-height: 1.5; }
+    /* What's-new bubble: positionBubble (controls.js) moves it beside the panel
+       when an act unlocks controls. (The guided tour itself is Driver.js; see
+       vendor/driver.css and the .driver-popover.aa-tour theme below.) The sim
+       keeps running underneath -- no pause, no page dimming. */
     .tourbubble {
       position: fixed; width: min(300px, 80vw); background: var(--panel-solid);
       border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
@@ -300,8 +292,25 @@
       width: 9px; height: 9px; border-radius: 50%; background: var(--red);
     }
     .tourfoot { display: flex; align-items: center; gap: 8px; }
-    .tourfoot .tourstep { font-size: 11px; color: var(--ink-dim); margin-right: auto; }
     .tourfoot button { font-size: 12px; padding: 5px 10px; }
+
+    /* Driver.js tour popover themed to the app palette (its default is a white
+       card with blue buttons). Scoped by popoverClass 'aa-tour'. */
+    .driver-popover.aa-tour {
+      background: var(--panel-solid); color: var(--ink);
+      border: 1px solid var(--border); border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(43,29,16,0.28); max-width: 320px;
+    }
+    .driver-popover.aa-tour .driver-popover-title { color: var(--ink); font-size: 15px; }
+    .driver-popover.aa-tour .driver-popover-description { color: var(--ink); line-height: 1.5; font-size: 13px; }
+    .driver-popover.aa-tour .driver-popover-progress-text { color: var(--ink-dim); font-size: 11px; }
+    .driver-popover.aa-tour .driver-popover-navigation-btns button {
+      color: var(--ink); background: var(--panel); border: 1px solid var(--border);
+      border-radius: 7px; font-size: 12px; padding: 5px 10px; text-shadow: none;
+    }
+    .driver-popover.aa-tour .driver-popover-navigation-btns button:hover { background: var(--border); }
+    .driver-popover.aa-tour .driver-popover-close-btn { color: var(--ink-dim); }
+    .driver-popover.aa-tour .driver-popover-arrow { border-color: var(--panel-solid); }
 
     /* "Fork me on GitHub" corner ribbon (pure CSS, no external asset). */
     .forkribbon { position: fixed; top: 0; left: 0; width: 150px; height: 150px; overflow: hidden; z-index: 50; pointer-events: none; }
@@ -369,26 +378,6 @@
     <div class="barslot" id="bar-rejects">
       <span class="baglabel"><span id="bar-rejects-label"></span><span class="info" tabindex="0"> &#9432;<span class="tip" id="bar-rejects-hover"></span></span></span>
       <span class="bagvalue" id="bar-rejects-value">0</span>
-    </div>
-  </div>
-
-  <div id="tour-overlay" class="hidden">
-    <div id="tour-welcome">
-      <p id="tour-welcome-text"></p>
-      <div class="tourfoot">
-        <span class="tourstep" id="tour-welcome-step"></span>
-        <button id="tour-skip">Skip</button>
-        <button id="tour-next">Next</button>
-      </div>
-    </div>
-    <div class="tourbubble" id="tourbubble">
-      <p id="tourbubble-text"></p>
-      <div class="tourfoot">
-        <span class="tourstep" id="tourbubble-step"></span>
-        <button class="tour-skip-btn">Skip</button>
-        <button class="tour-prev-btn">Back</button>
-        <button class="tour-next-btn">Next</button>
-      </div>
     </div>
   </div>
 
