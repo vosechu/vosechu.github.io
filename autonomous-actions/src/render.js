@@ -97,8 +97,9 @@ function fillCells(cellsArr, { busy = 0, visible = cellsArr.length, wallFrom = n
 }
 
 // The fixed bottom status bar: one slot per STRINGS.bar key, every metric
-// always visible (no progressive reveal). Label/hover text is static copy,
-// set once here; only the value and pass/fail class change per frame (render()).
+// always visible (no progressive reveal). Labels are static copy, set once
+// here; only the value and pass/fail class change per frame (render()). The
+// hover tooltips are Tippy instances wired in controls.js.
 function buildStatusBar() {
   const byId = (id) => document.getElementById(id);
   const bar = {};
@@ -106,8 +107,6 @@ function buildStatusBar() {
     const copy = STRINGS.bar[key];
     const labelEl = byId(`bar-${key}-label`);
     if (labelEl) labelEl.textContent = copy.label;
-    const hoverEl = byId(`bar-${key}-hover`);
-    if (hoverEl) hoverEl.textContent = copy.hover;
     bar[key] = { slot: byId(`bar-${key}`), value: byId(`bar-${key}-value`) };
   }
   return bar;

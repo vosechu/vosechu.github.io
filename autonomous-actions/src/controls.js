@@ -9,6 +9,11 @@ import { STRINGS } from './strings.js';
 import { driver } from '../vendor/driver.js.mjs';
 import { TOUR_STEP_DEFS, shouldAutoOpen, NEW_CONTROLS_BY_ACT } from './tour.js';
 import { parseCopy, glossaryDef } from './copy.js';
+// Tippy.js (tooltips) -- tippy.js@6.3.7, MIT, vendored as a self-contained bundle
+// (includes @popperjs/core). Owns the glossary/metric tooltip DOM, positioning,
+// and show/hide; z-index sits above the tour overlay (Driver uses 1e9).
+import tippy from '../vendor/tippy.mjs';
+tippy.setDefaultProps({ theme: 'aa', arrow: false, zIndex: 1000000001 });
 
 const clock = { now: () => performance.now() };
 const sim = new Sim({ clock, rng: makeRng(1), config: defaultConfig() });
@@ -43,13 +48,19 @@ function renderCopyInto(el, str) {
     } else {
       span.className = 'term';
       span.tabIndex = 0;
-      const tip = document.createElement('span');
-      tip.className = 'tip';
-      tip.textContent = glossaryDef(seg.value) ?? '';
-      span.appendChild(tip);
+      const def = glossaryDef(seg.value);
+      if (def) tippy(span, { content: def });
     }
     el.appendChild(span);
   }
+}
+
+// The bar's info tooltips: one Tippy per metric, content straight from
+// STRINGS.bar (the dynamic [[term]] tips get a Tippy as renderCopyInto creates
+// them). Tippy owns the DOM, positioning, and show/hide.
+for (const key of Object.keys(STRINGS.bar)) {
+  const el = document.getElementById(`bar-${key}-info`);
+  if (el) tippy(el, { content: STRINGS.bar[key].hover });
 }
 
 // A chip names a control label exactly (test/strings.test.js enforces it).
