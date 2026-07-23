@@ -1,15 +1,10 @@
 import js from '@eslint/js';
 import globals from 'globals';
-import seatbelt from 'eslint-seatbelt';
 
-// eslint-seatbelt ratchets rule violations: existing ones are grandfathered in
-// eslint.seatbelt.tsv, new ones fail the lint, and fixing one tightens the budget.
-// It replaces the old hand-rolled acorn complexity gate. The `complexity` rule is
-// the ratcheted metric; run `SEATBELT_INCREASE=complexity npx eslint .` to grandfather
-// an existing offender on purpose, and `npm test` (or CI=1) fails on any new one.
+// ESLint handles linting (unused vars, undefined refs, etc.). Complexity is NOT
+// gated here per-function; it is ratcheted in aggregate by test/complexity.test.js,
+// which sums every function's complexity across src/ and fails if the total rises.
 export default [
-  seatbelt.configs.enable,
-
   // Vendored third-party libraries are not ours to lint.
   { ignores: ['vendor/**'] },
 
@@ -22,9 +17,6 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: globals.browser,
-    },
-    rules: {
-      complexity: ['error', 10],
     },
   },
 
