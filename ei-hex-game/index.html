@@ -127,6 +127,7 @@
   }
   .status.show { opacity: 1; }
   .status.won { color: var(--gold); transition-delay: .5s; }
+  .status.helped { color: var(--dim); font-size: 1rem; }
   .status.cueing { color: var(--cue); font-family: var(--data); font-size: .95rem; }
 
   /* ---- controls ---- */
@@ -447,6 +448,7 @@ function drawInstantly() {
 
 let cueing = false;
 let plan = null;
+let assisted = false;           // sticky for the puzzle: peeking once forfeits the win
 
 function refreshCue() {
   plan = cueing && !finished ? solve(turns) : null;
@@ -455,7 +457,9 @@ function refreshCue() {
     const needed = plan ? plan[i] : 0;
     remaining += needed;
     tile.classList.toggle('cued', needed > 0);
-    cueEls[i].textContent = needed > 1 ? needed : '';
+    // Always show the count, including 1. A highlighted tile with no number reads as
+    // a different kind of thing from one with a number, rather than as "tap once".
+    cueEls[i].textContent = needed > 0 ? needed : '';
   });
   return remaining;
 }
@@ -464,8 +468,8 @@ function setStatus() {
   const remaining = refreshCue();
   statusEl.className = 'status';
   if (finished) {
-    statusEl.textContent = 'Solved.';
-    statusEl.classList.add('show', 'won');
+    statusEl.textContent = assisted ? 'Solved with help.' : 'Solved.';
+    statusEl.classList.add('show', assisted ? 'helped' : 'won');
   } else if (plan && remaining === 0) {
     // Solved, but not won: this is the board Reset hands back.
     statusEl.textContent = 'Solved. Build a sequence from here.';
@@ -559,13 +563,13 @@ function finish() {
   finished = true;
   const elapsed = stopClock();
   const best = readBest();
-  // Only a genuinely scrambled board can set a record. Solving your way back from
-  // Reset to solved still celebrates, but a two-second lap does not become the best.
-  if (ranked && elapsed > 0 && (best === null || elapsed < best)) {
+  // Only a genuinely scrambled board solved unaided can set a record. Reset hands back
+  // a board nobody scrambled, and the solver hands back the answer; neither counts.
+  if (ranked && !assisted && elapsed > 0 && (best === null || elapsed < best)) {
     try { localStorage.setItem(BEST_KEY, elapsed); } catch (e) { /* private mode */ }
   }
   showBest();
-  board.classList.add('solved');
+  if (!assisted) board.classList.add('solved');   // no gold for a solved-for-you board
   refresh();
 }
 
@@ -578,6 +582,7 @@ function clearFinish() {
 
 cueingEl.addEventListener('click', () => {
   cueing = !cueing;
+  if (cueing) assisted = true;    // stays set until New puzzle, so peek-then-hide still forfeits
   cueingEl.setAttribute('aria-pressed', String(cueing));
   cueingEl.textContent = cueing ? 'Hide solution' : 'Show solution';
   refresh();
@@ -605,6 +610,7 @@ document.getElementById('fresh').addEventListener('click', newPuzzle);
 function newPuzzle() {
   clearFinish();
   ranked = true;
+  assisted = false;
   for (let i = 0; i < turns.length; i++) turns[i] = 0;
   scramble(40);
   for (let i = 0; i < turns.length; i++) turns[i] %= STEPS;   // keep the counts small
