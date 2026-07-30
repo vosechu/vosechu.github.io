@@ -12,7 +12,10 @@
     --dim: #a9a9a9;
     --line: #575757;
     --warm: #9a9a9a;
-    --gold: #f2c879;
+    --gold: #f2c879;           /* warm: finished */
+    --cue: #8fd0e0;            /* cool: do this next */
+    --display: Georgia, "Times New Roman", serif;
+    --data: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     --ease: cubic-bezier(.22, 1.4, .36, 1);   /* quick off the mark, slight overshoot */
   }
   * { box-sizing: border-box; }
@@ -20,21 +23,21 @@
     margin: 0; min-height: 100vh; padding: 0 1rem 2rem;
     background: radial-gradient(ellipse 70% 60% at 50% 34%, #3d3d3d 0%, var(--bg) 62%, #262626 100%);
     color: var(--ink);
-    font-family: Georgia, "Times New Roman", serif; text-align: center;
+    font-family: var(--display); text-align: center;
     -webkit-text-size-adjust: 100%;
   }
   h1 { font-weight: 400; font-size: clamp(1.7rem, 5.5vw, 2.5rem); margin: 1.1rem 0 .3rem; }
   .hint { max-width: 27em; margin: 0 auto .8rem; color: var(--dim); font-size: .95rem; }
 
-  /* ---- stats ---- */
-  .stats { display: flex; justify-content: center; gap: clamp(1.2rem, 5vw, 3rem); margin: 0 auto .9rem; }
-  .stat { min-width: 5.5em; }
-  .stat dt { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
-  .stat dd {
-    margin: .15rem 0 0; font-size: clamp(1rem, 3.6vw, 1.35rem);
-    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
-  }
-  #best { color: var(--dim); }
+  /* ---- readout ---- The clock leads; best and moves are reference. Mono and
+     lowercase rather than the usual letterspaced caps, because this is a
+     speedcuber's workbench and its numbers should read like an instrument. */
+  .stats { display: flex; justify-content: center; gap: clamp(1rem, 4vw, 2.4rem); margin: 0 auto .9rem; }
+  .stat dt { font-family: var(--data); font-size: .68rem; color: var(--dim); }
+  .stat dd { display: inline-block; margin: .2rem 0 0; font-family: var(--data); font-variant-numeric: tabular-nums; }
+  #clock { min-width: 9ch; font-size: clamp(1.3rem, 4.6vw, 1.8rem); }
+  #best { min-width: 9ch; font-size: clamp(.9rem, 3vw, 1.1rem); color: var(--dim); }
+  #moves { min-width: 3ch; font-size: clamp(.9rem, 3vw, 1.1rem); color: var(--dim); }
 
   /* ---- board ----
      37 flat-top hexes tile into one pointy-top hexagon. A hexagon of hexagons is
@@ -58,8 +61,8 @@
   }
 
   /* The hex is drawn a touch inside the clip so its stroke survives, which also
-     leaves the hairline seam between tiles that the screenshots have. */
-  /* Two stacked SVGs: a still hexagon and a spinning arrow. pointer-events stay off
+     leaves the hairline seam between tiles that the screenshots have.
+     Two stacked SVGs: a still hexagon and a spinning arrow. pointer-events stay off
      so the clip-path above is the only hit area. */
   .tile svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .cell {
@@ -69,7 +72,8 @@
   .tile.warm .cell { fill: rgba(255, 255, 255, .05); stroke: var(--warm); }
   .tile:active .cell { fill: rgba(255, 255, 255, .11); }
   .tile:focus-visible { outline: none; }
-  .tile:focus-visible .cell { stroke: #9fb8d8; stroke-width: 6; }
+  /* Outscopes .tile.cued below on purpose: a cued tile must still show it has focus. */
+  #board .tile:focus-visible .cell { stroke: #cfe0f2; stroke-width: 7; }
 
   /* Only the arrow turns. Spinning the hexagon too looks identical at rest, since a
      regular hexagon is unchanged by a sixth of a turn, but halfway through the tween
@@ -93,6 +97,16 @@
   /* Instant repaint for scrambles and resets: no spin from the old state. */
   #board.no-tween .spin { transition: none; }
 
+  /* ---- the cue ---- Taps commute, so the hint is a set, not a sequence. Every tile
+     that needs a tap lights at once. The count only shows when it is more than one,
+     since the highlight already says "tap this". */
+  .cue {
+    position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%);
+    font-family: var(--data); font-size: calc(var(--p) * .19); line-height: 1;
+    color: var(--cue); pointer-events: none;
+  }
+  .tile.cued .cell { stroke: var(--cue); stroke-width: 4; fill: rgba(143, 208, 224, .07); }
+
   /* ---- solved: a glow rippling out from the centre ---- */
   #board.solved .cell {
     animation: flare 1.5s ease-out both;
@@ -106,28 +120,33 @@
     100% { fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55); stroke-width: 2.5; }
   }
 
-  .banner {
-    margin: .9rem auto 0; height: 1.6rem; color: var(--gold); font-size: 1.2rem;
-    opacity: 0; transform: translateY(6px); transition: opacity .5s ease .5s, transform .5s ease .5s;
+  /* One status line, one job: say where play stands. */
+  .status {
+    margin: .9rem auto 0; height: 1.6rem; font-size: 1.15rem;
+    opacity: 0; transition: opacity .3s ease;
   }
-  .banner.show { opacity: 1; transform: none; }
+  .status.show { opacity: 1; }
+  .status.won { color: var(--gold); transition-delay: .5s; }
+  .status.helped { color: var(--dim); font-size: 1rem; }
+  .status.cueing { color: var(--cue); font-family: var(--data); font-size: .95rem; }
 
   /* ---- controls ---- */
   .controls { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem; margin: .7rem auto 0; }
   .controls button {
     font-family: inherit; font-size: .95rem; padding: .5rem 1.1rem;
     color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 3px;
-    cursor: pointer; transition: border-color .18s ease, background-color .18s ease;
+    cursor: pointer; transition: border-color .18s ease, background-color .18s ease, color .18s ease;
   }
   .controls button:hover:enabled { border-color: var(--warm); background: rgba(255, 255, 255, .05); }
   .controls button:disabled { color: #6d6d6d; cursor: default; }
+  #cueing[aria-pressed="true"] { color: var(--cue); border-color: var(--cue); }
 
   @media (prefers-reduced-motion: reduce) {
     .spin, .arrow { transition-duration: 1ms; }
     #board.solved .cell {
       animation: none; fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55);
     }
-    .banner { transition: none; }
+    .status { transition: none; }
   }
 </style>
 </head>
@@ -137,15 +156,16 @@
 <p class="hint">Make all arrows point upward by tapping tiles. Each tap turns the tile and its neighbours a sixth of a turn clockwise.</p>
 
 <dl class="stats">
-  <div class="stat"><dt>Time</dt><dd id="clock">00:00.000</dd></div>
-  <div class="stat"><dt>Best</dt><dd id="best">&ndash;</dd></div>
-  <div class="stat"><dt>Moves</dt><dd id="moves">0</dd></div>
+  <div class="stat"><dt>time</dt><dd id="clock">00:00.000</dd></div>
+  <div class="stat"><dt>best</dt><dd id="best">&ndash;</dd></div>
+  <div class="stat"><dt>moves</dt><dd id="moves">0</dd></div>
 </dl>
 
 <div id="board"></div>
-<p class="banner" id="banner" role="status">Solved.</p>
+<p class="status" id="status" role="status"></p>
 
 <div class="controls">
+  <button type="button" id="cueing" aria-pressed="false">Show solution</button>
   <button type="button" id="undo" disabled>Undo</button>
   <button type="button" id="reset">Reset to solved</button>
   <button type="button" id="fresh">New puzzle</button>
@@ -185,7 +205,8 @@ const distanceOf = c => (Math.abs(c.q) + Math.abs(c.r) + Math.abs(c.q + c.r)) / 
 const turns = cells.map(() => 0);
 const taps = [];
 
-const isSolved = () => turns.every(t => t % STEPS === 0);
+const mod = (v, m) => ((v % m) + m) % m;
+const isSolved = () => turns.every(t => mod(t, STEPS) === 0);
 
 function turn(i, direction) {
   for (const j of groups[i]) turns[j] += direction;
@@ -197,20 +218,149 @@ function scramble(count) {
   for (let k = 0; k < count; k++) turn(Math.floor(Math.random() * cells.length), 1);
 }
 
-/* ===================== structural self-test ===================== */
+/* ===================== solver ===================== */
 
-// The board's shape is easy to get subtly wrong and hard to eyeball, so assert it:
-// 19 interior tiles turn 7 at once, 12 edge tiles turn 5, 6 corner tiles turn 4.
+// Taps commute and each has order 6, so a solution is not a sequence: it is a count
+// of taps per tile, applied in any order. Finding it means solving A x = -s over Z/6,
+// where A[j][i] is 1 when tapping i turns j. Z/6 splits as Z/2 x Z/3, so solve mod 2
+// and mod 3 by exact Gaussian elimination and recombine with the remainder theorem.
+// No floating point and no search anywhere in here.
+
+const MATRIX = cells.map((c, j) => cells.map((d, i) => (groups[i].indexOf(j) === -1 ? 0 : 1)));
+
+function inversesModP(p) {
+  const inv = [0];
+  for (let a = 1; a < p; a++) {
+    for (let b = 1; b < p; b++) if (a * b % p === 1) inv[a] = b;
+  }
+  return inv;
+}
+
+// Reduced row echelon form. Returns one solution plus a basis of A's kernel, which is
+// every tap-combination that does nothing at all.
+function solveModP(rhs, p) {
+  const n = MATRIX.length;
+  const inv = inversesModP(p);
+  const a = MATRIX.map((row, r) => row.concat(rhs[r]).map(v => mod(v, p)));
+  const pivotRow = new Array(n).fill(-1);
+  let row = 0;
+
+  for (let col = 0; col < n && row < n; col++) {
+    let found = -1;
+    for (let r = row; r < n; r++) if (a[r][col]) { found = r; break; }
+    if (found === -1) continue;
+    const swap = a[row]; a[row] = a[found]; a[found] = swap;
+    const scale = inv[a[row][col]];
+    for (let c = col; c <= n; c++) a[row][c] = a[row][c] * scale % p;
+    for (let r = 0; r < n; r++) {
+      if (r === row || !a[r][col]) continue;
+      const f = a[r][col];
+      for (let c = col; c <= n; c++) a[r][c] = (a[r][c] - f * a[row][c] % p + p) % p;
+    }
+    pivotRow[col] = row;
+    row++;
+  }
+
+  for (let r = row; r < n; r++) if (a[r][n]) return null;      // inconsistent
+
+  const particular = new Array(n).fill(0);
+  const basis = [];
+  for (let col = 0; col < n; col++) {
+    if (pivotRow[col] !== -1) { particular[col] = a[pivotRow[col]][n]; continue; }
+    const v = new Array(n).fill(0);
+    v[col] = 1;
+    for (let c = 0; c < n; c++) if (pivotRow[c] !== -1) v[c] = (p - a[pivotRow[c]][col]) % p;
+    basis.push(v);
+  }
+  return { particular, basis, p };
+}
+
+function* coset(sol) {
+  const total = Math.pow(sol.p, sol.basis.length);
+  for (let pick = 0; pick < total; pick++) {
+    const x = sol.particular.slice();
+    let rest = pick;
+    for (const v of sol.basis) {
+      const k = rest % sol.p;
+      rest = Math.floor(rest / sol.p);
+      if (k) for (let i = 0; i < x.length; i++) x[i] = (x[i] + k * v[i]) % sol.p;
+    }
+    yield x;
+  }
+}
+
+// x == a (mod 2) and x == b (mod 3). Write x = a + 2t, then 2t == b - a (mod 3),
+// and 2 is its own inverse mod 3, so t == 2(b - a) (mod 3).
+const combine = (a, b) => a.map((v, i) => v + 2 * mod(2 * (b[i] - v), 3));
+
+function applyPlan(state, plan) {
+  const after = state.slice();
+  plan.forEach((count, i) => {
+    for (let k = 0; k < count; k++) for (const j of groups[i]) after[j] = (after[j] + 1) % STEPS;
+  });
+  return after;
+}
+
+const MAX_CANDIDATES = 4096;
+
+// Returns taps-per-tile, fewest taps first, or null if this state cannot be solved.
+// Verifies its own answer before handing it back, so a wrong hint is impossible.
+function solve(rawTurns) {
+  const state = rawTurns.map(v => mod(v, STEPS));
+  const want = state.map(v => mod(-v, STEPS));
+  const mod2 = solveModP(want.map(v => v % 2), 2);
+  const mod3 = solveModP(want.map(v => v % 3), 3);
+  if (!mod2 || !mod3) return null;
+
+  let best = null;
+  let fewest = Infinity;
+  const candidates = Math.pow(2, mod2.basis.length) * Math.pow(3, mod3.basis.length);
+  if (candidates <= MAX_CANDIDATES) {
+    for (const a of coset(mod2)) {
+      for (const b of coset(mod3)) {
+        const x = combine(a, b);
+        let cost = 0;
+        for (const v of x) cost += v;
+        if (cost < fewest) { fewest = cost; best = x; }
+      }
+    }
+  } else {
+    best = combine(mod2.particular, mod3.particular);
+  }
+
+  return applyPlan(state, best).every(v => v === 0) ? best : null;
+}
+
+/* ===================== self-test ===================== */
+
+// Two things worth asserting on load. The board's shape, because 19 seven-tile groups,
+// 12 five-tile and 6 four-tile is easy to get wrong and hard to eyeball. And the
+// solver, end to end: solve() verifies its own plan, so a scramble it answers at all
+// is a scramble it genuinely solves.
 (function selfTest() {
   const sizes = {};
   for (const g of groups) sizes[g.length] = (sizes[g.length] || 0) + 1;
-  const symmetric = groups.every((g, i) => g.every(j => groups[j].includes(i)));
-  const pass = cells.length === 37 && symmetric &&
-               sizes[7] === 19 && sizes[5] === 12 && sizes[4] === 6;
+  const symmetric = groups.every((g, i) => g.every(j => groups[j].indexOf(i) !== -1));
+  const shapeOk = cells.length === 37 && symmetric &&
+                  sizes[7] === 19 && sizes[5] === 12 && sizes[4] === 6;
+
+  let solverOk = true;
+  for (let t = 0; t < 20 && solverOk; t++) {
+    const probe = cells.map(() => 0);
+    for (let k = 0; k < 40; k++) {
+      const i = Math.floor(Math.random() * cells.length);
+      for (const j of groups[i]) probe[j]++;
+    }
+    solverOk = solve(probe) !== null;
+  }
+
+  const kernel2 = solveModP(cells.map(() => 0), 2).basis.length;
+  const kernel3 = solveModP(cells.map(() => 0), 3).basis.length;
+  const pass = shapeOk && solverOk;
   console[pass ? 'log' : 'error'](
     '[arrow-puzzle] self-test ' + (pass ? 'PASS' : 'FAIL') +
-    ': ' + cells.length + ' tiles, group sizes ' + JSON.stringify(sizes) +
-    ', adjacency ' + (symmetric ? 'symmetric' : 'ASYMMETRIC'));
+    ': shape ' + (shapeOk ? 'ok' : 'BAD') + ', solver ' + (solverOk ? 'ok on 20 scrambles' : 'FAILED') +
+    ', kernel dimension ' + kernel2 + ' mod 2 and ' + kernel3 + ' mod 3');
 })();
 
 /* ===================== display ===================== */
@@ -223,7 +373,8 @@ const TILE_SVG =
   '<polygon class="cell" points="97,0 48.5,-84.004 -48.5,-84.004 -97,0 -48.5,84.004 48.5,84.004"/></svg>' +
   // Sat 3 units above the geometric centre: a chevron is bottom-heavy, so its bounding
   // box being centred reads as low. Units, not pixels, so it scales with the tile.
-  '<svg class="spin" ' + VIEW_BOX + '><path class="arrow" d="M-38 14 L0 -20 L38 14"/></svg>';
+  '<svg class="spin" ' + VIEW_BOX + '><path class="arrow" d="M-38 14 L0 -20 L38 14"/></svg>' +
+  '<span class="cue"></span>';
 
 const HEADINGS = ['up', 'upper right', 'lower right', 'down', 'lower left', 'upper left'];
 
@@ -231,12 +382,17 @@ const HEADINGS = ['up', 'upper right', 'lower right', 'down', 'lower left', 'upp
 const offsetX = c => Math.sqrt(3) / 2 * c.q;
 const offsetY = c => c.r + c.q / 2;
 
+// Named the way a player counting across the screen would, not by axial coordinate.
+const topOfColumn = q => Math.max(-RADIUS, -RADIUS - q);
+const placeOf = c => 'column ' + (c.q + RADIUS + 1) + ', tile ' + (c.r - topOfColumn(c.q) + 1);
+
 const board = document.getElementById('board');
 const clockEl = document.getElementById('clock');
 const bestEl = document.getElementById('best');
 const movesEl = document.getElementById('moves');
-const bannerEl = document.getElementById('banner');
+const statusEl = document.getElementById('status');
 const undoEl = document.getElementById('undo');
+const cueingEl = document.getElementById('cueing');
 
 const tiles = cells.map((c, i) => {
   const tile = document.createElement('button');
@@ -256,6 +412,8 @@ const tiles = cells.map((c, i) => {
   return tile;
 });
 
+const cueEls = tiles.map(tile => tile.querySelector('.cue'));
+
 function setWarm(i, on) {
   for (const j of groups[i]) tiles[j].classList.toggle('warm', on);
 }
@@ -271,9 +429,10 @@ function setRipple(i) {
 function draw() {
   tiles.forEach((tile, i) => {
     tile.style.setProperty('--turn', turns[i]);
-    const c = cells[i];
+    const needed = plan ? plan[i] : 0;
     tile.setAttribute('aria-label',
-      c.q + ',' + c.r + ': arrow ' + HEADINGS[((turns[i] % STEPS) + STEPS) % STEPS]);
+      placeOf(cells[i]) + ': arrow ' + HEADINGS[mod(turns[i], STEPS)] +
+      (needed ? ', tap ' + needed + (needed > 1 ? ' times' : ' time') : ''));
   });
 }
 
@@ -285,17 +444,58 @@ function drawInstantly() {
   board.classList.remove('no-tween');
 }
 
+/* ===================== cue ===================== */
+
+let cueing = false;
+let plan = null;
+let assisted = false;           // sticky for the puzzle: peeking once forfeits the win
+
+function refreshCue() {
+  plan = cueing && !finished ? solve(turns) : null;
+  let remaining = 0;
+  tiles.forEach((tile, i) => {
+    const needed = plan ? plan[i] : 0;
+    remaining += needed;
+    tile.classList.toggle('cued', needed > 0);
+    // Always show the count, including 1. A highlighted tile with no number reads as
+    // a different kind of thing from one with a number, rather than as "tap once".
+    cueEls[i].textContent = needed > 0 ? needed : '';
+  });
+  return remaining;
+}
+
+function setStatus() {
+  const remaining = refreshCue();
+  statusEl.className = 'status';
+  if (finished) {
+    statusEl.textContent = assisted ? 'Solved with help.' : 'Solved.';
+    statusEl.classList.add('show', assisted ? 'helped' : 'won');
+  } else if (plan && remaining === 0) {
+    // Solved, but not won: this is the board Reset hands back.
+    statusEl.textContent = 'Solved. Build a sequence from here.';
+    statusEl.classList.add('show', 'cueing');
+  } else if (plan) {
+    statusEl.textContent = remaining + (remaining === 1 ? ' tap' : ' taps') + ', in any order';
+    statusEl.classList.add('show', 'cueing');
+  } else if (cueing) {
+    statusEl.textContent = 'No solution from here.';
+    statusEl.classList.add('show', 'cueing');
+  } else {
+    statusEl.textContent = '';
+  }
+}
+
 /* ===================== clock ===================== */
 
 let startedAt = null;
 let frame = null;
 
+// Bumped to v2 to abandon records written before undo stopped counting as a win.
+const BEST_KEY = 'ei-hex-game.best.v2';
+
 const pad = (n, width) => String(n).padStart(width, '0');
 const format = ms =>
   pad(Math.floor(ms / 60000), 2) + ':' + pad(Math.floor(ms / 1000) % 60, 2) + '.' + pad(Math.floor(ms) % 1000, 3);
-
-// Bumped to v2 to abandon records written before undo stopped counting as a win.
-const BEST_KEY = 'ei-hex-game.best.v2';
 
 function readBest() {
   try {
@@ -346,14 +546,15 @@ function play(i, direction) {
   turn(i, direction);
   if (direction > 0) taps.push(i); else taps.pop();
   setRipple(i);
-  draw();
-  refresh();
   // Only a forward move can win. Undoing back into a solved board is not a solve:
   // after Reset to solved, one tap plus one undo would otherwise claim a victory.
-  if (direction > 0 && isSolved()) finish();
+  if (direction > 0 && isSolved()) finish(); else refresh();
 }
 
+// draw() reads plan, so the cue has to be recomputed before the tiles are drawn.
 function refresh() {
+  setStatus();
+  draw();
   movesEl.textContent = taps.length;
   undoEl.disabled = finished || taps.length === 0;
 }
@@ -362,24 +563,30 @@ function finish() {
   finished = true;
   const elapsed = stopClock();
   const best = readBest();
-  // Only a genuinely scrambled board can set a record. Solving your way back from
-  // Reset to solved still celebrates, but a two-second lap does not become the best.
-  if (ranked && elapsed > 0 && (best === null || elapsed < best)) {
+  // Only a genuinely scrambled board solved unaided can set a record. Reset hands back
+  // a board nobody scrambled, and the solver hands back the answer; neither counts.
+  if (ranked && !assisted && elapsed > 0 && (best === null || elapsed < best)) {
     try { localStorage.setItem(BEST_KEY, elapsed); } catch (e) { /* private mode */ }
   }
   showBest();
-  board.classList.add('solved');
-  bannerEl.classList.add('show');
-  undoEl.disabled = true;
+  if (!assisted) board.classList.add('solved');   // no gold for a solved-for-you board
+  refresh();
 }
 
 function clearFinish() {
   finished = false;
   board.classList.remove('solved');
-  bannerEl.classList.remove('show');
 }
 
 /* ===================== controls ===================== */
+
+cueingEl.addEventListener('click', () => {
+  cueing = !cueing;
+  if (cueing) assisted = true;    // stays set until New puzzle, so peek-then-hide still forfeits
+  cueingEl.setAttribute('aria-pressed', String(cueing));
+  cueingEl.textContent = cueing ? 'Hide solution' : 'Show solution';
+  refresh();
+});
 
 undoEl.addEventListener('click', () => {
   if (taps.length) play(taps[taps.length - 1], -1);
@@ -394,7 +601,6 @@ document.getElementById('reset').addEventListener('click', () => {
   for (let i = 0; i < turns.length; i++) turns[i] = Math.ceil(turns[i] / STEPS) * STEPS;
   taps.length = 0;
   setRipple(null);
-  draw();
   resetClock();
   refresh();
 });
@@ -404,14 +610,17 @@ document.getElementById('fresh').addEventListener('click', newPuzzle);
 function newPuzzle() {
   clearFinish();
   ranked = true;
+  assisted = false;
   for (let i = 0; i < turns.length; i++) turns[i] = 0;
   scramble(40);
   for (let i = 0; i < turns.length; i++) turns[i] %= STEPS;   // keep the counts small
   taps.length = 0;
   setRipple(null);
-  drawInstantly();
   resetClock();
-  refresh();
+  setStatus();
+  drawInstantly();
+  movesEl.textContent = 0;
+  undoEl.disabled = true;
 }
 
 showBest();
