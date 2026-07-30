@@ -146,7 +146,12 @@
   /* Visibility is the hidden attribute alone, so there is one source of truth. */
   .sheet { max-width: 62rem; margin: 2.6rem auto 0; }
   .sheet h2 { font-weight: 400; font-size: 1.35rem; margin: 0 0 .4rem; }
+  .sheet { scroll-margin-top: 1rem; }
   .sheet > p { color: var(--dim); font-size: .95rem; max-width: 40em; margin: 0 auto 1.8rem; }
+  .sheet h3 {
+    font-family: var(--data); font-weight: 400; font-size: .82rem; color: var(--cue);
+    margin: 2rem 0 1rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line);
+  }
   .algos { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 2rem 1.4rem; }
   .algo { margin: 0; }
   .pair { display: flex; justify-content: center; gap: .5rem; }
@@ -187,6 +192,7 @@
   <button type="button" id="reset">Reset to solved</button>
   <button type="button" id="fresh">New puzzle</button>
   <button type="button" id="sheeting" aria-pressed="false" aria-controls="sheet">Algorithm sheet</button>
+  <button type="button" id="clearbest">Reset best time</button>
 </div>
 
 <section class="sheet" id="sheet" hidden></section>
@@ -360,6 +366,34 @@ const KERNEL_3 = solveModP(cells.map(() => 0), 3).basis;
 
 // Every solvable position has exactly this many solutions: 2^4 * 3^5 = 3888.
 const SOLUTION_COUNT = Math.pow(2, KERNEL_2.length) * Math.pow(3, KERNEL_3.length);
+// True when a symmetry maps a vector onto itself.
+function fixedBy(v, perm) {
+  for (let i = 0; i < v.length; i++) if (v[perm[i]] !== v[i]) return false;
+  return true;
+}
+
+// Equally short solutions are equally correct, so among them prefer one that shares the
+// position's own symmetry: a symmetric algorithm is far easier to hold in your head.
+// Since A(g.x) = g.(A x), any symmetry fixing the position carries a solution to another
+// solution of the same length, so a symmetric choice is usually available. Falls back to
+// the lexicographically smallest, which at least makes the pick deterministic rather
+// than "whichever one the enumeration happened to reach first".
+function mostSymmetric(candidates, state) {
+  const stabiliser = SYMMETRIES.filter(perm => fixedBy(state, perm));
+  let best = null;
+  let bestScore = -1;
+  let bestKey = null;
+  for (const x of candidates) {
+    let score = 0;
+    for (const perm of stabiliser) if (fixedBy(x, perm)) score++;
+    const key = x.join(',');
+    if (score > bestScore || (score === bestScore && key < bestKey)) {
+      best = x; bestScore = score; bestKey = key;
+    }
+  }
+  return best;
+}
+
 const MAX_CANDIDATES = 4096;
 // 3888 fits under the cap, so the search below really does see every solution and its
 // answer is the true minimum rather than the best of a sample.
@@ -390,18 +424,25 @@ function patternReachable(support, values) {
 // The smallest positions that can be solved at all. These are the endgame cases worth
 // memorising, and they are what a single-tile algorithm would be if one existed: it
 // cannot, because A is not surjective, so nothing isolates one tile.
-// Stops at `limit` distinct cases so a size with thousands of them cannot hang the page.
-// Reports that it stopped rather than passing off a truncated count as the total.
-function findSmallestPatterns(maxSize, limit) {
-  for (let size = 1; size <= maxSize; size++) {
+// Solvable positions grouped by how many tiles are wrong, one group per requested size.
+// Two independent stops, both reported rather than hidden: `limit` distinct cases per
+// size, and a shared budget of reachability tests so the button can never hang. A group
+// is complete only when neither stop fired, and the sheet says so either way.
+function findPatterns(sizes, limit, budget) {
+  let spent = 0;
+  return sizes.map(size => {
     const found = new Map();
     const support = new Array(size);
     const values = new Array(size);
     let capped = false;
+    let overBudget = false;
+
+    const stop = () => capped || overBudget;
 
     const walkValues = k => {
-      if (capped) return;
+      if (stop()) return;
       if (k === size) {
+        if (++spent > budget) { overBudget = true; return; }
         if (!patternReachable(support, values)) return;
         const s = cells.map(() => 0);
         for (let j = 0; j < size; j++) s[support[j]] = values[j];
@@ -412,22 +453,21 @@ function findSmallestPatterns(maxSize, limit) {
         }
         return;
       }
-      for (let v = 1; v < STEPS && !capped; v++) { values[k] = v; walkValues(k + 1); }
+      for (let v = 1; v < STEPS && !stop(); v++) { values[k] = v; walkValues(k + 1); }
     };
 
     const walkSupport = (from, k) => {
-      if (capped) return;
+      if (stop()) return;
       if (k === size) { walkValues(0); return; }
-      for (let pos = from; pos < cells.length && !capped; pos++) {
+      for (let pos = from; pos < cells.length && !stop(); pos++) {
         support[k] = pos;
         walkSupport(pos + 1, k + 1);
       }
     };
 
     walkSupport(0, 0);
-    if (found.size) return { size, found, capped };
-  }
-  return null;
+    return { size, found, complete: !capped && !overBudget };
+  });
 }
 
 // Returns taps-per-tile, fewest taps first, or null if this state cannot be solved.
@@ -439,7 +479,7 @@ function solve(rawTurns) {
   const mod3 = solveModP(want.map(v => v % 3), 3);
   if (!mod2 || !mod3) return null;
 
-  let best = null;
+  let shortest = [];
   let fewest = Infinity;
   if (PROVABLY_FEWEST) {
     for (const a of coset(mod2)) {
@@ -447,13 +487,15 @@ function solve(rawTurns) {
         const x = combine(a, b);
         let cost = 0;
         for (const v of x) cost += v;
-        if (cost < fewest) { fewest = cost; best = x; }
+        if (cost < fewest) { fewest = cost; shortest = [x]; }
+        else if (cost === fewest) shortest.push(x);
       }
     }
   } else {
-    best = combine(mod2.particular, mod3.particular);
+    shortest = [combine(mod2.particular, mod3.particular)];
   }
 
+  const best = mostSymmetric(shortest, state);
   return applyPlan(state, best).every(v => v === 0) ? best : null;
 }
 
@@ -743,6 +785,13 @@ document.getElementById('reset').addEventListener('click', () => {
 
 document.getElementById('fresh').addEventListener('click', newPuzzle);
 
+// No confirm() here on purpose: a modal would block the page, and the stored value is one
+// local best time rather than anything you cannot simply set again.
+document.getElementById('clearbest').addEventListener('click', () => {
+  try { localStorage.removeItem(BEST_KEY); } catch (e) { /* private mode */ }
+  showBest();
+});
+
 function newPuzzle() {
   clearFinish();
   ranked = true;
@@ -786,43 +835,56 @@ function miniBoard(marks, klass, withArrows) {
   return mini;
 }
 
+const SHEET_SIZES = [1, 2, 3, 4];
+
 function buildSheet() {
-  const result = findSmallestPatterns(3, 60);
-  if (!result) {
-    sheetEl.innerHTML = '<h2>Algorithm sheet</h2><p>No position with three or fewer ' +
-      'wrong tiles can be solved on this board, so the smallest endgame case is larger ' +
-      'than this search covers.</p>';
+  const groups = findPatterns(SHEET_SIZES, 60, 6e6).filter(g => g.found.size);
+
+  sheetEl.innerHTML =
+    '<h2>Algorithm sheet</h2><p>Positions with up to ' + SHEET_SIZES[SHEET_SIZES.length - 1] +
+    ' wrong tiles that can be solved at all, grouped by how many are wrong and ' +
+    'deduplicated by the board\'s twelve symmetries. Left board is what you see, right ' +
+    'board is where to tap, in any order. Nothing turns a single tile on its own, because ' +
+    'A is not surjective, so these are as small as an endgame gets.</p>';
+
+  if (!groups.length) {
+    sheetEl.insertAdjacentHTML('beforeend',
+      '<p>No position with ' + SHEET_SIZES[SHEET_SIZES.length - 1] +
+      ' or fewer wrong tiles can be solved on this board.</p>');
     return;
   }
 
-  const entries = [...result.found.values()];
-  const shown = entries.slice(0, MAX_SHEET_ENTRIES);
-  sheetEl.innerHTML =
-    '<h2>Algorithm sheet</h2><p>The smallest position this puzzle can be left in has <b>' +
-    result.size + '</b> wrong tiles. Up to the board\'s twelve symmetries there ' +
-    (entries.length === 1 ? 'is <b>1</b> such case'
-      : 'are ' + (result.capped ? 'at least ' : '') + '<b>' + entries.length + '</b> such cases') +
-    (entries.length > shown.length ? ', of which the first ' + shown.length + ' are shown' : '') +
-    '. Left board is what you see; right board is where to tap, in any order. ' +
-    'Nothing turns a single tile on its own, so these are as small as an endgame gets.</p>' +
-    '<div class="algos"></div>';
-  const grid = sheetEl.querySelector('.algos');
+  for (const group of groups) {
+    const entries = [...group.found.values()];
+    const shown = entries.slice(0, MAX_SHEET_ENTRIES);
+    const block = document.createElement('section');
+    const count = (group.complete ? '' : 'at least ') + entries.length;
+    block.innerHTML =
+      '<h3>' + group.size + (group.size === 1 ? ' wrong tile' : ' wrong tiles') + ' &middot; ' +
+      count + (entries.length === 1 ? ' case' : ' cases') +
+      (group.complete ? ' (complete)' : ' (search stopped early)') +
+      (entries.length > shown.length ? ', showing ' + shown.length : '') +
+      '</h3><div class="algos"></div>';
+    const grid = block.querySelector('.algos');
 
-  shown.forEach((pattern, n) => {
-    const algo = solve(pattern);
-    const figure = document.createElement('figure');
-    figure.className = 'algo';
-    const pair = document.createElement('div');
-    pair.className = 'pair';
-    pair.append(miniBoard(pattern, 'off', true), miniBoard(algo || [], 'cued', false));
-    const caption = document.createElement('figcaption');
-    const taps = algo ? algo.reduce((sum, v) => sum + v, 0) : 0;
-    caption.textContent = algo
-      ? 'case ' + (n + 1) + ' · ' + taps + ' taps'
-      : 'case ' + (n + 1) + ' · unsolvable, which should be impossible here';
-    figure.append(pair, caption);
-    grid.append(figure);
-  });
+    shown.forEach((pattern, n) => {
+      const algo = solve(pattern);
+      const figure = document.createElement('figure');
+      figure.className = 'algo';
+      const pair = document.createElement('div');
+      pair.className = 'pair';
+      pair.append(miniBoard(pattern, 'off', true), miniBoard(algo || [], 'cued', false));
+      const caption = document.createElement('figcaption');
+      const taps = algo ? algo.reduce((sum, v) => sum + v, 0) : 0;
+      caption.textContent = algo
+        ? 'case ' + (n + 1) + ' · ' + taps + ' taps'
+        : 'case ' + (n + 1) + ' · unsolvable, which should be impossible here';
+      figure.append(pair, caption);
+      grid.append(figure);
+    });
+
+    sheetEl.append(block);
+  }
 }
 
 let sheetBuilt = false;
@@ -831,6 +893,11 @@ sheetingEl.addEventListener('click', () => {
   if (opening && !sheetBuilt) { buildSheet(); sheetBuilt = true; }
   sheetEl.hidden = !opening;
   sheetingEl.setAttribute('aria-pressed', String(opening));
+  // Has to follow unhiding: you cannot scroll to a display:none element.
+  if (opening) {
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    sheetEl.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+  }
 });
 
 showBest();
