@@ -59,15 +59,9 @@
 
   /* The hex is drawn a touch inside the clip so its stroke survives, which also
      leaves the hairline seam between tiles that the screenshots have. */
-  /* Only the arrow needs to turn, but a regular hexagon is unchanged by a sixth
-     of a turn, so spinning the whole SVG costs nothing and keeps the markup flat.
-     pointer-events stay off it so the clip-path above is the only hit area. */
-  .tile svg {
-    display: block; width: 100%; height: 100%; pointer-events: none;
-    transform: rotate(calc(var(--turn) * 60deg));
-    transition: transform .26s var(--ease);
-    transition-delay: var(--delay, 0ms);
-  }
+  /* Two stacked SVGs: a still hexagon and a spinning arrow. pointer-events stay off
+     so the clip-path above is the only hit area. */
+  .tile svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .cell {
     fill: transparent; stroke: var(--line); stroke-width: 2.5;
     transition: fill .18s ease, stroke .18s ease, stroke-width .18s ease;
@@ -77,21 +71,36 @@
   .tile:focus-visible { outline: none; }
   .tile:focus-visible .cell { stroke: #9fb8d8; stroke-width: 6; }
 
+  /* Only the arrow turns. Spinning the hexagon too looks identical at rest, since a
+     regular hexagon is unchanged by a sixth of a turn, but halfway through the tween
+     it sits at 30 degrees with its corners past the clip-path, so the outline gets
+     sliced along the seams it shares with its neighbours.
+     The rotation goes on a root <svg>, which is the one SVG element that centres its
+     own transform-origin. Rotating the <path> instead needs transform-box, whose
+     reference box starts at user-space 0,0 rather than at the viewBox corner, so
+     50% 50% lands half a tile away and flings the arrow out of the clip. */
+  .spin {
+    transform: rotate(calc(var(--turn) * 60deg));
+    transition: transform .26s var(--ease) var(--delay, 0ms);
+  }
   .arrow {
+    --stroke-delay: 0ms;
     fill: none; stroke: var(--ink); stroke-width: 12;
     stroke-linecap: round; stroke-linejoin: round;
-    transition: stroke .45s ease;
+    transition: stroke .45s ease var(--stroke-delay);
   }
 
   /* Instant repaint for scrambles and resets: no spin from the old state. */
-  #board.no-tween .tile svg { transition: none; }
+  #board.no-tween .spin { transition: none; }
 
   /* ---- solved: a glow rippling out from the centre ---- */
   #board.solved .cell {
     animation: flare 1.5s ease-out both;
     animation-delay: calc(var(--dist) * 130ms);
   }
-  #board.solved .arrow { stroke: var(--gold); transition-delay: calc(var(--dist) * 130ms); }
+  /* Delays the stroke only. Overriding transition-delay here would also delay the
+     turn, which would stall the winning move's own rotation. */
+  #board.solved .arrow { stroke: var(--gold); --stroke-delay: calc(var(--dist) * 130ms); }
   @keyframes flare {
     35% { fill: rgba(242, 200, 121, .34); stroke: var(--gold); stroke-width: 4; }
     100% { fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55); stroke-width: 2.5; }
@@ -114,7 +123,7 @@
   .controls button:disabled { color: #6d6d6d; cursor: default; }
 
   @media (prefers-reduced-motion: reduce) {
-    .tile svg, .arrow { transition-duration: 1ms; }
+    .spin, .arrow { transition-duration: 1ms; }
     #board.solved .cell {
       animation: none; fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55);
     }
@@ -208,10 +217,13 @@ function scramble(count) {
 
 // Hex of size 97 inside a viewBox sized for 100, so the stroke clears the clip-path
 // and leaves a hairline seam. The chevron's apex points at the tile's top edge.
+const VIEW_BOX = 'viewBox="-100 -86.603 200 173.205" aria-hidden="true"';
 const TILE_SVG =
-  '<svg viewBox="-100 -86.603 200 173.205" aria-hidden="true">' +
-  '<polygon class="cell" points="97,0 48.5,-84.004 -48.5,-84.004 -97,0 -48.5,84.004 48.5,84.004"/>' +
-  '<path class="arrow" d="M-38 17 L0 -17 L38 17"/></svg>';
+  '<svg ' + VIEW_BOX + '>' +
+  '<polygon class="cell" points="97,0 48.5,-84.004 -48.5,-84.004 -97,0 -48.5,84.004 48.5,84.004"/></svg>' +
+  // Sat 3 units above the geometric centre: a chevron is bottom-heavy, so its bounding
+  // box being centred reads as low. Units, not pixels, so it scales with the tile.
+  '<svg class="spin" ' + VIEW_BOX + '><path class="arrow" d="M-38 14 L0 -20 L38 14"/></svg>';
 
 const HEADINGS = ['up', 'upper right', 'lower right', 'down', 'lower left', 'upper left'];
 
@@ -282,9 +294,12 @@ const pad = (n, width) => String(n).padStart(width, '0');
 const format = ms =>
   pad(Math.floor(ms / 60000), 2) + ':' + pad(Math.floor(ms / 1000) % 60, 2) + '.' + pad(Math.floor(ms) % 1000, 3);
 
+// Bumped to v2 to abandon records written before undo stopped counting as a win.
+const BEST_KEY = 'ei-hex-game.best.v2';
+
 function readBest() {
   try {
-    const raw = Number(localStorage.getItem('ei-hex-game.best'));
+    const raw = Number(localStorage.getItem(BEST_KEY));
     return Number.isFinite(raw) && raw > 0 ? raw : null;
   } catch (e) { return null; }        // storage blocked in private mode
 }
@@ -323,6 +338,7 @@ function resetClock() {
 /* ===================== turn loop ===================== */
 
 let finished = false;
+let ranked = true;              // false once Reset hands back a board nobody scrambled
 
 function play(i, direction) {
   if (finished) return;
@@ -332,7 +348,9 @@ function play(i, direction) {
   setRipple(i);
   draw();
   refresh();
-  if (isSolved()) finish();
+  // Only a forward move can win. Undoing back into a solved board is not a solve:
+  // after Reset to solved, one tap plus one undo would otherwise claim a victory.
+  if (direction > 0 && isSolved()) finish();
 }
 
 function refresh() {
@@ -344,8 +362,10 @@ function finish() {
   finished = true;
   const elapsed = stopClock();
   const best = readBest();
-  if (elapsed > 0 && (best === null || elapsed < best)) {
-    try { localStorage.setItem('ei-hex-game.best', elapsed); } catch (e) { /* private mode */ }
+  // Only a genuinely scrambled board can set a record. Solving your way back from
+  // Reset to solved still celebrates, but a two-second lap does not become the best.
+  if (ranked && elapsed > 0 && (best === null || elapsed < best)) {
+    try { localStorage.setItem(BEST_KEY, elapsed); } catch (e) { /* private mode */ }
   }
   showBest();
   board.classList.add('solved');
@@ -370,6 +390,7 @@ undoEl.addEventListener('click', () => {
 // there in at most five steps instead of unwinding the whole game backwards.
 document.getElementById('reset').addEventListener('click', () => {
   clearFinish();
+  ranked = false;
   for (let i = 0; i < turns.length; i++) turns[i] = Math.ceil(turns[i] / STEPS) * STEPS;
   taps.length = 0;
   setRipple(null);
@@ -382,6 +403,7 @@ document.getElementById('fresh').addEventListener('click', newPuzzle);
 
 function newPuzzle() {
   clearFinish();
+  ranked = true;
   for (let i = 0; i < turns.length; i++) turns[i] = 0;
   scramble(40);
   for (let i = 0; i < turns.length; i++) turns[i] %= STEPS;   // keep the counts small
