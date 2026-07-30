@@ -13,7 +13,7 @@
     --line: #575757;
     --warm: #9a9a9a;
     --gold: #f2c879;
-    --ease: cubic-bezier(.34, 1.4, .5, 1);
+    --ease: cubic-bezier(.22, 1.4, .36, 1);   /* quick off the mark, slight overshoot */
   }
   * { box-sizing: border-box; }
   body {
@@ -65,7 +65,7 @@
   .tile svg {
     display: block; width: 100%; height: 100%; pointer-events: none;
     transform: rotate(calc(var(--turn) * 60deg));
-    transition: transform .42s var(--ease);
+    transition: transform .26s var(--ease);
     transition-delay: var(--delay, 0ms);
   }
   .cell {
@@ -252,7 +252,7 @@ function setWarm(i, on) {
 function setRipple(i) {
   const group = i === null ? [] : groups[i];
   tiles.forEach((tile, k) => {
-    tile.style.setProperty('--delay', group.indexOf(k) > 0 ? '55ms' : '0ms');
+    tile.style.setProperty('--delay', group.indexOf(k) > 0 ? '38ms' : '0ms');
   });
 }
 
