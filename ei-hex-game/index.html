@@ -6,121 +6,394 @@
 <title>Arrow Puzzle</title>
 <style>
   :root {
-    --p: min(14vw, 11vh);   /* distance between adjacent tile centres */
-    --bg: #363636;
-    --ink: #e8e8e8;
-    --dim: #c0c0c0;
-    --line: #5c5c5c;
+    --p: min(12.5vw, 8.8vh);   /* distance between adjacent tile centres */
+    --bg: #2f2f2f;
+    --ink: #ececec;
+    --dim: #a9a9a9;
+    --line: #575757;
+    --warm: #9a9a9a;
+    --gold: #f2c879;
+    --ease: cubic-bezier(.34, 1.4, .5, 1);
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0; min-height: 100vh; padding-bottom: 2rem;
-    background: var(--bg); color: var(--ink);
+    margin: 0; min-height: 100vh; padding: 0 1rem 2rem;
+    background: radial-gradient(ellipse 70% 60% at 50% 34%, #3d3d3d 0%, var(--bg) 62%, #262626 100%);
+    color: var(--ink);
     font-family: Georgia, "Times New Roman", serif; text-align: center;
     -webkit-text-size-adjust: 100%;
   }
-  h1 { font-weight: 400; font-size: clamp(1.6rem, 5vw, 2.4rem); margin: 1.3rem 0 .5rem; }
-  p { max-width: 26em; margin: 0 auto 1.3rem; padding: 0 1rem; color: var(--dim); }
+  h1 { font-weight: 400; font-size: clamp(1.7rem, 5.5vw, 2.5rem); margin: 1.1rem 0 .3rem; }
+  .hint { max-width: 27em; margin: 0 auto .8rem; color: var(--dim); font-size: .95rem; }
 
-  /* The board is a hexagon of hexagons, so its bounding box is 6.2 x 7 pitches. */
-  #board { position: relative; width: calc(6.2 * var(--p)); height: calc(7 * var(--p)); margin: 0 auto; }
+  /* ---- stats ---- */
+  .stats { display: flex; justify-content: center; gap: clamp(1.2rem, 5vw, 3rem); margin: 0 auto .9rem; }
+  .stat { min-width: 5.5em; }
+  .stat dt { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .stat dd {
+    margin: .15rem 0 0; font-size: clamp(1rem, 3.6vw, 1.35rem);
+    font-variant-numeric: tabular-nums; font-feature-settings: "tnum";
+  }
+  #best { color: var(--dim); }
 
+  /* ---- board ----
+     37 flat-top hexes tile into one pointy-top hexagon. A hexagon of hexagons is
+     always turned 30 degrees from its own tiles, so tiles flat-topped and board
+     pointy-topped is the only pairing that matches the reference screenshots.
+     Bounding box is 6.36 x 7 pitches. */
+  #board { position: relative; width: calc(6.36 * var(--p)); height: calc(7 * var(--p)); margin: 0 auto; }
+
+  /* A flat-top hex of pitch P measures 2P/sqrt(3) across the points by P across
+     the flats. clip-path trims the button to that hex so neighbouring tiles,
+     whose rectangles overlap at the corners, can't steal each other's clicks. */
   .tile {
+    --turn: 0;
     position: absolute; left: 50%; top: 50%;
-    width: calc(.98 * var(--p)); aspect-ratio: 1;
+    width: calc(1.1547 * var(--p)); height: var(--p);
     transform: translate(-50%, -50%)
                translate(calc(var(--x) * var(--p)), calc(var(--y) * var(--p)));
-    padding: 0; background: none; border: 1px solid var(--line); border-radius: 50%;
+    padding: 0; border: 0; background: none;
+    clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
     cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation;
   }
-  .tile:hover { border-color: #909090; }
-  .tile:focus-visible { outline: 2px solid #9fb8d8; outline-offset: 2px; }
 
-  /* Only the arrow turns; the circle is rotationally symmetric anyway. */
+  /* The hex is drawn a touch inside the clip so its stroke survives, which also
+     leaves the hairline seam between tiles that the screenshots have. */
+  /* Only the arrow needs to turn, but a regular hexagon is unchanged by a sixth
+     of a turn, so spinning the whole SVG costs nothing and keeps the markup flat.
+     pointer-events stay off it so the clip-path above is the only hit area. */
   .tile svg {
-    display: block; width: 100%; height: 100%;
+    display: block; width: 100%; height: 100%; pointer-events: none;
     transform: rotate(calc(var(--turn) * 60deg));
-    transition: transform .22s ease-out;
+    transition: transform .42s var(--ease);
+    transition-delay: var(--delay, 0ms);
   }
-  .tile path {
-    fill: none; stroke: var(--ink); stroke-width: 2.6;
+  .cell {
+    fill: transparent; stroke: var(--line); stroke-width: 2.5;
+    transition: fill .18s ease, stroke .18s ease, stroke-width .18s ease;
+  }
+  .tile.warm .cell { fill: rgba(255, 255, 255, .05); stroke: var(--warm); }
+  .tile:active .cell { fill: rgba(255, 255, 255, .11); }
+  .tile:focus-visible { outline: none; }
+  .tile:focus-visible .cell { stroke: #9fb8d8; stroke-width: 6; }
+
+  .arrow {
+    fill: none; stroke: var(--ink); stroke-width: 12;
     stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke .45s ease;
   }
-  @media (prefers-reduced-motion: reduce) { .tile svg { transition: none; } }
+
+  /* Instant repaint for scrambles and resets: no spin from the old state. */
+  #board.no-tween .tile svg { transition: none; }
+
+  /* ---- solved: a glow rippling out from the centre ---- */
+  #board.solved .cell {
+    animation: flare 1.5s ease-out both;
+    animation-delay: calc(var(--dist) * 130ms);
+  }
+  #board.solved .arrow { stroke: var(--gold); transition-delay: calc(var(--dist) * 130ms); }
+  @keyframes flare {
+    35% { fill: rgba(242, 200, 121, .34); stroke: var(--gold); stroke-width: 4; }
+    100% { fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55); stroke-width: 2.5; }
+  }
+
+  .banner {
+    margin: .9rem auto 0; height: 1.6rem; color: var(--gold); font-size: 1.2rem;
+    opacity: 0; transform: translateY(6px); transition: opacity .5s ease .5s, transform .5s ease .5s;
+  }
+  .banner.show { opacity: 1; transform: none; }
+
+  /* ---- controls ---- */
+  .controls { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem; margin: .7rem auto 0; }
+  .controls button {
+    font-family: inherit; font-size: .95rem; padding: .5rem 1.1rem;
+    color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 3px;
+    cursor: pointer; transition: border-color .18s ease, background-color .18s ease;
+  }
+  .controls button:hover:enabled { border-color: var(--warm); background: rgba(255, 255, 255, .05); }
+  .controls button:disabled { color: #6d6d6d; cursor: default; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile svg, .arrow { transition-duration: 1ms; }
+    #board.solved .cell {
+      animation: none; fill: rgba(242, 200, 121, .1); stroke: rgba(242, 200, 121, .55);
+    }
+    .banner { transition: none; }
+  }
 </style>
 </head>
 <body>
 
 <h1>Arrow Puzzle</h1>
-<p>Make all arrows point upward by tapping tiles. Each tap turns the tile and its neighbours.</p>
+<p class="hint">Make all arrows point upward by tapping tiles. Each tap turns the tile and its neighbours a sixth of a turn clockwise.</p>
+
+<dl class="stats">
+  <div class="stat"><dt>Time</dt><dd id="clock">00:00.000</dd></div>
+  <div class="stat"><dt>Best</dt><dd id="best">&ndash;</dd></div>
+  <div class="stat"><dt>Moves</dt><dd id="moves">0</dd></div>
+</dl>
+
 <div id="board"></div>
+<p class="banner" id="banner" role="status">Solved.</p>
+
+<div class="controls">
+  <button type="button" id="undo" disabled>Undo</button>
+  <button type="button" id="reset">Reset to solved</button>
+  <button type="button" id="fresh">New puzzle</button>
+</div>
 
 <script>
 'use strict';
 
-/* ---------------- game logic (knows nothing about the DOM) ---------------- */
+/* ===================== game logic (knows nothing about the DOM) ===================== */
 
-var RADIUS = 3;                                              // 3n^2 - 3n + 1 = 37 tiles at n = 4
-var NEIGHBOURS = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+const RADIUS = 3;                                    // 3n^2 - 3n + 1 = 37 tiles at side n = 4
+const STEPS = 6;                                     // sixths of a turn
+const NEIGHBOURS = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
 
 // Axial coordinates of every tile in a hexagon of hexagons.
-var cells = [];
-for (var q = -RADIUS; q <= RADIUS; q++) {
-  for (var r = -RADIUS; r <= RADIUS; r++) {
-    if (Math.abs(q + r) <= RADIUS) cells.push({ q: q, r: r });
+const cells = [];
+for (let q = -RADIUS; q <= RADIUS; q++) {
+  for (let r = -RADIUS; r <= RADIUS; r++) {
+    if (Math.abs(q + r) <= RADIUS) cells.push({ q, r });
   }
 }
 
-var indexOf = new Map(cells.map(function (c, i) { return [c.q + ',' + c.r, i]; }));
+const tileAt = new Map(cells.map((c, i) => [c.q + ',' + c.r, i]));
 
-// Tapping a tile turns it plus whichever of its six neighbours exist on the board.
-var groups = cells.map(function (c) {
-  return [[0, 0]].concat(NEIGHBOURS).map(function (d) {
-    return indexOf.get((c.q + d[0]) + ',' + (c.r + d[1]));
-  }).filter(function (i) { return i !== undefined; });
-});
+// Tapping a tile turns it plus whichever of its six neighbours exist. Index 0 is
+// always the tapped tile itself, which the ripple animation relies on.
+const groups = cells.map(c =>
+  [[0, 0]].concat(NEIGHBOURS)
+    .map(d => tileAt.get((c.q + d[0]) + ',' + (c.r + d[1])))
+    .filter(i => i !== undefined));
+
+// Rings out from the centre, for the solved animation.
+const distanceOf = c => (Math.abs(c.q) + Math.abs(c.r) + Math.abs(c.q + c.r)) / 2;
 
 // Cumulative sixth-turns clockwise per tile. Orientation is turns % 6; solved is all 0.
-var turns = cells.map(function () { return 0; });
+// Counting up forever instead of wrapping keeps CSS rotating the short way at the seam.
+const turns = cells.map(() => 0);
+const taps = [];
 
-function tap(i) {
-  groups[i].forEach(function (j) { turns[j]++; });
+const isSolved = () => turns.every(t => t % STEPS === 0);
+
+function turn(i, direction) {
+  for (const j of groups[i]) turns[j] += direction;
 }
 
-// Scrambling with real taps guarantees the puzzle is still solvable.
+// Replaying real taps keeps the scramble inside the group the taps generate, so
+// every puzzle is solvable. Randomising each tile independently would not be.
 function scramble(count) {
-  for (var k = 0; k < count; k++) tap(Math.floor(Math.random() * cells.length));
+  for (let k = 0; k < count; k++) turn(Math.floor(Math.random() * cells.length), 1);
 }
 
-/* ------------------------------- display -------------------------------- */
+/* ===================== structural self-test ===================== */
 
-// A chevron whose apex points at the tile's top vertex.
-var ARROW = '<svg viewBox="-10 -10 20 20" aria-hidden="true"><path d="M-5.5 3 L0 -3.6 L5.5 3"/></svg>';
+// The board's shape is easy to get subtly wrong and hard to eyeball, so assert it:
+// 19 interior tiles turn 7 at once, 12 edge tiles turn 5, 6 corner tiles turn 4.
+(function selfTest() {
+  const sizes = {};
+  for (const g of groups) sizes[g.length] = (sizes[g.length] || 0) + 1;
+  const symmetric = groups.every((g, i) => g.every(j => groups[j].includes(i)));
+  const pass = cells.length === 37 && symmetric &&
+               sizes[7] === 19 && sizes[5] === 12 && sizes[4] === 6;
+  console[pass ? 'log' : 'error'](
+    '[arrow-puzzle] self-test ' + (pass ? 'PASS' : 'FAIL') +
+    ': ' + cells.length + ' tiles, group sizes ' + JSON.stringify(sizes) +
+    ', adjacency ' + (symmetric ? 'symmetric' : 'ASYMMETRIC'));
+})();
+
+/* ===================== display ===================== */
+
+// Hex of size 97 inside a viewBox sized for 100, so the stroke clears the clip-path
+// and leaves a hairline seam. The chevron's apex points at the tile's top edge.
+const TILE_SVG =
+  '<svg viewBox="-100 -86.603 200 173.205" aria-hidden="true">' +
+  '<polygon class="cell" points="97,0 48.5,-84.004 -48.5,-84.004 -97,0 -48.5,84.004 48.5,84.004"/>' +
+  '<path class="arrow" d="M-38 17 L0 -17 L38 17"/></svg>';
+
+const HEADINGS = ['up', 'upper right', 'lower right', 'down', 'lower left', 'upper left'];
 
 // Flat-top hex packing: columns sit sqrt(3)/2 of a pitch apart and step half a pitch down.
-function offsetX(c) { return Math.sqrt(3) / 2 * c.q; }
-function offsetY(c) { return c.r + c.q / 2; }
+const offsetX = c => Math.sqrt(3) / 2 * c.q;
+const offsetY = c => c.r + c.q / 2;
 
-scramble(40);
+const board = document.getElementById('board');
+const clockEl = document.getElementById('clock');
+const bestEl = document.getElementById('best');
+const movesEl = document.getElementById('moves');
+const bannerEl = document.getElementById('banner');
+const undoEl = document.getElementById('undo');
 
-var board = document.getElementById('board');
-
-var tiles = cells.map(function (c, i) {
-  var tile = document.createElement('button');
+const tiles = cells.map((c, i) => {
+  const tile = document.createElement('button');
   tile.type = 'button';
   tile.className = 'tile';
   tile.style.setProperty('--x', offsetX(c));
   tile.style.setProperty('--y', offsetY(c));
-  tile.style.setProperty('--turn', turns[i]);   // set before insertion so it does not animate in
-  tile.innerHTML = ARROW;
-  tile.addEventListener('click', function () { tap(i); draw(); });
+  tile.style.setProperty('--dist', distanceOf(c));
+  tile.innerHTML = TILE_SVG;
+  tile.addEventListener('click', () => play(i, 1));
+  // Preview the tiles a tap would turn.
+  tile.addEventListener('pointerenter', () => setWarm(i, true));
+  tile.addEventListener('pointerleave', () => setWarm(i, false));
+  tile.addEventListener('focus', () => setWarm(i, true));
+  tile.addEventListener('blur', () => setWarm(i, false));
   board.append(tile);
   return tile;
 });
 
-function draw() {
-  tiles.forEach(function (tile, i) { tile.style.setProperty('--turn', turns[i]); });
+function setWarm(i, on) {
+  for (const j of groups[i]) tiles[j].classList.toggle('warm', on);
 }
+
+// Stagger the neighbours a beat behind the tapped tile so the turn ripples outward.
+function setRipple(i) {
+  const group = i === null ? [] : groups[i];
+  tiles.forEach((tile, k) => {
+    tile.style.setProperty('--delay', group.indexOf(k) > 0 ? '55ms' : '0ms');
+  });
+}
+
+function draw() {
+  tiles.forEach((tile, i) => {
+    tile.style.setProperty('--turn', turns[i]);
+    const c = cells[i];
+    tile.setAttribute('aria-label',
+      c.q + ',' + c.r + ': arrow ' + HEADINGS[((turns[i] % STEPS) + STEPS) % STEPS]);
+  });
+}
+
+// Repaint with no spin, for scrambles and resets.
+function drawInstantly() {
+  board.classList.add('no-tween');
+  draw();
+  void board.offsetWidth;             // flush the new transforms before tweens come back
+  board.classList.remove('no-tween');
+}
+
+/* ===================== clock ===================== */
+
+let startedAt = null;
+let frame = null;
+
+const pad = (n, width) => String(n).padStart(width, '0');
+const format = ms =>
+  pad(Math.floor(ms / 60000), 2) + ':' + pad(Math.floor(ms / 1000) % 60, 2) + '.' + pad(Math.floor(ms) % 1000, 3);
+
+function readBest() {
+  try {
+    const raw = Number(localStorage.getItem('ei-hex-game.best'));
+    return Number.isFinite(raw) && raw > 0 ? raw : null;
+  } catch (e) { return null; }        // storage blocked in private mode
+}
+
+function showBest() {
+  const best = readBest();
+  bestEl.textContent = best === null ? '–' : format(best);
+}
+
+function runClock() {
+  clockEl.textContent = format(performance.now() - startedAt);
+  frame = requestAnimationFrame(runClock);
+}
+
+function startClock() {
+  if (startedAt !== null) return;
+  startedAt = performance.now();
+  runClock();
+}
+
+function stopClock() {
+  if (startedAt === null) return 0;
+  cancelAnimationFrame(frame);
+  const elapsed = performance.now() - startedAt;
+  startedAt = null;
+  clockEl.textContent = format(elapsed);
+  return elapsed;
+}
+
+function resetClock() {
+  cancelAnimationFrame(frame);
+  startedAt = null;
+  clockEl.textContent = format(0);
+}
+
+/* ===================== turn loop ===================== */
+
+let finished = false;
+
+function play(i, direction) {
+  if (finished) return;
+  startClock();
+  turn(i, direction);
+  if (direction > 0) taps.push(i); else taps.pop();
+  setRipple(i);
+  draw();
+  refresh();
+  if (isSolved()) finish();
+}
+
+function refresh() {
+  movesEl.textContent = taps.length;
+  undoEl.disabled = finished || taps.length === 0;
+}
+
+function finish() {
+  finished = true;
+  const elapsed = stopClock();
+  const best = readBest();
+  if (elapsed > 0 && (best === null || elapsed < best)) {
+    try { localStorage.setItem('ei-hex-game.best', elapsed); } catch (e) { /* private mode */ }
+  }
+  showBest();
+  board.classList.add('solved');
+  bannerEl.classList.add('show');
+  undoEl.disabled = true;
+}
+
+function clearFinish() {
+  finished = false;
+  board.classList.remove('solved');
+  bannerEl.classList.remove('show');
+}
+
+/* ===================== controls ===================== */
+
+undoEl.addEventListener('click', () => {
+  if (taps.length) play(taps[taps.length - 1], -1);
+});
+
+// Reset is a workbench tool, not a win: it hands back a solved board without
+// celebrating it. Turning each tile forward to its next multiple of six gets
+// there in at most five steps instead of unwinding the whole game backwards.
+document.getElementById('reset').addEventListener('click', () => {
+  clearFinish();
+  for (let i = 0; i < turns.length; i++) turns[i] = Math.ceil(turns[i] / STEPS) * STEPS;
+  taps.length = 0;
+  setRipple(null);
+  draw();
+  resetClock();
+  refresh();
+});
+
+document.getElementById('fresh').addEventListener('click', newPuzzle);
+
+function newPuzzle() {
+  clearFinish();
+  for (let i = 0; i < turns.length; i++) turns[i] = 0;
+  scramble(40);
+  for (let i = 0; i < turns.length; i++) turns[i] %= STEPS;   // keep the counts small
+  taps.length = 0;
+  setRipple(null);
+  drawInstantly();
+  resetClock();
+  refresh();
+}
+
+showBest();
+newPuzzle();
 </script>
 
 </body>
